@@ -1,0 +1,5 @@
+2023.07.03 - version 1.0.1
+ * Fix webhook response for Clave payments
+
+2023.02.04 - version 1.0.0
+ * First Release
