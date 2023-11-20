@@ -5,6 +5,8 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 
 	protected static $instance;
 
+	const MIGRATION_TIME =  1701324000;
+
 	/**
 	 * Class constructor, more about it in Step 3
 	 */
@@ -31,8 +33,9 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 		$this->description = $this->get_option( 'description' );
 		$this->enabled = $this->get_option( 'enabled' );
 		$this->testmode = 'yes' === $this->get_option( 'testmode' );
-		$this->api_url = $this->testmode ? $this->get_option( 'test_api_url' ) : $this->get_option( 'api_url' );
+		$this->api_url = $this->getApiUrl($this->testmode);
 		$this->api_key = $this->testmode ? $this->get_option( 'test_api_key' ) : $this->get_option( 'api_key' );
+
 
 		// This action hook saves the settings
 		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
@@ -46,6 +49,30 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 		//URL OK y KO
 		add_action( "woocommerce_api_" . CBOConstants::STANDARD_GATEWAY_ID . '_status', array( $this, 'callback_url' ) );
 
+
+	}
+
+	/**
+	 * @param $testMode
+	 *
+	 * @return array|string|string[]
+	 */
+	public function getApiUrl($testMode = false) {
+		if ($testMode) {
+			return $this->get_option( 'test_api_url' );
+		}
+
+		$prodUrl = $this->get_option( 'api_url' );
+		if (time() >= self::MIGRATION_TIME) {
+			if (str_contains('cbo.cobalt.tech', $prodUrl)) {
+				$prodUrl = str_replace('cbo.cobalt.tech', 'metrobank.cobalt.tech', $prodUrl);
+
+				//Override option
+				$this->update_option('api_url', $prodUrl);
+			}
+		}
+
+		return $prodUrl;
 
 	}
 
