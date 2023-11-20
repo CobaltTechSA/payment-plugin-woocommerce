@@ -33,7 +33,7 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 		$this->description = $this->get_option( 'description' );
 		$this->enabled = $this->get_option( 'enabled' );
 		$this->testmode = 'yes' === $this->get_option( 'testmode' );
-		$this->api_url = $this->getApiUrl($this->testmode);
+		$this->api_url = $this->get_api_url($this->testmode);
 		$this->api_key = $this->testmode ? $this->get_option( 'test_api_key' ) : $this->get_option( 'api_key' );
 
 
@@ -57,7 +57,7 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 	 *
 	 * @return array|string|string[]
 	 */
-	public function getApiUrl($testMode = false) {
+	public function get_api_url($testMode = false) {
 		if ($testMode) {
 			return $this->get_option( 'test_api_url' );
 		}
