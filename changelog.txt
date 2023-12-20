@@ -1,3 +1,6 @@
+2023.12.20 - version 1.0.3
+ * Fix Version update
+
 2023.11.20 - version 1.0.2
  * Auto-update Production URL to metrobank.cobalt.tech after November 30th, 2023
  * Added error logs
