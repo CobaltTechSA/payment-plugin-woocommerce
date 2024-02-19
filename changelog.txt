@@ -1,3 +1,6 @@
+2024.02.19 - version 1.0.4
+ * Fix create Clave payments
+
 2023.12.20 - version 1.0.3
  * Fix Version update
 
