@@ -32,7 +32,8 @@ class CBOClient {
 		curl_setopt( $ch, CURLOPT_HTTPHEADER, [
 			'Content-Type: application/json',
 			'Authorization: Bearer ' . $this->apiKey,
-			'Accept: application/json'
+			'Accept: application/json',
+            'User-Agent: Cobalt-WC-Plugin ' . CBOConstants::PLUGIN_VERSION
 		] );
 
 		$response = curl_exec( $ch );
@@ -56,7 +57,8 @@ class CBOClient {
 		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
 		curl_setopt( $ch, CURLOPT_HTTPHEADER, [
 			'Authorization: Bearer ' . $this->apiKey,
-			'Accept: application/json'
+			'Accept: application/json',
+            'User-Agent: Cobalt-WC-Plugin ' . CBOConstants::PLUGIN_VERSION
 			]);
 
 		$response = curl_exec( $ch );
@@ -115,7 +117,7 @@ class CBOClient {
 				'platform' => 'Woocommerce',
 				'version' => CBOConstants::PLUGIN_VERSION,
 				'order_id' => $order->get_id(),
-				'payment_type' => 'telered'
+				'payment_type' => 'TELERED'
 			],
 			'tip' => 0,
 			'tax' => $tax,

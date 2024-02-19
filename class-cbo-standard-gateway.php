@@ -5,8 +5,6 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 
 	protected static $instance;
 
-	const MIGRATION_TIME =  1701324000;
-
 	/**
 	 * Class constructor, more about it in Step 3
 	 */
@@ -63,14 +61,12 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 		}
 
 		$prodUrl = $this->get_option( 'api_url' );
-		if (time() >= self::MIGRATION_TIME) {
-			if (str_contains('cbo.cobalt.tech', $prodUrl)) {
-				$prodUrl = str_replace('cbo.cobalt.tech', 'metrobank.cobalt.tech', $prodUrl);
+        if (str_contains('cbo.cobalt.tech', $prodUrl)) {
+            $prodUrl = str_replace('cbo.cobalt.tech', 'metrobank.cobalt.tech', $prodUrl);
 
-				//Override option
-				$this->update_option('api_url', $prodUrl);
-			}
-		}
+            //Override option
+            $this->update_option('api_url', $prodUrl);
+        }
 
 		return $prodUrl;
 
