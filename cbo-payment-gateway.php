@@ -6,7 +6,7 @@
  * Description: Payments with VISA, MasterCard and Clave
  * Author: Cobalt Tech
  * Author URI: https://cobalt.tech
- * Version: 1.0.4
+ * Version: 1.1.0
  */
 
 include_once 'cbo-logger.php';
