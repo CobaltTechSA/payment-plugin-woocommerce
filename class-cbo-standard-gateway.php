@@ -314,7 +314,7 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 	public function webhook() {
 
 		$data = json_decode(file_get_contents('php://input'), true);
-		CBOLog::debug("Webhook: Tx #" . $data['identifier'] . ": " . json_encode($data));
+		CBOLog::debug("Webhook: Tx #" . $data['identifier'] /*. ": " . json_encode($data)*/);
 
 		try {
 			//$transaction = $client->transaction($data['tid']);
