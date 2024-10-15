@@ -76,46 +76,46 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 		$this->form_fields = array(
 			'enabled' => array(
 				'title'       => __('Enable/Disable', 'cbo-payment-gateway'),
-				'label'       => __('Enable CBO Payment Gateway', 'woocommerce'),
+				'label'       => __('Enable CBO Payment Gateway', 'cbo-payment-gateway'),
 				'type'        => 'checkbox',
 				'description' => '',
 				'default'     => 'no'
 			),
 			'title' => array(
-				'title'       => __('Title', 'woocommerce'),
+				'title'       => __('Title', 'cbo-payment-gateway'),
 				'type'        => 'text',
-				'description' => __('This controls the title which the user sees during checkout.', 'woocommerce'),
+				'description' => __('This controls the title which the user sees during checkout.', 'cbo-payment-gateway'),
 				'default'     => 'VISA, Mastercard',
 				'desc_tip'    => true,
 			),
 			'description' => array(
-				'title'       => __('Description', 'woocommerce'),
+				'title'       => __('Description', 'cbo-payment-gateway'),
 				'type'        => 'textarea',
-				'description' => __('This controls the description which the user sees during checkout.', 'woocommerce'),
-				'default'     => __('Pay with your VISA or Mastercard card', 'woocommerce'),
+				'description' => __('This controls the description which the user sees during checkout.', 'cbo-payment-gateway'),
+				'default'     => __('Pay with your VISA or Mastercard card', 'cbo-payment-gateway'),
 			),
 			'testmode' => array(
-				'title'       => __('Test mode', 'woocommerce'),
-				'label'       => __('Enable Test Mode', 'woocommerce'),
+				'title'       => __('Test mode', 'cbo-payment-gateway'),
+				'label'       => __('Enable Test Mode', 'cbo-payment-gateway'),
 				'type'        => 'checkbox',
-				'description' => __('Place the payment gateway in test mode using test API keys.', 'woocommerce'),
+				'description' => __('Place the payment gateway in test mode using test API keys.', 'cbo-payment-gateway'),
 				'default'     => 'yes',
 				'desc_tip'    => true,
 			),
 			'test_api_url' => array(
-				'title'       => __('Test API URL', 'woocommerce'),
+				'title'       => __('Test API URL', 'cbo-payment-gateway'),
 				'type'        => 'text'
 			),
 			'test_api_key' => array(
-				'title'       => __('Test API Key', 'woocommerce'),
+				'title'       => __('Test API Key', 'cbo-payment-gateway'),
 				'type'        => 'password',
 			),
 			'api_url' => array(
-				'title'       => __('Production API URL', 'woocommerce'),
+				'title'       => __('Production API URL', 'cbo-payment-gateway'),
 				'type'        => 'text'
 			),
 			'api_key' => array(
-				'title'       => __('Production API Key', 'woocommerce'),
+				'title'       => __('Production API Key', 'cbo-payment-gateway'),
 				'type'        => 'password'
 			)
 		);
@@ -144,7 +144,7 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 		if ( $this->description ) {
 			// you can instructions for test mode, I mean test card numbers etc.
 			if ( $this->testmode ) {
-				$this->description .= ' ' . __('TEST MODE ENABLED', 'woocommerce') . '.';
+				$this->description .= ' ' . __('TEST MODE ENABLED', 'cbo-payment-gateway') . '.';
 				$this->description  = trim( $this->description );
 			}
 			// display the description with <p> tags etc.
@@ -200,23 +200,23 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 
         $cardNumber = str_replace(" ", "", $cardNumber);
         if (!is_valid_luhn($cardNumber)) {
-            wc_add_notice( __('Invalid card number', 'woocommerce'), 'error' );
+            wc_add_notice( __('Invalid card number', 'cbo-payment-gateway'), 'error' );
             $valid = false;
         }
 
         $cardExpiry = str_replace(" ", "", $cardExpiry);
         if (!is_valid_expiry_date($cardExpiry)) {
-            wc_add_notice( __('Invalid expiry date', 'woocommerce'), 'error' );
+            wc_add_notice( __('Invalid expiry date', 'cbo-payment-gateway'), 'error' );
             $valid = false;
         }
 
         if (!is_valid_card_holder($cardHolder)) {
-            wc_add_notice( __('Invalid card holder', 'woocommerce'), 'error' );
+            wc_add_notice( __('Invalid card holder', 'cbo-payment-gateway'), 'error' );
             $valid = false;
         }
 
         if (!is_valid_cvv($cardCvv)) {
-            wc_add_notice( __('Invalid card code (CVV)', 'woocommerce'), 'error' );
+            wc_add_notice( __('Invalid card code (CVV)', 'cbo-payment-gateway'), 'error' );
             $valid = false;
         }
 
@@ -253,17 +253,17 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
                 );
 
             } else if ($transaction['status'] === 'refused') {
-                wc_add_notice(  __('We were unable to complete the payment. Please contact with commerce.', 'woocommerce'), 'error' );
+                wc_add_notice(  __('We were unable to complete the payment. Please contact with commerce.', 'cbo-payment-gateway'), 'error' );
             } else {
-                wc_add_notice(  __('We were unable to complete the payment. Please check your card details or contact your bank.', 'woocommerce'), 'error' );
+                wc_add_notice(  __('We were unable to complete the payment. Please check your card details or contact your bank.', 'cbo-payment-gateway'), 'error' );
 
             }
 		} catch (\CBOException $e) {
 			if (!$e->isSuccessResponse()) {
 				CBOLog::debug($e->getMessage() . " - " . json_encode($e->getResponse()));
-				wc_add_notice(  __('No se ha podido generar el pago. Por favor contacte con el comercio.', 'woocommerce'), 'error' );
+				wc_add_notice(  __('No se ha podido generar el pago. Por favor contacte con el comercio.', 'cbo-payment-gateway'), 'error' );
 			} else {
-				wc_add_notice(  __('No se ha podido procesar el pago. Por favor contacte con el comercio.', 'woocommerce'), 'error' );
+				wc_add_notice(  __('No se ha podido procesar el pago. Por favor contacte con el comercio.', 'cbo-payment-gateway'), 'error' );
 			}
 		}
 	}

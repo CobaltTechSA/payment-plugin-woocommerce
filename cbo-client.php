@@ -180,7 +180,7 @@ class CBOClient {
 		}*/
 
 		$response = $this->post('/api/transactions/sale', $body);
-		\CBOLog::debug("Response: " . json_encode($response));
+		//\CBOLog::debug("Response: " . json_encode($response));
 		if ($response['code'] == 200) {
 			return $response['body']['data'];
 		} else {
