@@ -44,6 +44,11 @@ msgstr ""
 msgid "Acceptance of payments with Visa / Mastercard"
 msgstr ""
 
+#. CBO Standard Gateway Description
+#: class-cbo-telered-gateway.php
+msgid "Acceptance of payments with Clave"
+msgstr ""
+
 #. CBO Standard Gateway Enabled/Disable title
 #: class-cbo-standard-gateway.php
 msgid "Enable/Disable"

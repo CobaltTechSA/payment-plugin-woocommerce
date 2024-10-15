@@ -14,7 +14,7 @@ class WC_CBO_Telered_Gateway extends WC_Payment_Gateway {
 		$this->icon = ''; // URL of the icon that will be displayed on checkout page near your gateway name
 		$this->has_fields = false; // in case you need a custom credit card form
 		$this->method_title = 'CBO Clave Gateway';
-		$this->method_description = 'Aceptación de pagos con Clave'; // will be displayed on the options page
+		$this->method_description = __("Acceptance of payments with Clave", "cbo-payment-gateway"); // will be displayed on the options page
 
 		// gateways can support subscriptions, refunds, saved payment methods,
 		// but in this tutorial we begin with simple payments
@@ -69,52 +69,52 @@ class WC_CBO_Telered_Gateway extends WC_Payment_Gateway {
 	 */
 	public function init_form_fields(){
 
-		$this->form_fields = array(
-			'enabled' => array(
-				'title'       => 'Enable/Disable',
-				'label'       => 'Enable CBO Clave Gateway',
-				'type'        => 'checkbox',
-				'description' => '',
-				'default'     => 'no'
-			),
-			'title' => array(
-				'title'       => 'Title',
-				'type'        => 'text',
-				'description' => 'This controls the title which the user sees during checkout.',
-				'default'     => 'Clave',
-				'desc_tip'    => true,
-			),
-			'description' => array(
-				'title'       => 'Description',
-				'type'        => 'textarea',
-				'description' => 'This controls the description which the user sees during checkout.',
-				'default'     => 'Clave',
-			),
-			'testmode' => array(
-				'title'       => 'Test mode',
-				'label'       => 'Enable Test Mode',
-				'type'        => 'checkbox',
-				'description' => 'Place the payment gateway in test mode using test API keys.',
-				'default'     => 'yes',
-				'desc_tip'    => true,
-			),
-			'test_api_url' => array(
-				'title'       => 'Test API URL',
-				'type'        => 'text'
-			),
-			'test_api_key' => array(
-				'title'       => 'Test API Key',
-				'type'        => 'password',
-			),
-			'api_url' => array(
-				'title'       => 'Production API URL',
-				'type'        => 'text'
-			),
-			'api_key' => array(
-				'title'       => 'Production API Key',
-				'type'        => 'password'
-			)
-		);
+        $this->form_fields = array(
+            'enabled' => array(
+                'title'       => __('Enable/Disable', 'cbo-payment-gateway'),
+                'label'       => __('Enable CBO Payment Gateway', 'cbo-payment-gateway'),
+                'type'        => 'checkbox',
+                'description' => '',
+                'default'     => 'no'
+            ),
+            'title' => array(
+                'title'       => __('Title', 'cbo-payment-gateway'),
+                'type'        => 'text',
+                'description' => __('This controls the title which the user sees during checkout.', 'cbo-payment-gateway'),
+                'default'     => 'VISA, Mastercard',
+                'desc_tip'    => true,
+            ),
+            'description' => array(
+                'title'       => __('Description', 'cbo-payment-gateway'),
+                'type'        => 'textarea',
+                'description' => __('This controls the description which the user sees during checkout.', 'cbo-payment-gateway'),
+                'default'     => __('Pay with your VISA or Mastercard card', 'cbo-payment-gateway'),
+            ),
+            'testmode' => array(
+                'title'       => __('Test mode', 'cbo-payment-gateway'),
+                'label'       => __('Enable Test Mode', 'cbo-payment-gateway'),
+                'type'        => 'checkbox',
+                'description' => __('Place the payment gateway in test mode using test API keys.', 'cbo-payment-gateway'),
+                'default'     => 'yes',
+                'desc_tip'    => true,
+            ),
+            'test_api_url' => array(
+                'title'       => __('Test API URL', 'cbo-payment-gateway'),
+                'type'        => 'text'
+            ),
+            'test_api_key' => array(
+                'title'       => __('Test API Key', 'cbo-payment-gateway'),
+                'type'        => 'password',
+            ),
+            'api_url' => array(
+                'title'       => __('Production API URL', 'cbo-payment-gateway'),
+                'type'        => 'text'
+            ),
+            'api_key' => array(
+                'title'       => __('Production API Key', 'cbo-payment-gateway'),
+                'type'        => 'password'
+            )
+        );
 
 	}
 

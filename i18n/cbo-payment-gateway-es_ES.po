@@ -6,7 +6,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/cobalt-plugin-"
 "woocommerce\n"
 "POT-Creation-Date: 2024-10-09T17:39:58+00:00\n"
-"PO-Revision-Date: 2024-10-09 15:01-0500\n"
+"PO-Revision-Date: 2024-10-15 17:41-0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es_ES\n"
@@ -46,6 +46,11 @@ msgstr ""
 msgid "Acceptance of payments with Visa / Mastercard"
 msgstr "Aceptación de pagos con Visa / Mastercard"
 
+#. CBO Standard Gateway Description
+#: class-cbo-telered-gateway.php
+msgid "Acceptance of payments with Clave"
+msgstr "Aceptación de pagos con Clave"
+
 #. CBO Standard Gateway Enabled/Disable title
 #: class-cbo-standard-gateway.php
 msgid "Enable/Disable"
@@ -74,8 +79,7 @@ msgstr "Descripción"
 #. CBO Standard Gateway Description description
 #: class-cbo-standard-gateway.php
 msgid "This controls the description which the user sees during checkout."
-msgstr ""
-"Esto controla la descripción que el usuario ve durante el pago. Verga."
+msgstr "Esto controla la descripción que el usuario ve durante el pago."
 
 #. CBO Standard Gateway Description default
 #: class-cbo-standard-gateway.php
