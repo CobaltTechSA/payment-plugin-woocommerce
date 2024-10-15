@@ -5,7 +5,7 @@ class CBOConstants {
 	const STANDARD_GATEWAY_ID = 'cbo_standard_gateway';
 	const TELERED_GATEWAY_ID = 'cbo_telered_gateway';
 
-	const PLUGIN_VERSION = '1.1.0';
+	const PLUGIN_VERSION = '1.2.0';
 	const PLUGIN_NAME = 'CBO Payment Gateway';
 
 	// Minimum PHP version required by this plugin.
@@ -19,6 +19,6 @@ class CBOConstants {
 
 
     const PAYMENT_TYPE_TELERED = 'TELERED';
-    const PAYMENT_TYPE_VISA = 'MASTERCARD';
+    const PAYMENT_TYPE_VISA = 'VISA';
     const PAYMENT_TYPE_MASTERCARD = 'MASTERCARD';
 }
