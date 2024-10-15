@@ -127,7 +127,7 @@ class WC_CBO_Telered_Gateway extends WC_Payment_Gateway {
 		if ( $this->description ) {
 			// you can instructions for test mode, I mean test card numbers etc.
 			if ( $this->testmode ) {
-				$this->description .= ' TEST MODE ENABLED.';
+				$this->description .= ' ' . __('TEST MODE ENABLED', 'cbo-payment-gateway') . '.';
 				$this->description  = trim( $this->description );
 			}
 			// display the description with <p> tags etc.
