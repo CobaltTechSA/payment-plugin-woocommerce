@@ -1,3 +1,7 @@
+2024.10.15 - version 1.2.0
+ * Added native payments for VISA and Mastercard
+ * Added translations
+
 2024.03.11 - version 1.1.0
  * Enable VISA and MASTERCARD payments
 
