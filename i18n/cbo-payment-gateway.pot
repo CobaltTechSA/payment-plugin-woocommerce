@@ -110,6 +110,17 @@ msgstr ""
 msgid "Test API Key"
 msgstr ""
 
+
+#. CBO Standard Gateway Test API Client Id title
+#: class-cbo-standard-gateway.php
+msgid "Test API Client Id"
+msgstr ""
+
+#. CBO Standard Gateway Test API Client Secret title
+#: class-cbo-standard-gateway.php
+msgid "Test API Client Secret"
+msgstr ""
+
 #. CBO Standard Gateway Production API URL title
 #: class-cbo-standard-gateway.php
 msgid "Production API URL"
@@ -118,6 +129,16 @@ msgstr ""
 #. CBO Standard Gateway Production API Key title
 #: class-cbo-standard-gateway.php
 msgid "Production API Key"
+msgstr ""
+
+#. CBO Standard Gateway Production API Client Id title
+#: class-cbo-standard-gateway.php
+msgid "Production API Client Id"
+msgstr ""
+
+#. CBO Standard Gateway Production API Client Secret title
+#: class-cbo-standard-gateway.php
+msgid "Production API Client Secret"
 msgstr ""
 
 #. CBO Standard Gateway Production API Key title

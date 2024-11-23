@@ -6,7 +6,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/cobalt-plugin-"
 "woocommerce\n"
 "POT-Creation-Date: 2024-10-09T17:39:58+00:00\n"
-"PO-Revision-Date: 2024-10-15 17:41-0500\n"
+"PO-Revision-Date: 2024-11-23 18:45-0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es_ES\n"
@@ -113,6 +113,16 @@ msgstr "URL de la API de prueba"
 msgid "Test API Key"
 msgstr "Clave API de prueba"
 
+#. CBO Standard Gateway Test API Client Id title
+#: class-cbo-standard-gateway.php
+msgid "Test API Client Id"
+msgstr "API ClientId de prueba"
+
+#. CBO Standard Gateway Test API Client Secret title
+#: class-cbo-standard-gateway.php
+msgid "Test API Client Secret"
+msgstr "API ClientSecret de prueba"
+
 #. CBO Standard Gateway Production API URL title
 #: class-cbo-standard-gateway.php
 msgid "Production API URL"
@@ -122,6 +132,16 @@ msgstr "URL de la API de producción"
 #: class-cbo-standard-gateway.php
 msgid "Production API Key"
 msgstr "Clave API de producción"
+
+#. CBO Standard Gateway Production API Client Id title
+#: class-cbo-standard-gateway.php
+msgid "Production API Client Id"
+msgstr "API ClientId de producción"
+
+#. CBO Standard Gateway Production API Client Secret title
+#: class-cbo-standard-gateway.php
+msgid "Production API Client Secret"
+msgstr "API ClientSecret de producción"
 
 #. CBO Standard Gateway Production API Key title
 #: class-cbo-standard-gateway.php
