@@ -40,6 +40,7 @@ class CBO_Payment_Gateway_CC extends WC_Payment_Gateway_CC {
     public function form() {
         wp_enqueue_script( 'wc-credit-card-form' );
 
+
         $fields = array();
 
         $cvc_field = '<p class="form-row form-row-last">

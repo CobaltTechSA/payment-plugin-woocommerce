@@ -49,7 +49,8 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 		//URL OK y KO
 		add_action( "woocommerce_api_" . $this->id . '_status', array( $this, 'callback_url' ) );
 
-
+        //JS Scripts
+        add_action( 'wp_enqueue_scripts', array($this, 'register_plugin_scripts'));
 	}
 
 	public function get_icon() {
@@ -122,6 +123,12 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 
 	}
 
+    public function register_plugin_scripts()
+    {
+        CBOLog::debug("plugin path: " . plugin_dir_url(__FILE__));
+        wp_enqueue_script( 'cbo-standard-payment', plugin_dir_url(__FILE__) . 'assets/js/cbo-payment-script.js', array('jquery'), null, true);
+    }
+
     /**
      * @param $args
      * @param $fields
@@ -151,32 +158,6 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 			echo wpautop( wp_kses_post( $this->description ) );
 		}
         $this->credit_card_form();
-        /*echo '<fieldset id="wc-' . esc_attr( $this->id ) . '-cc-form" class="wc-credit-card-form wc-payment-form" style="background:transparent;">';
-
-        do_action( 'woocommerce_credit_card_form_start', $this->id );
-
-        echo '
-				<div class="form-row form-row-wide"><label>Número de tarjeta<span class="required">*</span></label>
-					<input id="wc-' . esc_attr( $this->id ) . '-card_number" type="tel" autocomplete="off" name="card_number" minlength="16" maxlength="16" required>
-				</div>
-				<div class="form-row form-row-wide"><label>Nombre en la tarjeta<span class="required">*</span></label>
-					<input id="wc-' . esc_attr( $this->id ) . '-card_holder" type="text" autocomplete="off" name="card_holder" required>
-				</div>
-				<div class="form-row form-row-first">
-					<label>Fecha de expiración<span class="required">*</span></label>
-					<input id="wc-' . esc_attr( $this->id ) . '-exp_date" type="tel" autocomplete="off" placeholder="MM / AA" name="exp_date" pattern="^(0[1-9]|1[0-2])\/([0-9]{2})$" minlength="5" maxlength="5" required>
-				</div>
-				<div class="form-row form-row-last">
-					<label>CVV<span class="required">*</span></label>
-					<input id="wc-' . esc_attr( $this->id ) . '-cvv" type="password" autocomplete="off" placeholder="CVV" name="cvv" minlength="3" maxlength="3" required>
-				</div>
-				<div class="clear"></div>';
-
-        do_action( 'woocommerce_credit_card_form_end', $this->id );
-
-        echo '<div class="clear"></div></fieldset>';*/
-
-
 	}
 
 	/*
@@ -235,6 +216,7 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 
 		$cboClient = new CBOClient($this->api_url, $this->api_key);
 		try {
+            CBOLog::debug('Order data: ' . json_encode($_POST));
             $cardNumber = $_POST[$this->id . '-card-number'];
             $cardExpiry = $_POST[$this->id . '-card-expiry'];
             $cardCvv = $_POST[$this->id . '-card-cvc'];
@@ -242,6 +224,8 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 
             $cardNumber = str_replace(" ", "", $cardNumber);
             $cardExpiry = str_replace(" ", "", $cardExpiry);
+
+            //$threeDSParams = $this->get3DSParams();
 
 			$transaction = $cboClient->sale($order, $cardNumber, $cardExpiry, $cardCvv, $cardHolder);
 			CBOLog::debug("Checkout data: " . json_encode($transaction));
@@ -267,6 +251,42 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 			}
 		}
 	}
+
+    /**
+     * @return array
+     */
+    private function get3DSParams()
+    {
+        $threeDSAttrs = ['browserJavaEnabled', 'browserJavascriptEnabled', 'browserLanguage', 'browserColorDepth',
+            'browserScreenWidth', 'browserScreenHeight', 'browserTZ', 'browserUserAgent', 'challengeWindowSize'];
+
+        $threeDSParams = [];
+
+        foreach ($threeDSAttrs as $attr) {
+            $threeDSParams[$attr] = $_POST[$this->id . '-' . $attr];
+        }
+
+        //Order additional data
+        $threeDSParams['transType'] = 'goods';
+        $threeDSParams['deviceChannel'] = 'browser';
+        $threeDSParams['browserIP'] = $_SERVER['REMOTE_ADDR'];
+        $threeDSParams['email'] = $_POST[$this->id . '-billing_email'];
+        $threeDSParams['billAddrCountry'] = $_POST[$this->id . '-billing_country'];
+        $threeDSParams['billAddrCity'] = $_POST[$this->id . '-billing_city'];
+        $threeDSParams['billAddrState'] = $_POST[$this->id . '-billing_state'];
+        $threeDSParams['billAddrLine1'] = $_POST[$this->id . '-billing_address_1'];
+        $threeDSParams['billAddrLine2'] = $_POST[$this->id . '-billing_address_2'];
+        $threeDSParams['billAddrPostCode'] = $_POST[$this->id . '-billing_postcode'];
+
+        $threeDSParams['shipAddrCountry'] = $_POST[$this->id . '-shipping_country'];
+        $threeDSParams['shipAddrCity'] = $_POST[$this->id . '-shipping_city'];
+        $threeDSParams['shipAddrState'] = $_POST[$this->id . '-shipping_state'];
+        $threeDSParams['shipAddrLine1'] = $_POST[$this->id . '-shipping_address_1'];
+        $threeDSParams['shipAddrLine2'] = $_POST[$this->id . '-shipping_address_2'];
+        $threeDSParams['shipAddrPostCode'] = $_POST[$this->id . '-shipping_postcode'];
+
+        return $threeDSParams;
+    }
 
     private function validate_payment($transaction)
     {

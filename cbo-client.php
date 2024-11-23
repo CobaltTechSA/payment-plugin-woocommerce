@@ -144,7 +144,7 @@ class CBOClient {
 		}
 	}
 
-	public function sale(WC_Order $order, $cardNumber, $expiryDate, $cvv, $cardHolder, $metadatas = array()) {
+	public function sale(WC_Order $order, $cardNumber, $expiryDate, $cvv, $cardHolder, $threeDSParams = array(), $metadatas = array()) {
 
 		\CBOLog::debug("Order ID: " . $order->get_id());
 
@@ -173,13 +173,14 @@ class CBOClient {
             'exp_date' => $expiryDate,
             'cvv2' => $cvv,
             'card_holder' => $cardHolder,
+            '3ds_params' => $threeDSParams
 		];
 
 		/*if ($onlyTelered) {
 			$body['metadatas']['card_brand'] = 'TELERED';
 		}*/
 
-		$response = $this->post('/api/transactions/sale', $body);
+		$response = $this->post('/api/v2/transactions/sale', $body);
 		//\CBOLog::debug("Response: " . json_encode($response));
 		if ($response['code'] == 200) {
 			return $response['body']['data'];
