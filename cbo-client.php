@@ -3,38 +3,73 @@
 include_once 'cbo-constants.php';
 class CBOClient {
 
+    const API_V1_ROUTES = [
+        'sale' => '/api/transactions/sale',
+        'transaction' => '/api/transactions/',
+        'checkout' => '/api/checkout'
+    ];
+
+    const API_V2_ROUTES = [
+        'sale' => '/api/v2/transactions/sale',
+        'transaction' => '/api/v2/transactions/',
+        'checkout' => '/api/v2/checkout'
+    ];
+
 	/** @var string */
 	private $baseUrl;
 
 	/** @var string */
 	private $apiKey;
 
-	/**
-	 * @param string $baseUrl
-	 * @param string $apiKey
-	 */
-	public function __construct( string $baseUrl, string $apiKey ) {
+    private $clientId;
+    private $clientSecret;
+
+    private $authorization;
+
+
+    /**
+     * @param string $baseUrl
+     * @param string $apiKey
+     * @param string|null $clientId
+     * @param string|null $clientSecret
+     */
+	public function __construct( string $baseUrl, string $apiKey, string $clientId = null, string $clientSecret = null ) {
 		$this->baseUrl = $baseUrl;
 		$this->apiKey  = $apiKey;
+        $this->clientId = $clientId;
+        $this->clientSecret = $clientSecret;
 	}
 
-	/**
-	 * @param string $endpoint
-	 * @param array $data
-	 *
-	 * @return array
-	 */
-	private function post( string $endpoint, array $data = [] ): array {
+    /**
+     * @param string $endpoint
+     * @param array $data
+     * @param bool $login
+     * @return array
+     * @throws CBOException
+     */
+	private function post( string $endpoint, array $data = [], $login = true): array {
+        if ($login) {
+            if (!$this->login()) {
+                throw new CBOException("Could not authenticate.");
+            }
+        }
+
 		$ch = curl_init( $this->baseUrl . $endpoint );
 		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
 		curl_setopt( $ch, CURLOPT_POST, true );
 		curl_setopt( $ch, CURLOPT_POSTFIELDS, json_encode( $data ) );
-		curl_setopt( $ch, CURLOPT_HTTPHEADER, [
-			'Content-Type: application/json',
-			'Authorization: Bearer ' . $this->apiKey,
-			'Accept: application/json',
+
+        $headers = [
+            'Content-Type: application/json',
+            'Accept: application/json',
             'User-Agent: Cobalt-WC-Plugin ' . CBOConstants::PLUGIN_VERSION
-		] );
+        ];
+
+        if ($this->authorization) {
+            $headers[] = $this->authorization;
+        }
+
+		curl_setopt( $ch, CURLOPT_HTTPHEADER, $headers );
 
 		$response = curl_exec( $ch );
 
@@ -47,19 +82,31 @@ class CBOClient {
 		return $data;
 	}
 
-	/**
-	 * @param string $endpoint
-	 *
-	 * @return array
-	 */
-	private function get(string $endpoint): array {
+    /**
+     * @param string $endpoint
+     * @param bool $login
+     * @return array
+     * @throws CBOException
+     */
+	private function get(string $endpoint, bool $login = true): array {
+        if ($login) {
+            if (!$this->login()) {
+                throw new CBOException("Could not authenticate.");
+            }
+        }
+
 		$ch = curl_init( $this->baseUrl . $endpoint );
 		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-		curl_setopt( $ch, CURLOPT_HTTPHEADER, [
-			'Authorization: Bearer ' . $this->apiKey,
-			'Accept: application/json',
+        $headers = [
+            'Accept: application/json',
             'User-Agent: Cobalt-WC-Plugin ' . CBOConstants::PLUGIN_VERSION
-			]);
+        ];
+
+        if ($this->authorization) {
+            $headers[] = $this->authorization;
+        }
+
+        curl_setopt( $ch, CURLOPT_HTTPHEADER, $headers );
 
 		$response = curl_exec( $ch );
 
@@ -71,6 +118,112 @@ class CBOClient {
 		curl_close( $ch );
 		return $data;
 	}
+
+    /**
+     * @return string
+     */
+    public function hasV2Credentials(): string
+    {
+        return $this->clientId != null && $this->clientSecret != null;
+    }
+
+    /**
+     * @param string $action
+     * @return string
+     */
+    public function getRoute(string $action)
+    {
+        if ($this->hasV2Credentials()) {
+            return self::API_V2_ROUTES[$action];
+        }
+
+        return self::API_V1_ROUTES[$action];
+
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAccessTokenExpired(): bool {
+        $expiresAt = intval(get_option('expires_at', 0));
+        $now = time();
+
+        return $expiresAt <= $now;
+    }
+
+    /**
+     * @return bool
+     * @throws CBOException
+     */
+    public function login()
+    {
+        $this->authorization = null;
+
+        //API v2
+        if ($this->hasV2Credentials()) {
+            CBOLog::info("API V2 Detected");
+            $accessToken = $this->getAccessToken();
+            if ($accessToken) {
+                $this->authorization = 'Authorization: Bearer ' . $accessToken;
+                return true;
+            }
+        }
+
+        if ($this->apiKey != null) {
+            //API v1 token
+            CBOLog::info("API V1 Detected");
+            $this->authorization = 'Authorization: Bearer ' . $this->apiKey;
+            return true;
+        }
+
+        CBOLog::error("No credentials detected");
+        return false;
+    }
+
+    /**
+     * @return false|mixed|null
+     * @throws CBOException
+     */
+    public function getAccessToken()
+    {
+        $accessToken = get_option('access_token');
+        if ($this->isAccessTokenExpired()) {
+            $response = $this->post('/oauth/token', [
+                'grant_type' => 'client_credentials',
+                'client_id' => $this->clientId,
+                'client_secret' => $this->clientSecret,
+            ], false);
+
+            //CBOLog::debug("response=" . json_encode($response));
+            if ($response['code'] == 200) {
+                $accessToken = $response['body']['access_token'];
+                $expiresIn = intval($response['body']['expires_in']);
+
+                //AccessToken expiration time
+                $expiresIn -= (60 * 5); //For prevention, subtract 5 minutes
+                $expiresAt = time() + $expiresIn;
+                CBOLog::debug("Authentication completed: expiresIn=$expiresIn, accessToken=$accessToken");
+            } else {
+                //Failed
+                CBOLog::error("Error getting access token: " . json_encode($response));
+                return null;
+            }
+
+            if (!$accessToken) {
+                //New Option
+                add_option('access_token', $accessToken);
+                add_option('expires_at', $expiresAt);
+            } else {
+                //Update option
+                update_option('access_token', $accessToken);
+                update_option('expires_at', $expiresAt);
+            }
+        }
+
+        //CBOLog::debug("API Access Token received: $accessToken");
+        return $accessToken;
+
+    }
 
 	/**
 	 * @param string $id
@@ -79,7 +232,7 @@ class CBOClient {
 	 * @throws CBOException
 	 */
 	public function transaction(string $id): array {
-		$response = $this->get('/api/transactions/' . $id);
+		$response = $this->get($this->getRoute('transaction') . $id);
 
 		if ($response['code'] == 200) {
 			return $response['body']['data'];
@@ -135,7 +288,7 @@ class CBOClient {
 			$body['metadatas']['card_brand'] = 'TELERED';
 		}*/
 
-		$response = $this->post('/api/checkout', $body);
+		$response = $this->post($this->getRoute('checkout'), $body);
 		\CBOLog::debug("Response: " . json_encode($response));
 		if ($response['code'] == 200) {
 			return $response['body']['data'];
@@ -173,14 +326,14 @@ class CBOClient {
             'exp_date' => $expiryDate,
             'cvv2' => $cvv,
             'card_holder' => $cardHolder,
-            '3ds_params' => $threeDSParams
+/*            '3ds_params' => $threeDSParams,
+            'webhook' => get_bloginfo('url') . "/wc-api/" . CBOConstants::STANDARD_GATEWAY_ID,
+            'return_url' => wc_get_cart_url(),
+            'url_ok' => get_bloginfo('url') . "/wc-api/" . CBOConstants::STANDARD_GATEWAY_ID . '_status?oid=' . $order->get_id(),
+            'url_ko' => get_bloginfo('url') . "/wc-api/" . CBOConstants::STANDARD_GATEWAY_ID . '_status?oid=' . $order->get_id(),*/
 		];
 
-		/*if ($onlyTelered) {
-			$body['metadatas']['card_brand'] = 'TELERED';
-		}*/
-
-		$response = $this->post('/api/v2/transactions/sale', $body);
+		$response = $this->post($this->getRoute('sale'), $body);
 		//\CBOLog::debug("Response: " . json_encode($response));
 		if ($response['code'] == 200) {
 			return $response['body']['data'];
@@ -210,7 +363,7 @@ class CBOException extends Exception {
 	/** @var array */
 	private array $response;
 
-	public function __construct(string $message, array $response) {
+	public function __construct(string $message, array $response = []) {
 		parent::__construct($message);
 		$this->response = $response;
 	}
