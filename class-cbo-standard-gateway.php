@@ -244,12 +244,19 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
             $cardNumber = str_replace(" ", "", $cardNumber);
             $cardExpiry = str_replace(" ", "", $cardExpiry);
 
-            //$threeDSParams = $this->get3DSParams();
+            $threeDSParams = $this->get3DSParams();
 
-			$transaction = $cboClient->sale($order, $cardNumber, $cardExpiry, $cardCvv, $cardHolder);
+            CBOLog::debug("threeDSParams=" . json_encode($threeDSParams));
+
+			$transaction = $cboClient->sale($order, $cardNumber, $cardExpiry, $cardCvv, $cardHolder, $threeDSParams);
 			CBOLog::debug("Checkout data: " . json_encode($transaction));
 
-            if ($this->validate_payment($transaction)) {
+            if ($transaction['status'] === 'authenticating') {
+                return array(
+                    'result' => 'success',
+                    'redirect' => $transaction['metadatas']['3ds_authentication_form']
+                );
+            } else if ($this->validate_payment($transaction)) {
                 return array(
                     'result' => 'success',
                     'redirect' => $order->get_checkout_order_received_url()
@@ -282,27 +289,27 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
         $threeDSParams = [];
 
         foreach ($threeDSAttrs as $attr) {
-            $threeDSParams[$attr] = $_POST[$this->id . '-' . $attr];
+            $threeDSParams[$attr] = $_POST[$attr];
         }
 
         //Order additional data
         $threeDSParams['transType'] = 'goods';
         $threeDSParams['deviceChannel'] = 'browser';
         $threeDSParams['browserIP'] = $_SERVER['REMOTE_ADDR'];
-        $threeDSParams['email'] = $_POST[$this->id . '-billing_email'];
-        $threeDSParams['billAddrCountry'] = $_POST[$this->id . '-billing_country'];
-        $threeDSParams['billAddrCity'] = $_POST[$this->id . '-billing_city'];
-        $threeDSParams['billAddrState'] = $_POST[$this->id . '-billing_state'];
-        $threeDSParams['billAddrLine1'] = $_POST[$this->id . '-billing_address_1'];
-        $threeDSParams['billAddrLine2'] = $_POST[$this->id . '-billing_address_2'];
-        $threeDSParams['billAddrPostCode'] = $_POST[$this->id . '-billing_postcode'];
+        $threeDSParams['email'] = $_POST['billing_email'];
+        $threeDSParams['billAddrCountry'] = $this->get_iso_alpha3_cc($_POST['billing_country']);
+        $threeDSParams['billAddrCity'] = $_POST['billing_city'];
+        $threeDSParams['billAddrState'] = parse_state($_POST['billing_state']);
+        $threeDSParams['billAddrLine1'] = $_POST['billing_address_1'];
+        $threeDSParams['billAddrLine2'] = $_POST['billing_address_2'];
+        $threeDSParams['billAddrPostCode'] = $_POST['billing_postcode'];
 
-        $threeDSParams['shipAddrCountry'] = $_POST[$this->id . '-shipping_country'];
-        $threeDSParams['shipAddrCity'] = $_POST[$this->id . '-shipping_city'];
-        $threeDSParams['shipAddrState'] = $_POST[$this->id . '-shipping_state'];
-        $threeDSParams['shipAddrLine1'] = $_POST[$this->id . '-shipping_address_1'];
-        $threeDSParams['shipAddrLine2'] = $_POST[$this->id . '-shipping_address_2'];
-        $threeDSParams['shipAddrPostCode'] = $_POST[$this->id . '-shipping_postcode'];
+        $threeDSParams['shipAddrCountry'] = $this->get_iso_alpha3_cc($_POST['shipping_country']);
+        $threeDSParams['shipAddrCity'] = $_POST['shipping_city'];
+        $threeDSParams['shipAddrState'] = parse_state($_POST['shipping_state']);
+        $threeDSParams['shipAddrLine1'] = $_POST['shipping_address_1'];
+        $threeDSParams['shipAddrLine2'] = $_POST['shipping_address_2'];
+        $threeDSParams['shipAddrPostCode'] = $_POST['shipping_postcode'];
 
         return $threeDSParams;
     }
@@ -367,6 +374,10 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 
 		}
 	}
+
+    function get_iso_alpha3_cc($country) {
+        return isset(CBOConstants::COUNTRIES[$country]) ? CBOConstants::COUNTRIES[$country] : $country;
+    }
 
 	public static function instance() {
 		if ( null === self::$instance ) {

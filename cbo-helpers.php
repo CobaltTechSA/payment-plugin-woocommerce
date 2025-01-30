@@ -68,3 +68,10 @@ function is_valid_cvv($cvv) {
 
     return true;
 }
+
+function parse_state($state)
+{
+    $state = str_replace('-', '', $state);
+    $state = str_pad($state, 3, "-");
+    return $state;
+}

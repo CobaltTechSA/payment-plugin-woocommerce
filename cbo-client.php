@@ -326,15 +326,15 @@ class CBOClient {
             'exp_date' => $expiryDate,
             'cvv2' => $cvv,
             'card_holder' => $cardHolder,
-/*            '3ds_params' => $threeDSParams,
+            '3ds_params' => $threeDSParams,
             'webhook' => get_bloginfo('url') . "/wc-api/" . CBOConstants::STANDARD_GATEWAY_ID,
-            'return_url' => wc_get_cart_url(),
+            //'return_url' => wc_get_cart_url(),
             'url_ok' => get_bloginfo('url') . "/wc-api/" . CBOConstants::STANDARD_GATEWAY_ID . '_status?oid=' . $order->get_id(),
-            'url_ko' => get_bloginfo('url') . "/wc-api/" . CBOConstants::STANDARD_GATEWAY_ID . '_status?oid=' . $order->get_id(),*/
+            'url_ko' => get_bloginfo('url') . "/wc-api/" . CBOConstants::STANDARD_GATEWAY_ID . '_status?oid=' . $order->get_id(),
 		];
 
 		$response = $this->post($this->getRoute('sale'), $body);
-		//\CBOLog::debug("Response: " . json_encode($response));
+		\CBOLog::debug("Response: " . json_encode($response));
 		if ($response['code'] == 200) {
 			return $response['body']['data'];
 		} else {

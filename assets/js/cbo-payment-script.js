@@ -1,12 +1,12 @@
 let jq = null;
 (function () {
     jQuery( function( $ ) {
-        //jq = $;
+        jq = $;
         function addBrowserData() {
             console.log('Adding browser data');
             let navParams = {
-                browserJavaEnabled: navigator.javaEnabled(),
-                browserJavascriptEnabled: true,
+                browserJavaEnabled: 0,
+                browserJavascriptEnabled: 1,
                 browserLanguage: navigator.language,
                 browserColorDepth: screen.colorDepth,
                 browserScreenWidth: screen.width,
@@ -31,15 +31,20 @@ let jq = null;
 
         $(document).ready( function() {
             setTimeout(_ => {
-                let paymentMethod = $('input[type=radio][name=payment_method]').change(function () {
-                    if (this.value === 'cbo_standard_gateway') {
+                let onPaymentMethodChange = function (paymentMethod) {
+                    console.log(paymentMethod);
+                    if (paymentMethod === 'cbo_standard_gateway') {
                         addBrowserData();
                     } else {
                         removeBrowserData();
                     }
+                }
+
+                $('input[type=radio][name=payment_method]').change(function () {
+                    onPaymentMethodChange(this.value());
                 });
 
-                console.log(paymentMethod);
+                onPaymentMethodChange($('input[type=radio][name=payment_method]:checked').val())
             }, 1000)
 
         });
