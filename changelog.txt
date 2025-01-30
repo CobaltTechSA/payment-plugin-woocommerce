@@ -1,3 +1,6 @@
+2025.01.30 - version 2.1.0
+* Added support for 3DS payments
+
 2024.11.23 - version 2.0.0
  * Adapted for API V2
 

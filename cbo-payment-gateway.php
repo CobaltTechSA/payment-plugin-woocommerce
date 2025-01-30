@@ -6,7 +6,7 @@
  * Description: Payments with VISA, MasterCard and Clave
  * Author: Cobalt Tech
  * Author URI: https://cobalt.tech
- * Version: 2.0.0
+ * Version: 2.1.0
  * Text Domain: cbo-payment-gateway
  * Domain Path: /i18n
  */

@@ -5,7 +5,7 @@ class CBOConstants {
 	const STANDARD_GATEWAY_ID = 'cbo_standard_gateway';
 	const TELERED_GATEWAY_ID = 'cbo_telered_gateway';
 
-	const PLUGIN_VERSION = '2.0.0';
+	const PLUGIN_VERSION = '2.1.0';
 	const PLUGIN_NAME = 'CBO Payment Gateway';
 
 	// Minimum PHP version required by this plugin.
