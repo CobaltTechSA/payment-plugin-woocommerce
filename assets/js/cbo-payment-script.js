@@ -41,7 +41,7 @@ let jq = null;
                 }
 
                 $('input[type=radio][name=payment_method]').change(function () {
-                    onPaymentMethodChange(this.value());
+                    onPaymentMethodChange($(this).val());
                 });
 
                 onPaymentMethodChange($('input[type=radio][name=payment_method]:checked').val())
