@@ -1,3 +1,7 @@
+2025.04.10 - version 2.2.0
+* Added APIv2 for eClave payments
+* Fix support for 3DS payments
+
 2025.01.30 - version 2.1.0
 * Added support for 3DS payments
 
