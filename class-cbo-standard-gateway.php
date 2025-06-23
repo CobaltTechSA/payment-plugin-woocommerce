@@ -189,12 +189,13 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 	  * Fields validation, more in Step 5
 	 */
 	public function validate_fields() {
+		CBOLog::debug( 'POST Data: ' . print_r( $_POST, true ) );
         $cardNumber = $_POST[$this->id . '-card-number'];
         $cardExpiry = $_POST[$this->id . '-card-expiry'];
         $cardCvv = $_POST[$this->id . '-card-cvc'];
         $cardHolder = $_POST[$this->id . '-card-holder'];
 
-        //CBOLog::debug("cardNumber=$cardNumber, cardExpiry=$cardExpiry, cardCvv=$cardCvv, cardHolder=$cardHolder");
+        CBOLog::debug("cardNumber=$cardNumber, cardExpiry=$cardExpiry, cardCvv=$cardCvv, cardHolder=$cardHolder");
         $valid = true;
 
         $cardNumber = str_replace(" ", "", $cardNumber);
@@ -231,7 +232,8 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 
 		// we need it to get any order details
 		$order = wc_get_order( $order_id );
-
+		 error_log( '[CBO][STANDARD] POST: ' . print_r( $_POST, true ) );
+		 
         CBOLog::debug("api_key=$this->api_key, api_client_id=$this->api_client_id, api_client_secret=$this->api_client_secret");
 		$cboClient = new CBOClient($this->api_url, $this->api_key, $this->api_client_id, $this->api_client_secret);
 		try {

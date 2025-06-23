@@ -1,14 +1,15 @@
 import { registerPaymentMethod } from '@woocommerce/blocks-registry';
 import { __ } from '@wordpress/i18n';
-import { createElement } from '@wordpress/element';
-import { CardFields } from './components/CardFields';   
+import CardFields from './components/CardFields';
 
-registerPaymentMethod( {
+const settings = {
     name: 'cbo_telered_gateway',
     ariaLabel: __( 'Pasarela CBO Telered', 'cbo-payment-gateway' ),
-    label: createElement( 'span', null, __( 'Tarjeta Clave', 'cbo-payment-gateway' ) ),
-    content: CardFields,   
-    edit:    CardFields,
+    label: __( 'Tarjeta Clave', 'cbo-payment-gateway' ),
     canMakePayment: () => true,
+    content: <CardFields />,
+    edit: <CardFields />,
+    
     supports: { features: [ 'products' ] },
-} );
+} 
+registerPaymentMethod(settings);

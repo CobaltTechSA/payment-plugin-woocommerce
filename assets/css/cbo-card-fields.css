@@ -1,0 +1,26 @@
+.cbo-card-fields {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 100%;
+}
+
+.cbo-card-fields__row {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.cbo-card-fields__group {
+  flex: 1 1 1px;
+  display: flex;
+  flex-direction: column;
+}
+
+.cbo-card-fields input {
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}

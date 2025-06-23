@@ -26,6 +26,19 @@ final class CBO_Blocks_Support {
             [ __CLASS__, 'register_scripts' ],
             1
         );
+        // Registro de los estilos
+        add_action(
+            'wp_enqueue_scripts',
+            [ __CLASS__, 'register_styles' ],
+            1
+        );
+
+        // Registro de los scripts 3ds
+        add_action(
+            'wp_enqueue_scripts',
+            [ __CLASS__, 'register_3ds_scripts' ],
+            1
+        );
     }
 
     // clases AbstractPaymentMethodType 
@@ -63,6 +76,25 @@ final class CBO_Blocks_Support {
                 $asset['version'],
                 true
             );
+        }
+    }
+
+    // estilos
+    public static function register_styles() {
+        // Estilos para los bloques de pago
+        wp_enqueue_style(
+            'cbo-card-fields-style',
+            CBO_PG_URL . 'assets/css/cbo-card-fields.css',
+            [],
+            '1.0.0'
+        );
+    }
+
+    //3ds
+    public static function register_3ds_scripts() {
+        if ( file_exists( CBO_PG_PATH . 'build/cbo-payment-script.asset.php' ) ) {
+            $asset = include CBO_PG_PATH . 'build/cbo-payment-script.asset.php';
+            wp_enqueue_script( 'cbo-payment-script', plugins_url( 'assets/js/cbo-payment-script', __FILE__ ), ['jquery'], '1.0', true );
         }
     }
 }
