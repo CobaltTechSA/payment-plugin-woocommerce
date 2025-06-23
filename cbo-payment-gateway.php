@@ -75,7 +75,8 @@ class WC_CBO_Loader {
 		require_once plugin_dir_path( __FILE__ ) . 'class-cbo-standard-gateway.php';
 		require_once plugin_dir_path( __FILE__ ) . 'class-cbo-telered-gateway.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-cbo-blocks-support.php';
-
+		\CBO\Blocks\CBO_Blocks_Support::init();
+		
 		// fire it up!
         cbo_payment_gateway();
 	}
