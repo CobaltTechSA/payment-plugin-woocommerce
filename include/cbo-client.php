@@ -1,6 +1,9 @@
 <?php
 
-include_once 'cbo-constants.php';
+namespace Neopayment\WooCommerce;
+use Exception;
+use WC_Order;
+
 class CBOClient {
 
     const API_V1_ROUTES = [
@@ -161,7 +164,7 @@ class CBOClient {
 
         //API v2
         if ($this->hasV2Credentials()) {
-            CBOLog::info("API V2 Detected");
+            //CBOLog::info("API V2 Detected");
             $accessToken = $this->getAccessToken();
             if ($accessToken) {
                 $this->authorization = 'Authorization: Bearer ' . $accessToken;
@@ -171,7 +174,7 @@ class CBOClient {
 
         if ($this->apiKey != null) {
             //API v1 token
-            CBOLog::info("API V1 Detected");
+            //CBOLog::info("API V1 Detected");
             $this->authorization = 'Authorization: Bearer ' . $this->apiKey;
             return true;
         }
@@ -202,7 +205,7 @@ class CBOClient {
                 //AccessToken expiration time
                 $expiresIn -= (60 * 5); //For prevention, subtract 5 minutes
                 $expiresAt = time() + $expiresIn;
-                CBOLog::debug("Authentication completed: expiresIn=$expiresIn, accessToken=$accessToken");
+                //CBOLog::debug("Authentication completed: expiresIn=$expiresIn, accessToken=$accessToken");
             } else {
                 //Failed
                 CBOLog::error("Error getting access token: " . json_encode($response));
@@ -241,7 +244,6 @@ class CBOClient {
 		}
 	}
 
-
     /**
      * @param WC_Order $order
      * @param $paymentType
@@ -250,7 +252,7 @@ class CBOClient {
      */
 	public function checkout(WC_Order $order, $paymentType) {
 
-		\CBOLog::debug("Order ID: " . $order->get_id());
+		CBOLog::debug("Order ID: " . $order->get_id());
 
 		$tax = $order->get_total_tax() * 100;
 		$total = $order->get_total() * 100;
@@ -280,7 +282,7 @@ class CBOClient {
 		}*/
 
 		$response = $this->post($this->getRoute('checkout'), $body);
-		\CBOLog::debug("Response: " . json_encode($response));
+		CBOLog::debug("Response: " . json_encode($response));
 		if ($response['code'] == 200) {
 			return $response['body']['data'];
 		} else {
@@ -290,7 +292,7 @@ class CBOClient {
 
 	public function sale(WC_Order $order, $cardNumber, $expiryDate, $cvv, $cardHolder, $threeDSParams = array(), $metadatas = array()) {
 
-		\CBOLog::debug("Order ID: " . $order->get_id());
+		CBOLog::debug("Order ID: " . $order->get_id());
 
 		$tax = $order->get_total_tax() * 100;
 		$total = $order->get_total() * 100;
@@ -325,7 +327,7 @@ class CBOClient {
 		];
 
 		$response = $this->post($this->getRoute('sale'), $body);
-		\CBOLog::debug("Response: " . json_encode($response));
+		CBOLog::debug("Response: " . json_encode($response));
 		if ($response['code'] == 200) {
 			return $response['body']['data'];
 		} else {

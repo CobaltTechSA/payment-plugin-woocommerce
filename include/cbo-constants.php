@@ -1,5 +1,7 @@
 <?php
 
+namespace Neopayment\WooCommerce;
+
 class CBOConstants {
 
 	const STANDARD_GATEWAY_ID = 'cbo_standard_gateway';

@@ -1,6 +1,10 @@
 <?php
 
-include_once 'cbo-constants.php';
+namespace Neopayment\WooCommerce;
+
+use WC_HTTPS;
+use WC_Payment_Gateway;
+
 class WC_CBO_Telered_Gateway extends WC_Payment_Gateway {
 
 	protected static $instance;
@@ -52,7 +56,7 @@ class WC_CBO_Telered_Gateway extends WC_Payment_Gateway {
 	}
 
 	public function get_icon() {
-		$path = plugin_dir_url( __FILE__ );
+        $path = plugin_dir_url( __DIR__ );
 		$icons = array(
 			'<img style="height: 40px; max-height: 3em; float: left !important; margin: 5px" src="' . WC_HTTPS::force_https_url( $path . 'assets/images/clave.svg' ) . '" alt="Telered" />',
 		);

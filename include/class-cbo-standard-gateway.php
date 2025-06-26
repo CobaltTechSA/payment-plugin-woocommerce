@@ -1,8 +1,9 @@
 <?php
 
-include_once 'cbo-constants.php';
-include_once 'cbo-helpers.php';
-include_once 'class-cbo-payment-gateway-cc.php';
+namespace Neopayment\WooCommerce;
+
+use WC_HTTPS;
+use WC_Payment_Gateway;
 
 class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 
@@ -64,7 +65,7 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 	}
 
 	public function get_icon() {
-		$path = plugin_dir_url( __FILE__ );
+		$path = plugin_dir_url( __DIR__ );
 		$icons = array(
 			'<img src="' . WC_HTTPS::force_https_url( $path. 'assets/images/visa.svg' ) . '" alt="Visa" />',
 			'<img src="' . WC_HTTPS::force_https_url( $path . 'assets/images/mastercard.svg' ) . '" alt="Mastercard" />',
@@ -152,8 +153,7 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 
     public function register_plugin_scripts()
     {
-        CBOLog::debug("plugin path: " . plugin_dir_url(__FILE__));
-        wp_enqueue_script( 'cbo-standard-payment', plugin_dir_url(__FILE__) . 'assets/js/cbo-payment-script.js', array('jquery'), null, true);
+        wp_enqueue_script( 'cbo-standard-payment', plugin_dir_url(__DIR__) . 'assets/js/cbo-payment-script.js', array('jquery'), null, true);
     }
 
     /**
@@ -241,7 +241,8 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 		// we need it to get any order details
 		$order = wc_get_order( $order_id );
 
-        CBOLog::debug("api_key=$this->api_key, api_client_id=$this->api_client_id, api_client_secret=$this->api_client_secret");
+        //CBOLog::debug("api_key=$this->api_key, api_client_id=$this->api_client_id, api_client_secret=$this->api_client_secret");
+        CBOLog::debug("orderData=" . json_encode($order->get_base_data()));
 		$cboClient = new CBOClient($this->api_url, $this->api_key, $this->api_client_id, $this->api_client_secret);
 		try {
             CBOLog::debug('Order data: ' . json_encode($_POST));
@@ -253,7 +254,7 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
             $cardNumber = str_replace(" ", "", $cardNumber);
             $cardExpiry = str_replace(" ", "", $cardExpiry);
 
-            $threeDSParams = $this->get3DSParams();
+            $threeDSParams = $this->get3DSParams($order);
 
             CBOLog::debug("threeDSParams=" . json_encode($threeDSParams));
 
@@ -288,37 +289,47 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 	}
 
     /**
+     * @param \WC_Order|\WC_Order_Refund $order
      * @return array
      */
-    private function get3DSParams()
+    private function get3DSParams($order = null)
     {
+
         $threeDSAttrs = ['browserJavaEnabled', 'browserJavascriptEnabled', 'browserLanguage', 'browserColorDepth',
             'browserScreenWidth', 'browserScreenHeight', 'browserTZ', 'browserUserAgent', 'challengeWindowSize'];
 
         $threeDSParams = [];
 
         foreach ($threeDSAttrs as $attr) {
-            $threeDSParams[$attr] = $_POST[$attr];
+            if ($order) {
+                $threeDSParams[$attr] = $_POST[strtolower($attr)];
+
+            } else {
+                $threeDSParams[$attr] = $_POST[$attr];
+
+            }
         }
+
+        $orderData = $order ? $order->get_base_data() : null;
 
         //Order additional data
         $threeDSParams['transType'] = 'goods';
         $threeDSParams['deviceChannel'] = 'browser';
         $threeDSParams['browserIP'] = $_SERVER['REMOTE_ADDR'];
-        $threeDSParams['email'] = $_POST['billing_email'];
-        $threeDSParams['billAddrCountry'] = $this->get_iso_alpha3_cc($_POST['billing_country']);
-        $threeDSParams['billAddrCity'] = $_POST['billing_city'];
-        $threeDSParams['billAddrState'] = parse_state($_POST['billing_state']);
-        $threeDSParams['billAddrLine1'] = $_POST['billing_address_1'];
-        $threeDSParams['billAddrLine2'] = $_POST['billing_address_2'];
-        $threeDSParams['billAddrPostCode'] = $_POST['billing_postcode'];
+        $threeDSParams['email'] = $orderData ? $orderData['billing']['email'] : $_POST['billing_email'];
+        $threeDSParams['billAddrCountry'] = $this->get_iso_alpha3_cc(($orderData ? $orderData['billing']['country'] : $_POST['billing_country']));
+        $threeDSParams['billAddrCity'] = $orderData ? $orderData['billing']['city'] : $_POST['billing_city'];
+        $threeDSParams['billAddrState'] = parse_state(($orderData ? $orderData['billing']['state'] : $_POST['billing_state']));
+        $threeDSParams['billAddrLine1'] = $orderData ? $orderData['billing']['address_1'] : $_POST['billing_address_1'];
+        $threeDSParams['billAddrLine2'] = $orderData ? $orderData['billing']['address_2'] : $_POST['billing_address_2'];
+        $threeDSParams['billAddrPostCode'] = $orderData ? $orderData['billing']['postcode'] : $_POST['billing_postcode'];
 
-        $threeDSParams['shipAddrCountry'] = $this->get_iso_alpha3_cc($_POST['shipping_country']);
-        $threeDSParams['shipAddrCity'] = $_POST['shipping_city'];
-        $threeDSParams['shipAddrState'] = parse_state($_POST['shipping_state']);
-        $threeDSParams['shipAddrLine1'] = $_POST['shipping_address_1'];
-        $threeDSParams['shipAddrLine2'] = $_POST['shipping_address_2'];
-        $threeDSParams['shipAddrPostCode'] = $_POST['shipping_postcode'];
+        $threeDSParams['shipAddrCountry'] = $this->get_iso_alpha3_cc(($orderData ? $orderData['shipping']['country'] : $_POST['shipping_country']));
+        $threeDSParams['shipAddrCity'] = $orderData ? $orderData['shipping']['city'] : $_POST['shipping_city'];
+        $threeDSParams['shipAddrState'] = parse_state(($orderData ? $orderData['shipping']['state'] : $_POST['shipping_state']));
+        $threeDSParams['shipAddrLine1'] = $orderData ? $orderData['shipping']['address_1'] : $_POST['shipping_address_1'];
+        $threeDSParams['shipAddrLine2'] = $orderData ? $orderData['shipping']['address_2'] : $_POST['shipping_address_2'];
+        $threeDSParams['shipAddrPostCode'] = $orderData ? $orderData['shipping']['postcode'] : $_POST['shipping_postcode'];
 
         return $threeDSParams;
     }

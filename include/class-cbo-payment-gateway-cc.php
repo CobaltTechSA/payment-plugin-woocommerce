@@ -1,5 +1,9 @@
 <?php
 
+namespace Neopayment\WooCommerce;
+
+use WC_Payment_Gateway_CC;
+
 class CBO_Payment_Gateway_CC extends WC_Payment_Gateway_CC {
 
     /**

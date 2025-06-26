@@ -1,5 +1,6 @@
 <?php
 
+namespace Neopayment\WooCommerce;
 class CBOLog {
 
 	private static $instance = null;

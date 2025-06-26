@@ -11,9 +11,14 @@
  * Domain Path: /i18n
  */
 
-include_once 'cbo-logger.php';
-include_once 'cbo-constants.php';
-include_once 'cbo-client.php';
+include_once 'include/cbo-logger.php';
+include_once 'include/cbo-constants.php';
+include_once 'include/cbo-client.php';
+include_once 'include/cbo-helpers.php';
+
+use Neopayment\WooCommerce\CBOClaveGatewayBlocks;
+use Neopayment\WooCommerce\CBOStandardGatewayBlocks;
+use Neopayment\WooCommerce\CBOConstants;
 
 
 class WC_CBO_Loader {
@@ -70,8 +75,8 @@ class WC_CBO_Loader {
 			return;
 		}
 
-		require_once plugin_dir_path( __FILE__ ) . 'class-cbo-standard-gateway.php';
-		require_once plugin_dir_path( __FILE__ ) . 'class-cbo-telered-gateway.php';
+		require_once plugin_dir_path( __FILE__ ) . 'include/class-cbo-standard-gateway.php';
+		require_once plugin_dir_path( __FILE__ ) . 'include/class-cbo-telered-gateway.php';
 
 		// fire it up!
         cbo_payment_gateway();
@@ -387,8 +392,8 @@ class WC_CBO_Loader {
  * This action hook registers our PHP class as a WooCommerce payment gateway
  */
 function cbo_add_payment_gateway_class( $gateways ) {
-    $gateways[] = 'WC_CBO_Telered_Gateway'; // your class name is here
-    $gateways[] = 'WC_CBO_Standard_Gateway'; // your class name is here
+    $gateways[] = 'Neopayment\WooCommerce\WC_CBO_Telered_Gateway'; // your class name is here
+    $gateways[] = 'Neopayment\WooCommerce\WC_CBO_Standard_Gateway'; // your class name is here
     return $gateways;
 }
 
@@ -396,9 +401,35 @@ function cbo_add_payment_gateway_class( $gateways ) {
  * @return WC_CBO_Telered_Gateway
  */
 function cbo_payment_gateway() {
+
+    if ( ! class_exists( 'WC_Payment_Gateway_CC' ) ) {
+        return; // WooCommerce no está cargado todavía.
+    }
+
+    require_once plugin_dir_path( __FILE__ ) . 'include/class-cbo-payment-gateway-cc.php';
+
     add_filter( 'woocommerce_payment_gateways', 'cbo_add_payment_gateway_class' );
     //return \WC_CBO_Telered_Gateway::instance();
+
+    add_action(
+        'woocommerce_blocks_payment_method_type_registration',
+        'register_blocks_payment_methods'
+    );
+
 }
+
+function register_blocks_payment_methods( $registry ) {
+    if ( class_exists( 'Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType' ) ) {
+
+        include_once plugin_dir_path( __FILE__ ) . 'include/cbo-base-gateway-blocks.php';
+        include_once plugin_dir_path( __FILE__ ) . 'include/cbo-standard-gateway-blocks.php';
+        include_once plugin_dir_path( __FILE__ ) . 'include/cbo-clave-gateway-blocks.php';
+
+        $registry->register( new CBOStandardGatewayBlocks() );
+        $registry->register( new CBOClaveGatewayBlocks() );
+    }
+}
+
 
 // fire it up!
 WC_CBO_Loader::instance();

@@ -19,9 +19,11 @@ let jq = null;
 
             for (let p in navParams) {
                 let el = `<input class="cbo-standard-gateway-browser" type="hidden" name="${p}" value="${navParams[p]}" />`;
-                console.log(el);
+                //console.log(el);
                 payForm.append(el);
             }
+
+            console.log('Added all browser data')
         }
 
         function removeBrowserData() {
@@ -41,6 +43,7 @@ let jq = null;
                 }
 
                 $('input[type=radio][name=payment_method]').change(function () {
+                    console.log('Payment method change')
                     onPaymentMethodChange($(this).val());
                 });
 
