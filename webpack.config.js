@@ -17,13 +17,22 @@ module.exports = {
     module: {
         rules: [
             {
+                test: /\.svg$/i,
+                type: 'asset/resource'
+            },
+            {
                 test: /\.(js|jsx)$/,
                 exclude: /node_modules/,
-                use: 'babel-loader'
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ['@babel/preset-react', '@babel/preset-env'],
+                    },
+                },
             }
         ]
     },
     resolve: {
-        extensions: ['.js', '.jsx']
+       extensions: ['.js', '.jsx', '.json', '.svg'],
     }
 };

@@ -2,3 +2,6 @@
 localfiles
 deploy
 node_modules
+build/
+dist/
+wp-cli.cache/

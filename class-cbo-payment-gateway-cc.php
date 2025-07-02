@@ -2,6 +2,30 @@
 
 class CBO_Payment_Gateway_CC extends WC_Payment_Gateway_CC {
 
+     public function __construct()
+    {
+        add_filter('woocommerce_credit_card_form_fields', [$this, 'reorder_credit_card_fields'], 20, 2);
+    }
+
+     public function reorder_credit_card_fields($fields, $gateway_id)
+    {
+        if ($gateway_id === $this->id) {
+            $ordered   = [];
+            $sequence  = [
+                'card-holder-field',
+                'card-number-field',
+                'card-expiry-field',
+                'card-cvc-field',
+            ];
+            foreach ($sequence as $key) {
+                if (isset($fields[$key])) {
+                    $ordered[$key] = $fields[$key];
+                }
+            }
+            return $ordered;
+        }
+        return $fields;
+    }
     /**
      * Builds our payment fields area - including tokenization fields for logged
      * in users, and the actual payment fields.

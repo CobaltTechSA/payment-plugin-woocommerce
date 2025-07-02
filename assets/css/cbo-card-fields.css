@@ -24,3 +24,79 @@
   border: 1px solid #ccc;
   border-radius: 4px;
 }
+
+.cbo-card-fields__error {
+  color: #e74c3c;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  display: block;
+  line-height: 1.2;
+}
+
+
+.required {
+  color: #e74c3c;
+  margin-left: 0.25rem;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.cbo-card-fields {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 100%;
+}
+
+.cbo-card-fields__row {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.cbo-card-fields__group {
+  flex: 1 1 1px;
+  display: flex;
+  flex-direction: column;
+}
+
+.cbo-card-fields input {
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.cbo-card-fields__error {
+  color: #e74c3c;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  display: block;
+  line-height: 1.2;
+}
+
+.required {
+  color: #e74c3c;
+  margin-left: 0.25rem;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.cbo-payment-label {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding-right: 1rem; 
+}
+
+.cbo-payment-label__icons {
+  display: flex;
+  gap: 8px;
+  margin-left: auto; 
+}
+
+.cbo-payment-label__icon {
+  width: 24px;
+  height: auto;
+}

@@ -4,7 +4,7 @@ export default function ProcessPaymentHandler( props ) {
   const { eventRegistration, emitResponse } = props;
 
   useEffect( () => {
-    const unsubscribe = eventRegistration.onPaymentProcessing( async () => {
+    const unsubscribe = eventRegistration.onPaymentSetup(() => {
       return {
         type: emitResponse.responseTypes.SUCCESS,
       };

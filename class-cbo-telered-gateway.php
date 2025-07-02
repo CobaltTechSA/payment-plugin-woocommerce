@@ -230,12 +230,21 @@ class WC_CBO_Telered_Gateway extends WC_Payment_Gateway {
 		CBOLog::debug("callback_url: " . $order_id);
 
 		$order = wc_get_order( $order_id );
-		if ($order->is_paid()) {
-			header("Location: " . $order->get_checkout_order_received_url());
-			return;
+		
+		$start = time();
+		while (! $order->is_paid() && (time() - $start) < 30) {
+			sleep(1);
+			$order = wc_get_order($order_id);
 		}
 
-		header("Location: " . $order->get_checkout_payment_url());
+		if ($order->is_paid()) {
+			CBOLog::debug("callback_url: PAGADO, redirigiendo a order-received");
+			wp_safe_redirect($order->get_checkout_order_received_url());
+			exit;
+		}
+
+		wp_safe_redirect($order->get_checkout_payment_url());
+		exit;
 
 	}
 	/*

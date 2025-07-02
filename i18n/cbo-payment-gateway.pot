@@ -1,17 +1,17 @@
-# Copyright (C) 2024 Cobalt Tech
+# Copyright (C) 2025 Cobalt Tech
 # This file is distributed under the same license as the CBO Payment Gateway plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: CBO Payment Gateway 1.1.0\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/cobalt-plugin-woocommerce\n"
+"Project-Id-Version: CBO Payment Gateway 2.2.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/payment-plugin-woocommerce\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-10-09T17:39:58+00:00\n"
+"POT-Creation-Date: 2025-07-02T21:03:29+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.11.0\n"
+"X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: cbo-payment-gateway\n"
 
 #. Plugin Name of the plugin
@@ -27,7 +27,7 @@ msgstr ""
 #. Description of the plugin
 #: cbo-payment-gateway.php
 msgid "Payments with VISA, MasterCard and Clave"
-msgstr "Pagos con VISA, MasterCard y Clave"
+msgstr ""
 
 #. Author of the plugin
 #: cbo-payment-gateway.php
@@ -39,146 +39,252 @@ msgstr ""
 msgid "https://cobalt.tech"
 msgstr ""
 
-#. CBO Standard Gateway Description
-#: class-cbo-standard-gateway.php
-msgid "Acceptance of payments with Visa / Mastercard"
+#. translators: %1$s - plugin name, %2$s - minimum WordPress version required, %3$s - update WordPress link open, %4$s - update WordPress link close
+#: cbo-payment-gateway.php:133
+#, php-format
+msgid "%1$s requiere WordPress %2$s or higher. Porfavor %3$sactualiza WordPress &raquo;%4$s"
 msgstr ""
 
-#. CBO Standard Gateway Description
-#: class-cbo-telered-gateway.php
-msgid "Acceptance of payments with Clave"
+#. translators: %1$s - Plugin Name, %2$s - activate WooCommerce link open, %3$s - activate WooCommerce link close.
+#: cbo-payment-gateway.php:159
+#, php-format
+msgid "%1$s requiere que WooCommerce esté activado. Por favor %2$sactiva WooCommerce%3$s."
 msgstr ""
 
-#. CBO Standard Gateway Enabled/Disable title
-#: class-cbo-standard-gateway.php
-msgid "Enable/Disable"
+#. translators: %1$s - Plugin Name, %2$s - install WooCommerce link open, %3$s - install WooCommerce link close.
+#: cbo-payment-gateway.php:176
+#, php-format
+msgid "%1$s requiere que WooCommerce esté instalado y activado. por favor, %2$sinstala WooCommerce%3$s."
 msgstr ""
 
-#. CBO Standard Gateway Enabled/Disable label
-#: class-cbo-standard-gateway.php
-msgid "Enable CBO Payment Gateway"
+#. translators: %1$s - Plugin Name, %2$s - minimum WooCommerce version, %3$s - update WooCommerce link open, %4$s - update WooCommerce link close, %5$s - download minimum WooCommerce link open, %6$s - download minimum WooCommerce link close.
+#: cbo-payment-gateway.php:196
+#, php-format
+msgid "%1$s requiere WooCommerce %2$s o superior. Por favor, %3$sactualiza WooCommerce%4$s a la última versión, o %5$sdescarga la versión mínima requerida &raquo;%6$s"
 msgstr ""
 
-#. CBO Standard Gateway Title title
-#: class-cbo-standard-gateway.php
-msgid "Title"
+#. translators: %1$s - Plugin Name, %2$s - minimum WooCommerce version, %3$s - update WooCommerce link open, %4$s - update WooCommerce link close, %5$s - download minimum WooCommerce link open, %6$s - download minimum WooCommerce link close.
+#: cbo-payment-gateway.php:212
+#, php-format
+msgid "%1$s solo está disponible para tiendas localizadas en Panamá."
 msgstr ""
 
-#. CBO Standard Gateway Title description
-#: class-cbo-standard-gateway.php
-msgid "This controls the title which the user sees during checkout."
+#: cbo-payment-gateway.php:422
+#: includes/blocks/class-cbo-standard-blocks.php:42
+#: assets/js/blocks/cbo-standard.js:15
+msgid "Card (Visa/Mastercard)"
 msgstr ""
 
-#. CBO Standard Gateway Description title
-#: class-cbo-standard-gateway.php
-msgid "Description"
-msgstr ""
-
-#. CBO Standard Gateway Description description
-#: class-cbo-standard-gateway.php
-msgid "This controls the description which the user sees during checkout."
-msgstr ""
-
-#. CBO Standard Gateway Description default
-#: class-cbo-standard-gateway.php
-msgid "Pay with your VISA or Mastercard card"
-msgstr ""
-
-#. CBO Standard Gateway TestMode title
-#: class-cbo-standard-gateway.php
-msgid "Test mode"
-msgstr ""
-
-#. CBO Standard Gateway TestMode label
-#: class-cbo-standard-gateway.php
-msgid "Enable Test Mode"
-msgstr ""
-
-
-#. CBO Standard Gateway TestMode description
-#: class-cbo-standard-gateway.php
-msgid "Place the payment gateway in test mode using test API keys."
-msgstr ""
-
-#. CBO Standard Gateway Test API URL title
-#: class-cbo-standard-gateway.php
-msgid "Test API URL"
-msgstr ""
-
-#. CBO Standard Gateway Test API Key title
-#: class-cbo-standard-gateway.php
-msgid "Test API Key"
-msgstr ""
-
-
-#. CBO Standard Gateway Test API Client Id title
-#: class-cbo-standard-gateway.php
-msgid "Test API Client Id"
-msgstr ""
-
-#. CBO Standard Gateway Test API Client Secret title
-#: class-cbo-standard-gateway.php
-msgid "Test API Client Secret"
-msgstr ""
-
-#. CBO Standard Gateway Production API URL title
-#: class-cbo-standard-gateway.php
-msgid "Production API URL"
-msgstr ""
-
-#. CBO Standard Gateway Production API Key title
-#: class-cbo-standard-gateway.php
-msgid "Production API Key"
-msgstr ""
-
-#. CBO Standard Gateway Production API Client Id title
-#: class-cbo-standard-gateway.php
-msgid "Production API Client Id"
-msgstr ""
-
-#. CBO Standard Gateway Production API Client Secret title
-#: class-cbo-standard-gateway.php
-msgid "Production API Client Secret"
-msgstr ""
-
-#. CBO Standard Gateway Production API Key title
-#: class-cbo-standard-gateway.php
-msgid "TEST MODE ENABLED"
-msgstr ""
-
-#. CBO Standard Gateway CardNumber validation
-#: class-cbo-standard-gateway.php
-msgid "Invalid card number"
-msgstr ""
-
-#. CBO Standard Gateway CardNumber validation
-#: class-cbo-standard-gateway.php
-msgid "Invalid expiry date"
-msgstr ""
-
-#. CBO Standard Gateway Payment Generation error
-#: class-cbo-standard-gateway.php
-msgid "Cannot generate the payment. Please, contact with commerce."
-msgstr ""
-
-#. CBO Standard Gateway Payment Processment error
-#: class-cbo-standard-gateway.php
-msgid "Cannot process the payment. Please, contact with commerce."
-msgstr ""
-
-#. CBO Standard Gateway Payment completed
-#: class-cbo-standard-gateway.php
-msgid "Payment completed"
-msgstr ""
-
-#. CBO Standard Gateway Payment failed
-#: class-cbo-standard-gateway.php
-msgid "Failed payment"
-msgstr ""
-
-#. Card holder
-#: class-cbo-payment-gateway-cc.php
+#: class-cbo-payment-gateway-cc.php:76
+#: class-cbo-payment-gateway-cc.php:77
+#: assets/js/blocks/components/CardFields.js:59
 msgid "Card holder"
 msgstr ""
 
+#: class-cbo-standard-gateway.php:20
+msgid "Acceptance of payments with Visa / Mastercard"
+msgstr ""
 
+#: class-cbo-standard-gateway.php:81
+#: class-cbo-telered-gateway.php:76
+msgid "Enable/Disable"
+msgstr ""
+
+#: class-cbo-standard-gateway.php:82
+#: class-cbo-telered-gateway.php:77
+msgid "Enable CBO Payment Gateway"
+msgstr ""
+
+#: class-cbo-standard-gateway.php:88
+#: class-cbo-telered-gateway.php:83
+msgid "Title"
+msgstr ""
+
+#: class-cbo-standard-gateway.php:90
+#: class-cbo-telered-gateway.php:85
+msgid "This controls the title which the user sees during checkout."
+msgstr ""
+
+#: class-cbo-standard-gateway.php:95
+#: class-cbo-telered-gateway.php:90
+msgid "Description"
+msgstr ""
+
+#: class-cbo-standard-gateway.php:97
+#: class-cbo-telered-gateway.php:92
+msgid "This controls the description which the user sees during checkout."
+msgstr ""
+
+#: class-cbo-standard-gateway.php:98
+#: class-cbo-telered-gateway.php:93
+msgid "Pay with your VISA or Mastercard card"
+msgstr ""
+
+#: class-cbo-standard-gateway.php:101
+#: class-cbo-telered-gateway.php:96
+msgid "Test mode"
+msgstr ""
+
+#: class-cbo-standard-gateway.php:102
+#: class-cbo-telered-gateway.php:97
+msgid "Enable Test Mode"
+msgstr ""
+
+#: class-cbo-standard-gateway.php:104
+#: class-cbo-telered-gateway.php:99
+msgid "Place the payment gateway in test mode using test API keys."
+msgstr ""
+
+#: class-cbo-standard-gateway.php:109
+#: class-cbo-telered-gateway.php:104
+msgid "Test API URL"
+msgstr ""
+
+#: class-cbo-standard-gateway.php:113
+#: class-cbo-telered-gateway.php:108
+msgid "Test API Key"
+msgstr ""
+
+#: class-cbo-standard-gateway.php:117
+#: class-cbo-telered-gateway.php:112
+msgid "Test API Client Id"
+msgstr ""
+
+#: class-cbo-standard-gateway.php:121
+#: class-cbo-telered-gateway.php:116
+msgid "Test API Client Secret"
+msgstr ""
+
+#: class-cbo-standard-gateway.php:125
+#: class-cbo-telered-gateway.php:120
+msgid "Production API URL"
+msgstr ""
+
+#: class-cbo-standard-gateway.php:129
+#: class-cbo-telered-gateway.php:124
+msgid "Production API Key"
+msgstr ""
+
+#: class-cbo-standard-gateway.php:133
+#: class-cbo-telered-gateway.php:128
+msgid "Production API Client Id"
+msgstr ""
+
+#: class-cbo-standard-gateway.php:137
+#: class-cbo-telered-gateway.php:132
+msgid "Production API Client Secret"
+msgstr ""
+
+#: class-cbo-standard-gateway.php:172
+#: class-cbo-telered-gateway.php:148
+msgid "TEST MODE ENABLED"
+msgstr ""
+
+#: class-cbo-standard-gateway.php:213
+#: assets/js/blocks/cbo-standard.js:64
+#: assets/js/blocks/components/CardFields.js:98
+msgid "Invalid card number"
+msgstr ""
+
+#: class-cbo-standard-gateway.php:219
+msgid "Invalid expiry date"
+msgstr ""
+
+#: class-cbo-standard-gateway.php:224
+msgid "Invalid card holder"
+msgstr ""
+
+#: class-cbo-standard-gateway.php:229
+msgid "Invalid card code (CVV)"
+msgstr ""
+
+#: class-cbo-standard-gateway.php:335
+msgid "We were unable to complete the payment. Please contact with commerce."
+msgstr ""
+
+#: class-cbo-standard-gateway.php:337
+msgid "We were unable to complete the payment. Please check your card details or contact your bank."
+msgstr ""
+
+#: class-cbo-standard-gateway.php:343
+msgid "Cannot generate the payment. Please, contact with commerce."
+msgstr ""
+
+#: class-cbo-standard-gateway.php:345
+msgid "Cannot process the payment. Please, contact with commerce."
+msgstr ""
+
+#: class-cbo-standard-gateway.php:401
+msgid "Payment completed"
+msgstr ""
+
+#: class-cbo-standard-gateway.php:406
+msgid "Failed payment"
+msgstr ""
+
+#: class-cbo-telered-gateway.php:17
+msgid "Acceptance of payments with Clave"
+msgstr ""
+
+#: includes/blocks/class-cbo-standard-blocks.php:43
+msgid "Pay securely with your card."
+msgstr ""
+
+#: includes/blocks/class-cbo-telered-blocks.php:31
+#: assets/js/blocks/cbo-telered.js:8
+msgid "Clave Card"
+msgstr ""
+
+#: includes/blocks/class-cbo-telered-blocks.php:32
+msgid "Pay securely with your card"
+msgstr ""
+
+#: assets/js/blocks/cbo-standard.js:70
+#: assets/js/blocks/components/CardFields.js:127
+msgid "Invalid date"
+msgstr ""
+
+#: assets/js/blocks/cbo-standard.js:76
+#: assets/js/blocks/components/CardFields.js:148
+msgid "Invalid CVC"
+msgstr ""
+
+#: assets/js/blocks/cbo-standard.js:82
+msgid "Holder name is required"
+msgstr ""
+
+#: assets/js/blocks/cbo-standard.js:106
+msgid "CBO Standard Gateway"
+msgstr ""
+
+#: assets/js/blocks/cbo-telered.js:17
+msgid "CBO Telered Gateway"
+msgstr ""
+
+#: assets/js/blocks/cbo-telered.js:24
+msgid "Pay with Clave"
+msgstr ""
+
+#: assets/js/blocks/components/CardFields.js:64
+msgid "Full name"
+msgstr ""
+
+#: assets/js/blocks/components/CardFields.js:73
+msgid "You must enter the holder name"
+msgstr ""
+
+#: assets/js/blocks/components/CardFields.js:80
+msgid "Card number"
+msgstr ""
+
+#: assets/js/blocks/components/CardFields.js:107
+msgid "Expiration date"
+msgstr ""
+
+#: assets/js/blocks/components/CardFields.js:112
+msgid "MM/YY"
+msgstr ""
+
+#: assets/js/blocks/components/CardFields.js:134
+msgid "CVC"
+msgstr ""

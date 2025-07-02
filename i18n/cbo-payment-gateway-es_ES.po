@@ -1,18 +1,15 @@
-# Copyright (C) 2024 Cobalt Tech
-# This file is distributed under the same license as the CBO Payment Gateway plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: CBO Payment Gateway 1.1.0\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/cobalt-plugin-"
-"woocommerce\n"
-"POT-Creation-Date: 2024-10-09T17:39:58+00:00\n"
-"PO-Revision-Date: 2024-11-23 18:45-0500\n"
+"Project-Id-Version: CBO Payment Gateway 2.2.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/cobalt-plugin-woocommerce\n"
 "Last-Translator: \n"
 "Language-Team: \n"
-"Language: es_ES\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2024-10-09T17:39:58+00:00\n"
+"PO-Revision-Date: 2024-11-23 18:45-0500\n"
+"Language: es_ES\n"
 "X-Generator: Poedit 3.5\n"
 "X-Domain: cobalt-plugin-woocommerce\n"
 
@@ -41,15 +38,22 @@ msgstr ""
 msgid "https://cobalt.tech"
 msgstr ""
 
+#: cbo-payment-gateway.php:422
+#: includes/blocks/class-cbo-standard-blocks.php:42
+#: assets/js/blocks/cbo-standard.js:15
+msgid "Card (Visa/Mastercard)"
+msgstr "Tarjeta (Visa/Mastercard)"
+
+#: class-cbo-payment-gateway-cc.php:76
+#: class-cbo-payment-gateway-cc.php:77
+#: assets/js/blocks/components/CardFields.js:59
+msgid "Card holder"
+msgstr "Titular de la tajeta"
+
 #. CBO Standard Gateway Description
 #: class-cbo-standard-gateway.php
 msgid "Acceptance of payments with Visa / Mastercard"
 msgstr "Aceptación de pagos con Visa / Mastercard"
-
-#. CBO Standard Gateway Description
-#: class-cbo-telered-gateway.php
-msgid "Acceptance of payments with Clave"
-msgstr "Aceptación de pagos con Clave"
 
 #. CBO Standard Gateway Enabled/Disable title
 #: class-cbo-standard-gateway.php
@@ -99,9 +103,7 @@ msgstr "Habilitar Modo  de pruebas"
 #. CBO Standard Gateway TestMode description
 #: class-cbo-standard-gateway.php
 msgid "Place the payment gateway in test mode using test API keys."
-msgstr ""
-"Coloque la pasarela de pago en modo de prueba utilizando claves API de "
-"prueba."
+msgstr "Coloque la pasarela de pago en modo de prueba utilizando claves API de prueba."
 
 #. CBO Standard Gateway Test API URL title
 #: class-cbo-standard-gateway.php
@@ -148,20 +150,35 @@ msgstr "API ClientSecret de producción"
 msgid "TEST MODE ENABLED"
 msgstr "MODO DE PRUEBAS HABILITADO"
 
-#. CBO Standard Gateway CardNumber validation
-#: class-cbo-standard-gateway.php
+#: class-cbo-standard-gateway.php:213
+#: assets/js/blocks/cbo-standard.js:64
+#: assets/js/blocks/components/CardFields.js:98
 msgid "Invalid card number"
 msgstr "Número de tarjeta no válido"
 
-#. CBO Standard Gateway CardNumber validation
-#: class-cbo-standard-gateway.php
+#: class-cbo-standard-gateway.php:219
 msgid "Invalid expiry date"
-msgstr "Fecha de caducidad no válida"
+msgstr "Fecha no válida"
 
-#. CBO Standard Gateway Payment Generation error
-#: class-cbo-standard-gateway.php
+#: class-cbo-standard-gateway.php:224
+msgid "Invalid card holder"
+msgstr "Nombre de tarjeta no válido"
+
+#: class-cbo-standard-gateway.php:229
+msgid "Invalid card code (CVV)"
+msgstr "CVV no válido (CVV)"
+
+#: class-cbo-standard-gateway.php:335
+msgid "We were unable to complete the payment. Please contact with commerce."
+msgstr "No pudimos completar el pago. Por favor, contacte con el departamento de comercio."
+
+#: class-cbo-standard-gateway.php:337
+msgid "We were unable to complete the payment. Please check your card details or contact your bank."
+msgstr "No pudimos completar el pago. Por favor, revise los datos de su tarjeta o contacte con su banco."
+
+#: class-cbo-standard-gateway.php:343
 msgid "Cannot generate the payment. Please, contact with commerce."
-msgstr "No se puede generar el pago, por favor contacte con el comercio."
+msgstr "No se puede generar el pago. Por favor, contacte con el comercio."
 
 #. CBO Standard Gateway Payment Processment error
 #: class-cbo-standard-gateway.php
@@ -178,7 +195,19 @@ msgstr "Pago completado"
 msgid "Failed payment"
 msgstr "Pago fallido"
 
-#. Card holder
-#: class-cbo-payment-gateway-cc.php
-msgid "Card holder"
-msgstr "Titular de la tarjeta"
+#: class-cbo-telered-gateway.php:17
+msgid "Acceptance of payments with Clave"
+msgstr "Aceptación de pagos con Clave"
+
+#: includes/blocks/class-cbo-standard-blocks.php:43
+msgid "Pay securely with your card."
+msgstr "Paga de forma segura con tu tarjeta."
+
+#: includes/blocks/class-cbo-telered-blocks.php:31
+#: assets/js/blocks/cbo-telered.js:8
+msgid "Clave Card"
+msgstr "Tarjeta Clave"
+
+#: includes/blocks/class-cbo-telered-blocks.php:32
+msgid "Pay securely with your card"
+msgstr "Paga de forma segura con tu tarjeta"

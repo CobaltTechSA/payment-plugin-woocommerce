@@ -72,6 +72,10 @@ function is_valid_cvv($cvv) {
 function parse_state($state)
 {
     $state = str_replace('-', '', $state);
-    $state = str_pad($state, 3, "-");
+    if (strlen($state) > 3) {
+        $state = substr($state, 0, 3);
+    } else {
+        $state = str_pad($state, 3, '-');
+    }
     return $state;
 }

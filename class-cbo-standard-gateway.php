@@ -189,13 +189,23 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 	  * Fields validation, more in Step 5
 	 */
 	public function validate_fields() {
-		CBOLog::debug( 'POST Data: ' . print_r( $_POST, true ) );
+
+		// detect if the request is from a block-based checkout or classic checkout
+		$raw_input = file_get_contents('php://input');
+		$body      = json_decode($raw_input, true) ?: [];
+
+		// if the request is from a block-based checkout, omit the validation
+		if (! empty($body['payment_data'])) {
+			return true;
+		}
+
+		//CBOLog::debug( 'POST Data: ' . print_r( $_POST, true ) );
         $cardNumber = $_POST[$this->id . '-card-number'];
         $cardExpiry = $_POST[$this->id . '-card-expiry'];
         $cardCvv = $_POST[$this->id . '-card-cvc'];
         $cardHolder = $_POST[$this->id . '-card-holder'];
 
-        CBOLog::debug("cardNumber=$cardNumber, cardExpiry=$cardExpiry, cardCvv=$cardCvv, cardHolder=$cardHolder");
+        //CBOLog::debug("cardNumber=$cardNumber, cardExpiry=$cardExpiry, cardCvv=$cardCvv, cardHolder=$cardHolder");
         $valid = true;
 
         $cardNumber = str_replace(" ", "", $cardNumber);
@@ -231,23 +241,78 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 	public function process_payment( $order_id ) {
 
 		// we need it to get any order details
-		$order = wc_get_order( $order_id );
-		 error_log( '[CBO][STANDARD] POST: ' . print_r( $_POST, true ) );
+		CBOLog::debug("process_payment: " . $order_id);
+		$order = wc_get_order($order_id);
 		 
         CBOLog::debug("api_key=$this->api_key, api_client_id=$this->api_client_id, api_client_secret=$this->api_client_secret");
 		$cboClient = new CBOClient($this->api_url, $this->api_key, $this->api_client_id, $this->api_client_secret);
 		try {
-            CBOLog::debug('Order data: ' . json_encode($_POST));
-            $cardNumber = $_POST[$this->id . '-card-number'];
-            $cardExpiry = $_POST[$this->id . '-card-expiry'];
-            $cardCvv = $_POST[$this->id . '-card-cvc'];
-            $cardHolder = $_POST[$this->id . '-card-holder'];
+            // detect if the request is from a block-based checkout or classic checkout
+			$raw_input = file_get_contents('php://input');
+			$body = json_decode($raw_input, true) ?: [];
+			$is_block = ! empty($body['payment_data']);
 
-            $cardNumber = str_replace(" ", "", $cardNumber);
-            $cardExpiry = str_replace(" ", "", $cardExpiry);
+			// if the request is from a block-based checkout, we need to handle it differently
+			if ($is_block) {
+				CBOLog::debug('Origin: Checkout Based Blocks');
+				$pdata    = $body['payment_data'];
+				$billing  = $body['billing_address']  ?? [];
+				$shipping = $body['shipping_address'] ?? [];
 
-            $threeDSParams = $this->get3DSParams();
+				$data = [];
+				foreach ($pdata as $index => $field) {
+					if (isset($field['key'], $field['value'])) {
+						$data[$field['key']] = wc_clean($field['value']);
+					}
+				}
 
+				// card details
+				$cardNumber = $data['cardNumber']  ?? '';
+				$cardExpiry = $data['cardExpiry']  ?? '';
+				$cardCvc    = $data['cardCvc']     ?? '';
+				$cardHolder = $data['cardHolder']  ?? '';
+
+				$threeDSParams = [
+					'transType'                 => 'goods',
+					'deviceChannel'             => 'browser',
+					'browserJavaEnabled'        => $data['browserJavaEnabled']       ?? null,
+					'browserJavascriptEnabled'  => $data['browserJavascriptEnabled'] ?? null,
+					'browserLanguage'           => $data['browserLanguage']          ?? null,
+					'browserColorDepth'         => $data['browserColorDepth']        ?? null,
+					'browserScreenWidth'        => $data['browserScreenWidth']       ?? null,
+					'browserScreenHeight'       => $data['browserScreenHeight']      ?? null,
+					'browserTZ'                 => $data['browserTZ']                ?? null,
+					'browserUserAgent'          => $data['browserUserAgent']         ?? null,
+					'challengeWindowSize'       => $data['challengeWindowSize']      ?? null,
+
+					'browserIP'                 => $_SERVER['REMOTE_ADDR'],
+					'email'                     => $billing['email']                ?? $order->get_billing_email(),
+					'billAddrCountry'           => $this->get_iso_alpha3_cc($billing['country'] ?? $order->get_billing_country()),
+					'billAddrCity'              => $billing['city']                 ?? $order->get_billing_city(),
+					'billAddrState'             => parse_state($billing['state']  ?? $order->get_billing_state()),
+					'billAddrLine1'             => $billing['address_1']            ?? $order->get_billing_address_1(),
+					'billAddrLine2'             => "none",
+					'billAddrPostCode'          => $billing['postcode']             ?? $order->get_billing_postcode(),
+					'shipAddrCountry'           => $this->get_iso_alpha3_cc($shipping['country'] ?? $order->get_shipping_country()),
+					'shipAddrCity'              => $shipping['city']                ?? $order->get_shipping_city(),
+					'shipAddrState'             => parse_state($shipping['state'] ?? $order->get_shipping_state()),
+					'shipAddrLine1'             => $shipping['address_1']           ?? $order->get_shipping_address_1(),
+					'shipAddrLine2'             => "none",
+					'shipAddrPostCode'          => $shipping['postcode']            ?? $order->get_shipping_postcode(),
+				];
+
+			} else {
+				CBOLog::debug('Origin: Classic Checkout');
+				$cardNumber = $_POST[$this->id . '-card-number'];
+				$cardExpiry = $_POST[$this->id . '-card-expiry'];
+				$cardCvv = $_POST[$this->id . '-card-cvc'];
+				$cardHolder = $_POST[$this->id . '-card-holder'];
+
+				$cardNumber = str_replace(" ", "", $cardNumber);
+				$cardExpiry = str_replace(" ", "", $cardExpiry);
+
+				$threeDSParams = $this->get3DSParams();
+			}
             CBOLog::debug("threeDSParams=" . json_encode($threeDSParams));
 
 			$transaction = $cboClient->sale($order, $cardNumber, $cardExpiry, $cardCvv, $cardHolder, $threeDSParams);
@@ -256,12 +321,14 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
             if ($transaction['status'] === 'authenticating') {
                 return array(
                     'result' => 'success',
-                    'redirect' => $transaction['metadatas']['3ds_authentication_form']
+                    'redirect' => $transaction['metadatas']['3ds_authentication_form'],
+					'additional_data' => [],
                 );
             } else if ($this->validate_payment($transaction)) {
                 return array(
                     'result' => 'success',
-                    'redirect' => $order->get_checkout_order_received_url()
+                    'redirect' => $order->get_checkout_order_received_url(),
+					'additional_data' => [],
                 );
 
             } else if ($transaction['status'] === 'refused') {
@@ -296,22 +363,22 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 
         //Order additional data
         $threeDSParams['transType'] = 'goods';
-        $threeDSParams['deviceChannel'] = 'browser';
-        $threeDSParams['browserIP'] = $_SERVER['REMOTE_ADDR'];
-        $threeDSParams['email'] = $_POST['billing_email'];
-        $threeDSParams['billAddrCountry'] = $this->get_iso_alpha3_cc($_POST['billing_country']);
-        $threeDSParams['billAddrCity'] = $_POST['billing_city'];
-        $threeDSParams['billAddrState'] = parse_state($_POST['billing_state']);
-        $threeDSParams['billAddrLine1'] = $_POST['billing_address_1'];
-        $threeDSParams['billAddrLine2'] = $_POST['billing_address_2'];
-        $threeDSParams['billAddrPostCode'] = $_POST['billing_postcode'];
+		$threeDSParams['deviceChannel'] = 'browser';
+		$threeDSParams['browserIP'] = $_SERVER['REMOTE_ADDR'];
+		$threeDSParams['email'] = $_POST['billing_email'];
+		$threeDSParams['billAddrCountry'] = $this->get_iso_alpha3_cc($_POST['billing_country']);
+		$threeDSParams['billAddrCity'] = $_POST['billing_city'];
+		$threeDSParams['billAddrState'] = parse_state($_POST['billing_state']);
+		$threeDSParams['billAddrLine1'] = $_POST['billing_address_1'];
+		$threeDSParams['billAddrLine2'] = "none";
+		$threeDSParams['billAddrPostCode'] = $_POST['billing_postcode'];
 
-        $threeDSParams['shipAddrCountry'] = $this->get_iso_alpha3_cc($_POST['shipping_country']);
-        $threeDSParams['shipAddrCity'] = $_POST['shipping_city'];
-        $threeDSParams['shipAddrState'] = parse_state($_POST['shipping_state']);
-        $threeDSParams['shipAddrLine1'] = $_POST['shipping_address_1'];
-        $threeDSParams['shipAddrLine2'] = $_POST['shipping_address_2'];
-        $threeDSParams['shipAddrPostCode'] = $_POST['shipping_postcode'];
+		$threeDSParams['shipAddrCountry'] = $this->get_iso_alpha3_cc($_POST['shipping_country']) ?? "dig";
+		$threeDSParams['shipAddrCity'] = $_POST['shipping_city'] ?? "digital";
+		$threeDSParams['shipAddrState'] = parse_state($_POST['shipping_state']) ?? "dig";
+		$threeDSParams['shipAddrLine1'] = $_POST['shipping_address_1'] ?? "digital";
+		$threeDSParams['shipAddrLine2'] = "none";
+		$threeDSParams['shipAddrPostCode'] = $_POST['shipping_postcode'] ?? "digital";
 
         return $threeDSParams;
     }

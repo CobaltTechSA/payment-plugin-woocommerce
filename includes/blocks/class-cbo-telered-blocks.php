@@ -1,30 +1,36 @@
 <?php
+
 namespace CBO\Blocks;
 
 use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType;
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (! defined('ABSPATH')) {
     exit;
 }
 
+include_once 'cbo-constants.php';
+
 /**
- * Integración de CBO Telered/Clave Gateway con Cart & Checkout Blocks
+ * Integration for the CBO Telered Blocks payment method.
  */
-final class CBO_Telered_Blocks extends AbstractPaymentMethodType {
+final class CBO_Telered_Blocks extends AbstractPaymentMethodType
+{
 
     protected $name = 'cbo_telered_gateway';
 
     public function initialize() {}
 
-    public function get_payment_method_script_handles() {
-        return [ 'cbo-telered-blocks-js' ];
+    public function get_payment_method_script_handles()
+    {
+        return ['cbo-telered-blocks-js'];
     }
 
-    public function get_payment_method_data() {
+    public function get_payment_method_data()
+    {
         return [
-            'title'       => __( 'Tarjeta Clave', 'cbo-payment-gateway' ),
-            'description' => __( 'Paga con tu tarjeta Clave.', 'cbo-payment-gateway' ),
-            'supports'    => [ 'products' ],
+            'title'       => __('Clave Card', 'cbo-payment-gateway'),
+            'description' => __('Pay securely with your card', 'cbo-payment-gateway'),
+            'supports'    => ['products'],
         ];
     }
 }

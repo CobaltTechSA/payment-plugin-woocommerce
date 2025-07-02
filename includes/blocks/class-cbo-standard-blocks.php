@@ -1,44 +1,45 @@
 <?php
+
 namespace CBO\Blocks;
 
 use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType;
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (! defined('ABSPATH')) {
     exit;
 }
 
 /**
- * Integración de CBO Standard Gateway con Cart & Checkout Blocks
+ * Integration for the CBO Standard Blocks payment method.
  */
-final class CBO_Standard_Blocks extends AbstractPaymentMethodType {
+final class CBO_Standard_Blocks extends AbstractPaymentMethodType
+{
 
     protected $name = 'cbo_standard_gateway';
 
 
-    public function initialize() {
-       
-    }
+    public function initialize() {}
 
     /**
-     * Handles de los scripts JS registrados en wp_register_script()
+     * Handles the payment method type.
      *
      * @return array
      */
-    public function get_payment_method_script_handles() {
-        return [ 'cbo-standard-blocks-js' ];
+    public function get_payment_method_script_handles()
+    {
+        return ['cbo-standard-blocks-js'];
     }
 
     /**
-     * Data que se expone en window.wc.wcSettings.paymentMethods
+     * Data to be passed to the payment method block.
      *
      * @return array
      */
-    public function get_payment_method_data() {
+    public function get_payment_method_data()
+    {
         return [
-            'title'       => __( 'Tarjeta (Visa/Mastercard)', 'cbo-payment-gateway' ),
-            'description' => __( 'Paga de forma segura con tu tarjeta.', 'cbo-payment-gateway' ),
-            'supports'    => [ 'products' ],
-            'icons'       => [], 
+            'title'       => __('Card (Visa/Mastercard)', 'cbo-payment-gateway'),
+            'description' => __('Pay securely with your card.', 'cbo-payment-gateway'),
+            'supports'    => ['products'],
         ];
     }
 }
