@@ -1,3 +1,6 @@
+2025.07.3 - version 2.3.1
+* Added support for WordPress block mode
+
 2025.04.10 - version 2.2.0
 * Added APIv2 for eClave payments
 * Fix support for 3DS payments
