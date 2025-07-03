@@ -1,17 +1,18 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: CBO Payment Gateway 2.2.0\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/cobalt-plugin-woocommerce\n"
-"Last-Translator: \n"
-"Language-Team: \n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/cbo-payment-gateway\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-10-09T17:39:58+00:00\n"
-"PO-Revision-Date: 2024-11-23 18:45-0500\n"
-"Language: es_ES\n"
-"X-Generator: Poedit 3.5\n"
-"X-Domain: cobalt-plugin-woocommerce\n"
+"POT-Creation-Date: 2025-07-03T19:23:15+00:00\n"
+"PO-Revision-Date: 2025-07-03T19:23:15+00:00\n"
+"Language: es\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: cbo-payment-gateway\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. Plugin Name of the plugin
 #: cbo-payment-gateway.php
@@ -39,159 +40,158 @@ msgid "https://cobalt.tech"
 msgstr ""
 
 #: cbo-payment-gateway.php:422
-#: includes/blocks/class-cbo-standard-blocks.php:42
+#: includes/blocks/class-cbo-standard-blocks.php:40
 #: assets/js/blocks/cbo-standard.js:15
+#: build/cbo-standard.js:1
 msgid "Card (Visa/Mastercard)"
 msgstr "Tarjeta (Visa/Mastercard)"
 
 #: class-cbo-payment-gateway-cc.php:76
 #: class-cbo-payment-gateway-cc.php:77
 #: assets/js/blocks/components/CardFields.js:59
+#: build/cbo-standard.js:1
 msgid "Card holder"
 msgstr "Titular de la tajeta"
 
-#. CBO Standard Gateway Description
-#: class-cbo-standard-gateway.php
+#: class-cbo-standard-gateway.php:20
 msgid "Acceptance of payments with Visa / Mastercard"
 msgstr "Aceptación de pagos con Visa / Mastercard"
 
-#. CBO Standard Gateway Enabled/Disable title
-#: class-cbo-standard-gateway.php
+#: class-cbo-standard-gateway.php:82
+#: class-cbo-telered-gateway.php:76
 msgid "Enable/Disable"
 msgstr "Habilitar/Deshabilitar"
 
-#. CBO Standard Gateway Enabled/Disable label
-#: class-cbo-standard-gateway.php
+#: class-cbo-standard-gateway.php:83
+#: class-cbo-telered-gateway.php:77
 msgid "Enable CBO Payment Gateway"
 msgstr "Habilitar CBO Payment Gateway"
 
-#. CBO Standard Gateway Title title
-#: class-cbo-standard-gateway.php
+#: class-cbo-standard-gateway.php:89
+#: class-cbo-telered-gateway.php:83
 msgid "Title"
 msgstr "Título"
 
-#. CBO Standard Gateway Title description
-#: class-cbo-standard-gateway.php
+#: class-cbo-standard-gateway.php:91
+#: class-cbo-telered-gateway.php:85
 msgid "This controls the title which the user sees during checkout."
 msgstr "Esto controla el título que el usuario ve durante el pago."
 
-#. CBO Standard Gateway Description title
-#: class-cbo-standard-gateway.php
+#: class-cbo-standard-gateway.php:96
+#: class-cbo-telered-gateway.php:90
 msgid "Description"
 msgstr "Descripción"
 
-#. CBO Standard Gateway Description description
-#: class-cbo-standard-gateway.php
+#: class-cbo-standard-gateway.php:98
+#: class-cbo-telered-gateway.php:92
 msgid "This controls the description which the user sees during checkout."
 msgstr "Esto controla la descripción que el usuario ve durante el pago."
 
-#. CBO Standard Gateway Description default
-#: class-cbo-standard-gateway.php
+#: class-cbo-standard-gateway.php:99
+#: class-cbo-telered-gateway.php:93
 msgid "Pay with your VISA or Mastercard card"
 msgstr "Paga con tu tarjeta VISA o Mastercard"
 
-#. CBO Standard Gateway TestMode title
-#: class-cbo-standard-gateway.php
+#: class-cbo-standard-gateway.php:102
+#: class-cbo-telered-gateway.php:96
 msgid "Test mode"
 msgstr "Modo de pruebas"
 
-#. CBO Standard Gateway TestMode label
-#: class-cbo-standard-gateway.php
+#: class-cbo-standard-gateway.php:103
+#: class-cbo-telered-gateway.php:97
 msgid "Enable Test Mode"
 msgstr "Habilitar Modo  de pruebas"
 
-#. CBO Standard Gateway TestMode description
-#: class-cbo-standard-gateway.php
+#: class-cbo-standard-gateway.php:105
+#: class-cbo-telered-gateway.php:99
 msgid "Place the payment gateway in test mode using test API keys."
 msgstr "Coloque la pasarela de pago en modo de prueba utilizando claves API de prueba."
 
-#. CBO Standard Gateway Test API URL title
-#: class-cbo-standard-gateway.php
+#: class-cbo-standard-gateway.php:110
+#: class-cbo-telered-gateway.php:104
 msgid "Test API URL"
 msgstr "URL de la API de prueba"
 
-#. CBO Standard Gateway Test API Key title
-#: class-cbo-standard-gateway.php
+#: class-cbo-standard-gateway.php:114
+#: class-cbo-telered-gateway.php:108
 msgid "Test API Key"
 msgstr "Clave API de prueba"
 
-#. CBO Standard Gateway Test API Client Id title
-#: class-cbo-standard-gateway.php
+#: class-cbo-standard-gateway.php:118
+#: class-cbo-telered-gateway.php:112
 msgid "Test API Client Id"
 msgstr "API ClientId de prueba"
 
-#. CBO Standard Gateway Test API Client Secret title
-#: class-cbo-standard-gateway.php
+#: class-cbo-standard-gateway.php:122
+#: class-cbo-telered-gateway.php:116
 msgid "Test API Client Secret"
 msgstr "API ClientSecret de prueba"
 
-#. CBO Standard Gateway Production API URL title
-#: class-cbo-standard-gateway.php
+#: class-cbo-standard-gateway.php:126
+#: class-cbo-telered-gateway.php:120
 msgid "Production API URL"
 msgstr "URL de la API de producción"
 
-#. CBO Standard Gateway Production API Key title
-#: class-cbo-standard-gateway.php
+#: class-cbo-standard-gateway.php:130
+#: class-cbo-telered-gateway.php:124
 msgid "Production API Key"
 msgstr "Clave API de producción"
 
-#. CBO Standard Gateway Production API Client Id title
-#: class-cbo-standard-gateway.php
+#: class-cbo-standard-gateway.php:134
+#: class-cbo-telered-gateway.php:128
 msgid "Production API Client Id"
 msgstr "API ClientId de producción"
 
-#. CBO Standard Gateway Production API Client Secret title
-#: class-cbo-standard-gateway.php
+#: class-cbo-standard-gateway.php:138
+#: class-cbo-telered-gateway.php:132
 msgid "Production API Client Secret"
 msgstr "API ClientSecret de producción"
 
-#. CBO Standard Gateway Production API Key title
-#: class-cbo-standard-gateway.php
+#: class-cbo-standard-gateway.php:173
+#: class-cbo-telered-gateway.php:148
 msgid "TEST MODE ENABLED"
 msgstr "MODO DE PRUEBAS HABILITADO"
 
-#: class-cbo-standard-gateway.php:213
+#: class-cbo-standard-gateway.php:214
 #: assets/js/blocks/cbo-standard.js:64
 #: assets/js/blocks/components/CardFields.js:98
+#: build/cbo-standard.js:1
 msgid "Invalid card number"
 msgstr "Número de tarjeta no válido"
 
-#: class-cbo-standard-gateway.php:219
+#: class-cbo-standard-gateway.php:220
 msgid "Invalid expiry date"
 msgstr "Fecha no válida"
 
-#: class-cbo-standard-gateway.php:224
+#: class-cbo-standard-gateway.php:225
 msgid "Invalid card holder"
 msgstr "Nombre de tarjeta no válido"
 
-#: class-cbo-standard-gateway.php:229
+#: class-cbo-standard-gateway.php:230
 msgid "Invalid card code (CVV)"
 msgstr "CVV no válido (CVV)"
 
-#: class-cbo-standard-gateway.php:335
+#: class-cbo-standard-gateway.php:377
 msgid "We were unable to complete the payment. Please contact with commerce."
 msgstr "No pudimos completar el pago. Por favor, contacte con el departamento de comercio."
 
-#: class-cbo-standard-gateway.php:337
+#: class-cbo-standard-gateway.php:379
 msgid "We were unable to complete the payment. Please check your card details or contact your bank."
 msgstr "No pudimos completar el pago. Por favor, revise los datos de su tarjeta o contacte con su banco."
 
-#: class-cbo-standard-gateway.php:343
+#: class-cbo-standard-gateway.php:385
 msgid "Cannot generate the payment. Please, contact with commerce."
 msgstr "No se puede generar el pago. Por favor, contacte con el comercio."
 
-#. CBO Standard Gateway Payment Processment error
-#: class-cbo-standard-gateway.php
+#: class-cbo-standard-gateway.php:387
 msgid "Cannot process the payment. Please, contact with commerce."
 msgstr "No se puede procesar el pago. Por favor, contacte con el comercio."
 
-#. CBO Standard Gateway Payment completed
-#: class-cbo-standard-gateway.php
+#: class-cbo-standard-gateway.php:443
 msgid "Payment completed"
 msgstr "Pago completado"
 
-#. CBO Standard Gateway Payment failed
-#: class-cbo-standard-gateway.php
+#: class-cbo-standard-gateway.php:448
 msgid "Failed payment"
 msgstr "Pago fallido"
 
@@ -199,12 +199,13 @@ msgstr "Pago fallido"
 msgid "Acceptance of payments with Clave"
 msgstr "Aceptación de pagos con Clave"
 
-#: includes/blocks/class-cbo-standard-blocks.php:43
+#: includes/blocks/class-cbo-standard-blocks.php:41
 msgid "Pay securely with your card."
 msgstr "Paga de forma segura con tu tarjeta."
 
 #: includes/blocks/class-cbo-telered-blocks.php:31
 #: assets/js/blocks/cbo-telered.js:8
+#: build/cbo-telered.js:1
 msgid "Clave Card"
 msgstr "Tarjeta Clave"
 
