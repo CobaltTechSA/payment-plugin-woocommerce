@@ -22,7 +22,8 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 		// gateways can support subscriptions, refunds, saved payment methods,
 		// but in this tutorial we begin with simple payments
 		$this->supports = array(
-			'products'
+			'products',
+			'refunds'
 		);
 
 		// Method with all the options fields
@@ -233,6 +234,47 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 
 		return $valid;
 
+	}
+
+	public function process_refund($order_id, $amount = 0, $reason = '')
+	{
+		CBOLog::debug("api_key={$this->api_key}, api_client_id={$this->api_client_id}, api_client_secret={$this->api_client_secret}");
+		$cboClient = new CBOClient(
+			$this->api_url,
+			$this->api_key,
+			$this->api_client_id,
+			$this->api_client_secret
+		);
+
+		if (! $order_id || ! $amount) {
+			return new WP_Error('invalid_order', 'Invalid order ID or amount');
+		}
+		CBOLog::debug("process_refund: order_id={$order_id}, amount={$amount}, reason={$reason}");
+		$order = wc_get_order($order_id);
+		
+		if (! $order) {
+			return new WP_Error('invalid_order', 'Invalid order ID');
+		}
+		$txn = $order->get_meta('cbo_transaction_id');
+		if (! $txn) {
+			return new WP_Error('no_transaction_id', 'No transaction ID found for this order');
+		}
+
+		try {
+			$data = $cboClient->refund($txn, intval($amount * 100));
+		} catch (CBOException $e) {
+			CBOLog::debug("Error processing refund: " . $e->getMessage());
+			return new WP_Error('cbo_refund_error', $e->getMessage());
+		}
+
+		$order->add_order_note(sprintf(
+			'Reembolso de %s realizado vía CBO (refund_id %s). Motivo: %s',
+			wc_price($amount),
+			$data['identifier'] ?? $data['id'] ?? '',
+			$reason
+		));
+
+		return true;
 	}
 
 	/*

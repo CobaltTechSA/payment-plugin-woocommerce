@@ -39,7 +39,7 @@ final class CBO_Standard_Blocks extends AbstractPaymentMethodType
         return [
             'title'       => __('Card (Visa/Mastercard)', 'cbo-payment-gateway'),
             'description' => __('Pay securely with your card.', 'cbo-payment-gateway'),
-            'supports'    => ['products'],
+            'supports'    => ['products','refunds'],
         ];
     }
 }
