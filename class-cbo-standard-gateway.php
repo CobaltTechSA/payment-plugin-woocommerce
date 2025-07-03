@@ -347,7 +347,7 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 				CBOLog::debug('Origin: Classic Checkout');
 				$cardNumber = $_POST[$this->id . '-card-number'];
 				$cardExpiry = $_POST[$this->id . '-card-expiry'];
-				$cardCvv = $_POST[$this->id . '-card-cvc'];
+				$cardCvc = $_POST[$this->id . '-card-cvc'];
 				$cardHolder = $_POST[$this->id . '-card-holder'];
 
 				$cardNumber = str_replace(" ", "", $cardNumber);
@@ -357,7 +357,7 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 			}
             CBOLog::debug("threeDSParams=" . json_encode($threeDSParams));
 
-			$transaction = $cboClient->sale($order, $cardNumber, $cardExpiry, $cardCvv, $cardHolder, $threeDSParams);
+			$transaction = $cboClient->sale($order, $cardNumber, $cardExpiry, $cardCvc, $cardHolder, $threeDSParams);
 			CBOLog::debug("Checkout data: " . json_encode($transaction));
 
             if ($transaction['status'] === 'authenticating') {
