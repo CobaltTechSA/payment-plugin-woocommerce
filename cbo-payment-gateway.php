@@ -7,6 +7,7 @@
  * Author: Cobalt Tech
  * Author URI: https://cobalt.tech
  * Version: 2.2.0
+ * License:     GPL-2.0
  * Text Domain: cbo-payment-gateway
  * Domain Path: /i18n
  */
