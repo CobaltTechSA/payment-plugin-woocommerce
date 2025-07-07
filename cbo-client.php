@@ -12,7 +12,8 @@ class CBOClient {
     const API_V2_ROUTES = [
         'sale' => '/api/v2/transactions/sale',
         'transaction' => '/api/v2/transactions/',
-        'checkout' => '/api/v2/checkout'
+        'checkout' => '/api/v2/checkout',
+        'refund' => '/api/v2/transactions/refund',
     ];
 
 	/** @var string */
@@ -223,6 +224,52 @@ class CBOClient {
         //CBOLog::debug("API Access Token received: $accessToken");
         return $accessToken;
 
+    }
+
+     /**
+     * @param string $transactionId
+     * @param int    $amount        // en centavos
+     * @return array               
+     * @throws CBOException
+     */
+    public function refund(string $transactionId, int $amount = 0): array
+    { 
+        $parseId = (int) $transactionId;
+        $id = $parseId - 130000000;
+        if ($id <= 0) {
+            \CBOLog::error("ID de transacción inválido: $transactionId");
+            throw new CBOException('ID de transacción inválido');
+        }
+
+        $route = $this->getRoute('refund'); 
+        if (empty($route)) {
+            throw new CBOException('Ruta de reembolso no definida');
+        }
+      
+        $endpoint = sprintf(
+            '%s/%d?amount=%d',
+            $route,
+            $id,
+            $amount
+        );
+
+        $response = $this->get($endpoint);
+        \CBOLog::debug("Respuesta de reembolso: " . json_encode($response));
+
+
+        if ($response['code'] !== 200) {
+            \CBOLog::error("Error al solicitar reembolso: " . json_encode($response));
+            throw new CBOException('Error al solicitar reembolso', $response);
+        }
+
+        $body = $response['body'];
+
+        if (empty($body['status']) || $body['status'] !== 'ok') {
+            $msg = $body['message'] ?? 'Reembolso fallido';
+            throw new CBOException($msg, $response);
+        }
+
+        return $body['data'];
     }
 
 	/**

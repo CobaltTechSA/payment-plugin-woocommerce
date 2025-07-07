@@ -420,7 +420,7 @@ function cbo_payment_gateway() {
 			$methods[] = array(
 				'name'     => 'cbo_standard_gateway',                      
 				'label'    => __('Card (Visa/Mastercard)', 'cbo-payment-gateway'),
-				'supports' => array('products'),                             
+				'supports' => array('products', 'refunds'),                             
 			);
 			return $methods;
 		}
