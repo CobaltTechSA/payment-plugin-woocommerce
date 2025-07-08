@@ -354,6 +354,12 @@ class CBOClient {
 
         $finalMetadatas = array_merge($finalMetadatas, $metadatas);
 
+		$callback = home_url( "/wc-api/" 
+        . CBOConstants::STANDARD_GATEWAY_ID 
+        . "_status?oid=" 
+        . $order->get_id()
+        );
+
 		$body = [
 			'metas' => $finalMetadatas,
 			'tip' => 0,
@@ -365,10 +371,10 @@ class CBOClient {
             'cvv2' => $cvv,
             'card_holder' => $cardHolder,
             '3ds_params' => $threeDSParams,
-            'webhook' => get_bloginfo('url') . "/wc-api/" . CBOConstants::STANDARD_GATEWAY_ID,
             //'return_url' => wc_get_cart_url(),
-            'url_ok' => get_bloginfo('url') . "/wc-api/" . CBOConstants::STANDARD_GATEWAY_ID . '_status?oid=' . $order->get_id(),
-            'url_ko' => get_bloginfo('url') . "/wc-api/" . CBOConstants::STANDARD_GATEWAY_ID . '_status?oid=' . $order->get_id(),
+            'url_ok' => $callback,
+            'url_ko' => $callback,
+            'webhook' => get_bloginfo('url') . "/wc-api/" . CBOConstants::STANDARD_GATEWAY_ID,
 		];
 
 		$response = $this->post($this->getRoute('sale'), $body);

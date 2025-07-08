@@ -1,0 +1,118 @@
+jQuery(($) => {
+
+  function testPopupEnabled() {
+    const w = window.open('', '_blank', 'width=100,height=100');
+    if (!w) {
+      alert('Por favor, habilita las ventanas emergentes en tu navegador e inténtalo de nuevo.');
+      return false;
+    }
+    w.close();
+    return true;
+  }
+
+  $(document).on('click', 'button[name="woocommerce_checkout_place_order"]', function (e) {
+    $('.woocommerce-notices-wrapper').empty();
+    if (!testPopupEnabled()) {
+      e.preventDefault();
+      return false;
+    }
+  });
+
+  $(document).on('click', 'button[name="woocommerce_checkout_place_order"]', function (e) {
+    if (!testPopupEnabled()) {
+      e.preventDefault();
+      return false;
+    }
+  });
+
+  $(document).on('click', '.wc-block-components-checkout__button button', function (e) {
+    if (!testPopupEnabled()) {
+      e.preventDefault();
+      return false;
+    }
+  });
+
+  let popup;
+
+  // checkout classic
+  $(document).ajaxComplete((e, xhr, settings) => {
+    if (settings.url.includes('wc-ajax=checkout')) {
+      _handleResponse(_parseJSON(xhr.responseText));
+    }
+  });
+
+  // checkout block
+  if (window.fetch) {
+    const _origFetch = window.fetch;
+    window.fetch = function (input, init) {
+      return _origFetch(input, init).then(response => {
+        const url = typeof input === 'string' ? input : input.url;
+        const isStoreCheckout = url.includes('/wc/store/v1/checkout');
+        const contentType = response.headers.get('content-type') || '';
+        if (isStoreCheckout && contentType.includes('application/json')) {
+          response.clone().json()
+            .then(json => _handleResponse(json))
+            .catch(() => { });
+        }
+        return response;
+      });
+    };
+  }
+
+  function _parseJSON(text) {
+    try {
+      return JSON.parse(text);
+    } catch {
+      return {};
+    }
+  }
+
+  function _handleResponse(res) {
+    // classic checkout
+    if (res.requires_challenge && res.challenge_url) {
+      _openPopup(res.challenge_url);
+      return;
+    }
+
+    // checkout block
+    if (res.payment_result && Array.isArray(res.payment_result.payment_details)) {
+      const details = res.payment_result.payment_details.reduce((acc, { key, value }) => {
+        acc[key] = value;
+        return acc;
+      }, {});
+      if (details.requires_challenge === '1' && details.challenge_url) {
+        _openPopup(details.challenge_url);
+        return;
+      }
+      if (details.redirect && details.redirect) {
+        window.location.href = details.redirect;
+        return;
+      }
+    }
+
+    // fallback if no challenge 
+    if (res.result === 'success' && res.redirect) {
+      window.location.href = res.redirect;
+    }
+  }
+
+  function _openPopup(url) {
+    popup = window.open('', '_blank', 'width=400,height=600');
+    popup.location = url;
+
+    const checkClosed = setInterval(() => {
+      if (!popup || popup.closed) {
+        clearInterval(checkClosed);
+
+        swal({
+          title: 'Autenticación cancelada',
+          text: 'La ventana de 3DS se cerró. Por favor inténtalo de nuevo.',
+          icon: 'warning',
+          button: 'Entendido'
+        }).then(() => {
+          location.reload();
+        });
+      }
+    }, 500);
+  }
+});
