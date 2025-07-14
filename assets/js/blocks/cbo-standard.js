@@ -28,16 +28,19 @@ const Label = ({ label }) => (
   </div>
 );
 
+const POPUP_WIDTH  = 400;
+const POPUP_HEIGHT = 600;
+
 const getBrowserData = () => ({
   browserJavaEnabled: navigator.javaEnabled ? '1' : '0',
   browserJavascriptEnabled: '1',
   browserLanguage: navigator.language,
   browserColorDepth: window.screen.colorDepth.toString(),
-  browserScreenWidth: window.screen.width.toString(),
-  browserScreenHeight: window.screen.height.toString(),
+  browserScreenWidth: POPUP_WIDTH.toString(),
+  browserScreenHeight: POPUP_HEIGHT.toString(),
   browserTZ: new Date().getTimezoneOffset().toString(),
   browserUserAgent: navigator.userAgent,
-  challengeWindowSize: window.screen.width.toString(),
+  challengeWindowSize: POPUP_WIDTH.toString(),
 });
 
 function PaymentMethod({

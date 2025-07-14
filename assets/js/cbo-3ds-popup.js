@@ -1,5 +1,8 @@
 jQuery(($) => {
 
+  const POPUP_WIDTH  = 400;
+  const POPUP_HEIGHT = 600;
+
   function testPopupEnabled() {
     const w = window.open('', '_blank', 'width=100,height=100');
     if (!w) {
@@ -97,7 +100,7 @@ jQuery(($) => {
   }
 
   function _openPopup(url) {
-    popup = window.open('', '_blank', 'width=400,height=600');
+    popup = window.open('', '_blank', `width=${POPUP_WIDTH},height=${POPUP_HEIGHT}`);
     popup.location = url;
 
     const checkClosed = setInterval(() => {
