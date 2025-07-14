@@ -4,16 +4,18 @@ let jq = null;
         jq = $;
         function addBrowserData() {
             console.log('Adding browser data');
+            const POPUP_WIDTH  = 400;
+            const POPUP_HEIGHT = 600;
             let navParams = {
                 browserJavaEnabled: 0,
                 browserJavascriptEnabled: 1,
                 browserLanguage: navigator.language,
                 browserColorDepth: screen.colorDepth,
-                browserScreenWidth: screen.width,
-                browserScreenHeight: screen.height,
+                browserScreenWidth: POPUP_WIDTH,
+                browserScreenHeight: POPUP_HEIGHT,
                 browserTZ: new Date().getTimezoneOffset(),
                 browserUserAgent: navigator.userAgent,
-                challengeWindowSize: screen.width,
+                challengeWindowSize:POPUP_WIDTH,
             }
             let payForm = $('form[name="checkout"]');
 

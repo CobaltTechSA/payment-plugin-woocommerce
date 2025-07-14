@@ -57,6 +57,23 @@ final class CBO_Blocks_Support
                 'cbo-payment-gateway',
                 CBO_PG_PATH . 'build/i18n'
             );
+
+             wp_register_script(
+                'cbo-3ds-popup', 
+                CBO_PG_URL . 'assets/js/cbo-3ds-popup.js',
+                [ 'jquery' ],
+                "2.3.0",
+                true
+            );
+
+            wp_localize_script(
+                'cbo-3ds-popup',
+                'CBO3DS',
+                [
+                    'url_ok' => esc_url_raw( home_url( "/wc-api/cbo_standard_gateway_status" ) ),
+                    'url_ko' => esc_url_raw( home_url( "/wc-api/cbo_standard_gateway_status" ) ),
+                ]
+            );
         }
 
         // Clave
