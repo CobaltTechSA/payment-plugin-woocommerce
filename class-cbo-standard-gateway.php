@@ -36,7 +36,6 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 		$this->enabled = $this->get_option( 'enabled' );
 		$this->testmode = 'yes' === $this->get_option( 'testmode' );
 		$this->api_url = $this->testmode ? $this->get_option( 'test_api_url' ) : $this->get_option( 'api_url' );
-		$this->api_key = $this->testmode ? $this->get_option( 'test_api_key' ) : $this->get_option( 'api_key' );
 		$this->api_client_id = $this->testmode ? $this->get_option( 'test_api_client_id' ) : $this->get_option( 'api_client_id' );
 		$this->api_client_secret = $this->testmode ? $this->get_option( 'test_api_client_secret' ) : $this->get_option( 'api_client_secret' );
 
@@ -53,7 +52,7 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 		add_action( "woocommerce_api_" . $this->id . '_status', array( $this, 'callback_url' ) );
 
         //JS Scripts
-        add_action( 'wp_enqueue_scripts', array($this, 'register_plugin_scripts'));
+		add_action('wp_enqueue_scripts', [ $this, 'register_plugin_scripts' ], 20);
 	}
 
 	public function get_icon() {
@@ -120,10 +119,7 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 				'title'       => __('Test API URL', 'cbo-payment-gateway'),
 				'type'        => 'text'
 			),
-			'test_api_key' => array(
-				'title'       => __('Test API Key', 'cbo-payment-gateway'),
-				'type'        => 'password',
-			),
+
             'test_api_client_id' => array(
                 'title'       => __('Test API Client Id', 'cbo-payment-gateway'),
                 'type'        => 'text',
@@ -136,10 +132,7 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 				'title'       => __('Production API URL', 'cbo-payment-gateway'),
 				'type'        => 'text'
 			),
-			'api_key' => array(
-				'title'       => __('Production API Key', 'cbo-payment-gateway'),
-				'type'        => 'password'
-			),
+
             'api_client_id' => array(
                 'title'       => __('Production API Client Id', 'cbo-payment-gateway'),
                 'type'        => 'text',
@@ -152,11 +145,56 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 
 	}
 
-    public function register_plugin_scripts()
-    {
-        CBOLog::debug("plugin path: " . plugin_dir_url(__FILE__));
-        wp_enqueue_script( 'cbo-standard-payment', plugin_dir_url(__FILE__) . 'assets/js/cbo-payment-script.js', array('jquery'), CBOConstants::PLUGIN_VERSION, true);
-    }
+	/**
+	 * Register scripts for the plugin.
+	 * This method is called on the 'wp_enqueue_scripts' action.
+	 */
+	public function register_plugin_scripts() {
+		if ( ! is_checkout() || is_cart() ) {
+			return;
+		}
+
+		$base = plugin_dir_url( __FILE__ ) . 'assets/js/';
+		$ver  = CBOConstants::PLUGIN_VERSION;
+
+		wp_enqueue_script(
+			'sweetalert',
+			'https://unpkg.com/sweetalert/dist/sweetalert.min.js',
+			[],
+			'2.1.2',
+			true
+		);
+
+		// Script for the standard payment method
+		wp_enqueue_script(
+			'cbo-standard-payment',
+			$base . 'cbo-payment-script.js',
+			[ 'jquery' ],
+			$ver,
+			true
+		);
+
+		// Script for the 3DS popup + classic checkout
+		wp_enqueue_script(
+			'cbo-3ds-popup',
+			$base . 'cbo-3ds-popup.js',
+			[ 'jquery', 'wc-checkout', 'sweetalert' ],
+			$ver,
+			true
+		);
+
+		// This will be used to handle the 3DS challenge response
+		$callback = esc_url_raw( home_url( "/wc-api/{$this->id}_status" ) );
+
+		wp_localize_script(
+			'cbo-3ds-popup',
+			'CBO3DS',
+			[
+				'url_ok' => $callback,
+				'url_ko' => $callback,
+			]
+		);
+	}
 
     /**
      * @param $args
@@ -248,10 +286,9 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 
 	public function process_refund($order_id, $amount = 0, $reason = '')
 	{
-		CBOLog::debug("api_key={$this->api_key}, api_client_id={$this->api_client_id}, api_client_secret={$this->api_client_secret}");
+		CBOLog::debug("api_client_id={$this->api_client_id}, api_client_secret={$this->api_client_secret}");
 		$cboClient = new CBOClient(
 			$this->api_url,
-			$this->api_key,
 			$this->api_client_id,
 			$this->api_client_secret
 		);
@@ -296,8 +333,8 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 		CBOLog::debug("process_payment: " . $order_id);
 		$order = wc_get_order($order_id);
 		 
-        CBOLog::debug("api_key=$this->api_key, api_client_id=$this->api_client_id, api_client_secret=$this->api_client_secret");
-		$cboClient = new CBOClient($this->api_url, $this->api_key, $this->api_client_id, $this->api_client_secret);
+        CBOLog::debug(" api_client_id=$this->api_client_id, api_client_secret=$this->api_client_secret");
+		$cboClient = new CBOClient($this->api_url, $this->api_client_id, $this->api_client_secret);
 		try {
             // detect if the request is from a block-based checkout or classic checkout
 			$raw_input = file_get_contents('php://input');
@@ -370,13 +407,15 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 			$transaction = $cboClient->sale($order, $cardNumber, $cardExpiry, $cardCvc, $cardHolder, $threeDSParams);
 			CBOLog::debug("Checkout data: " . json_encode($transaction));
 
-            if ($transaction['status'] === 'authenticating') {
-                return array(
-                    'result' => 'success',
-                    'redirect' => $transaction['metadatas']['3ds_authentication_form'],
-					'additional_data' => [],
-                );
-            } else if ($this->validate_payment($transaction)) {
+         if ($transaction['status'] === 'authenticating') {
+			return [
+					'result'            => 'success',
+					'requires_challenge'=> true,
+					'challenge_url'     => $transaction['metadatas']['3ds_authentication_form'],
+					'redirect'          => '',
+					'callback_url'      => $callback,
+				];
+			} else if ($this->validate_payment($transaction)) {
                 return array(
                     'result' => 'success',
                     'redirect' => $order->get_checkout_order_received_url(),
@@ -414,23 +453,29 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
         }
 
         //Order additional data
-        $threeDSParams['transType'] = 'goods';
+		$threeDSParams['transType']     = 'goods';
 		$threeDSParams['deviceChannel'] = 'browser';
-		$threeDSParams['browserIP'] = $_SERVER['REMOTE_ADDR'];
-		$threeDSParams['email'] = $_POST['billing_email'];
-		$threeDSParams['billAddrCountry'] = $this->get_iso_alpha3_cc($_POST['billing_country']);
-		$threeDSParams['billAddrCity'] = $_POST['billing_city'];
-		$threeDSParams['billAddrState'] = parse_state($_POST['billing_state']);
-		$threeDSParams['billAddrLine1'] = $_POST['billing_address_1'];
-		$threeDSParams['billAddrLine2'] = "none";
-		$threeDSParams['billAddrPostCode'] = $_POST['billing_postcode'];
+		$threeDSParams['browserIP']     = $_SERVER['REMOTE_ADDR'];
+		$threeDSParams['email']         = $_POST['billing_email'] ?? '';
 
-		$threeDSParams['shipAddrCountry'] = $this->get_iso_alpha3_cc($_POST['shipping_country']) ?? "dig";
-		$threeDSParams['shipAddrCity'] = $_POST['shipping_city'] ?? "digital";
-		$threeDSParams['shipAddrState'] = parse_state($_POST['shipping_state']) ?? "dig";
-		$threeDSParams['shipAddrLine1'] = $_POST['shipping_address_1'] ?? "digital";
-		$threeDSParams['shipAddrLine2'] = "none";
-		$threeDSParams['shipAddrPostCode'] = $_POST['shipping_postcode'] ?? "digital";
+		$threeDSParams['billAddrCountry']  = $this->get_iso_alpha3_cc( $_POST['billing_country'] ?? '' ) ?: 'DIG';
+		$threeDSParams['billAddrCity']     = trim( $_POST['billing_city'] ?? '' )        ?: 'digital';
+		$threeDSParams['billAddrState']    = parse_state( $_POST['billing_state'] ?? '' ) ?: 'DIG';
+		$threeDSParams['billAddrLine1']    = trim( $_POST['billing_address_1'] ?? '' )   ?: 'digital';
+		$threeDSParams['billAddrLine2']    = 'none';
+		$threeDSParams['billAddrPostCode'] = trim( $_POST['billing_postcode'] ?? '' )   ?: '0000';
+
+		$billingCity  = $threeDSParams['billAddrCity'];
+		$billingLine1 = $threeDSParams['billAddrLine1'];
+		$billingPost  = $threeDSParams['billAddrPostCode'];
+
+		$threeDSParams['shipAddrCountry']  = $this->get_iso_alpha3_cc( $_POST['shipping_country'] ?? '' ) ?: 'DIG';
+		$threeDSParams['shipAddrCity']     = trim( $_POST['shipping_city'] ?? '' )          ?: $billingCity  ?: 'digital';
+		$threeDSParams['shipAddrState']    = parse_state( $_POST['shipping_state'] ?? '' ) ?: 'DIG';
+		$threeDSParams['shipAddrLine1']    = trim( $_POST['shipping_address_1'] ?? '' )     ?: $billingLine1 ?: 'digital';
+		$threeDSParams['shipAddrLine2']    = 'none';
+		$threeDSParams['shipAddrPostCode'] = trim( $_POST['shipping_postcode'] ?? '' )     ?: $billingPost  ?: '0000';
+
 
         return $threeDSParams;
     }
@@ -462,19 +507,40 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
     }
 
 	public function callback_url() {
-		$order_id = $_GET['oid'];
+		$order_id = absint($_GET['oid']);
+		$order    = wc_get_order($order_id);
 
-		CBOLog::debug("callback_url: " . $order_id);
+		$target = ($order && $order->is_paid())
+		? $order->get_checkout_order_received_url()
+		: $order->get_checkout_payment_url();
 
-		$order = wc_get_order( $order_id );
-		if ($order->is_paid()) {
-			header("Location: " . $order->get_checkout_order_received_url());
-			return;
-		}
 
-		header("Location: " . $order->get_checkout_payment_url());
-
+		?>
+		<!DOCTYPE html>
+		<html lang="es">
+		<head><meta charset="utf-8"><title>Procesando 3DS…</title></head>
+		<body>
+		<script>
+			(function(){
+			var target = <?php echo wp_json_encode($target); ?>;
+			// if the opener is still open, we can notify it
+			// and redirect it to the target URL
+			if (window.opener && !window.opener.closed) {
+				window.opener.postMessage({ cbo3ds: 'success' }, '*' );
+				window.opener.location.href = target;
+				window.close();
+			} else {
+				window.location.href = target;
+			}
+			})();
+		</script>
+		</body>
+		</html>
+		<?php
+		exit;
 	}
+
+
 	/*
 	 * In case you need a webhook, like PayPal IPN etc
 	 */

@@ -8,8 +8,6 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-include_once 'cbo-constants.php';
-
 /**
  * Integration for the CBO Telered Blocks payment method.
  */
