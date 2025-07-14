@@ -52,8 +52,12 @@ class WC_CBO_Telered_Gateway extends WC_Payment_Gateway {
 
 	public function get_icon() {
 		$path = plugin_dir_url( __FILE__ );
-		$icons = array(
-			'<img style="height: 40px; max-height: 3em; float: left !important; margin: 5px" src="' . WC_HTTPS::force_https_url( $path . 'assets/images/clave.svg' ) . '" alt="Telered" />',
+		$icons = array(   sprintf(
+        '<img class="%s" src="%s" alt="%s" />',
+        esc_attr( 'cbo-gateway-icon' ),
+        esc_url( WC_HTTPS::force_https_url( $path . 'assets/images/clave.svg' ) ),
+        esc_attr__( 'Telered', 'cbo-payment-gateway' )
+    ),
 		);
 
 		$payIcons = '<div style="vertical-align: middle; display: inline-block; margin-left: 22px">';
@@ -140,7 +144,7 @@ class WC_CBO_Telered_Gateway extends WC_Payment_Gateway {
 				$this->description  = trim( $this->description );
 			}
 			// display the description with <p> tags etc.
-			echo wpautop( wp_kses_post( $this->description ) );
+			echo wp_kses_post( wpautop( $this->description ) );
 		}
 
 		/*// I will echo() the form, but you can close PHP tags and print it directly in HTML
@@ -265,11 +269,11 @@ class WC_CBO_Telered_Gateway extends WC_Payment_Gateway {
 			$order->add_meta_data('cbo_bank_authorization', $transaction['authorization_number']);
 
 			if (in_array($status, $successStatus)) {
-				$order->update_status('completed', __( 'Pago completado', 'woocommerce' ));
+				$order->update_status('completed', __( 'Pago completado', 'cbo-payment-gateway' ));
 				$order->payment_complete($transaction['identifier']);
 				$woocommerce->cart->empty_cart();
 			} else {
-				$order->update_status('failed', __( 'Pago fallido', 'woocommerce' ));
+				$order->update_status('failed', __( 'Pago fallido', 'cbo-payment-gateway' ));
 			}
 
 			header( 'HTTP/1.1 204 OK' );

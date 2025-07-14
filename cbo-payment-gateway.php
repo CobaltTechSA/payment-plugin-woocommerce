@@ -54,12 +54,12 @@ class WC_CBO_Loader {
 
 	public function __clone() {
 
-		_doing_it_wrong( __FUNCTION__, sprintf( 'No se puede clonar instancias de %s.', get_class( $this ) ), '1.10.0' );
+		_doing_it_wrong( __FUNCTION__, sprintf( 'No se puede clonar instancias de %s.', esc_html( get_class( $this ) )), '1.10.0' );
 	}
 
 	public function __wakeup() {
 
-		_doing_it_wrong( __FUNCTION__, sprintf( 'No se pueden deserializar instancias de %s.', get_class( $this ) ), '1.10.0' );
+		_doing_it_wrong( __FUNCTION__, sprintf( 'No se pueden deserializar instancias de %s.', esc_html( get_class( $this ) )), '1.10.0' );
 	}
 
 
@@ -96,7 +96,7 @@ class WC_CBO_Loader {
 
 			$this->deactivate_plugin();
 
-			wp_die( CBOConstants::PLUGIN_NAME . ' no se puede activar. ' . $this->get_environment_message() );
+			wp_die(  esc_html( CBOConstants::PLUGIN_NAME ). ' no se puede activar. ' . esc_html( $this->get_environment_message() ) );
 		}
 	}
 

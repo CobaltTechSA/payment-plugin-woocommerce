@@ -58,8 +58,18 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 	public function get_icon() {
 		$path = plugin_dir_url( __FILE__ );
 		$icons = array(
-			'<img src="' . WC_HTTPS::force_https_url( $path. 'assets/images/visa.svg' ) . '" alt="Visa" />',
-			'<img src="' . WC_HTTPS::force_https_url( $path . 'assets/images/mastercard.svg' ) . '" alt="Mastercard" />',
+			sprintf(
+				'<img class="%s" src="%s" alt="%s" />',
+				esc_attr( 'cbo-gateway-icon' ),
+				esc_url( WC_HTTPS::force_https_url( $path . 'assets/images/visa.svg' ) ),
+				esc_attr__( 'Visa', 'cbo-payment-gateway' )
+			),
+			sprintf(
+				'<img class="%s" src="%s" alt="%s" />',
+				esc_attr( 'cbo-gateway-icon' ),
+				esc_url( WC_HTTPS::force_https_url( $path . 'assets/images/mastercard.svg' ) ),
+				esc_attr__( 'Mastercard', 'cbo-payment-gateway' )
+			),
 		);
 
 		$payIcons = '<div style="vertical-align: middle; display: inline-block; margin-left: 22px">';
@@ -109,7 +119,7 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 				'title'       => __('Test API URL', 'cbo-payment-gateway'),
 				'type'        => 'text'
 			),
-		
+
             'test_api_client_id' => array(
                 'title'       => __('Test API Client Id', 'cbo-payment-gateway'),
                 'type'        => 'text',
@@ -122,7 +132,7 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 				'title'       => __('Production API URL', 'cbo-payment-gateway'),
 				'type'        => 'text'
 			),
-			
+
             'api_client_id' => array(
                 'title'       => __('Production API Client Id', 'cbo-payment-gateway'),
                 'type'        => 'text',
@@ -134,7 +144,7 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 		);
 
 	}
-   
+
 	/**
 	 * Register scripts for the plugin.
 	 * This method is called on the 'wp_enqueue_scripts' action.
@@ -150,11 +160,11 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 		wp_enqueue_script(
 			'sweetalert',
 			'https://unpkg.com/sweetalert/dist/sweetalert.min.js',
-			[],       
-			'2.1.2', 
-			true 
+			[],
+			'2.1.2',
+			true
 		);
-		
+
 		// Script for the standard payment method
 		wp_enqueue_script(
 			'cbo-standard-payment',
@@ -212,7 +222,7 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 				$this->description  = trim( $this->description );
 			}
 			// display the description with <p> tags etc.
-			echo wpautop( wp_kses_post( $this->description ) );
+			echo wp_kses_post( wpautop( $this->description ) );
 		}
         $this->credit_card_form();
 	}
@@ -504,7 +514,7 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 		? $order->get_checkout_order_received_url()
 		: $order->get_checkout_payment_url();
 
-		
+
 		?>
 		<!DOCTYPE html>
 		<html lang="es">
@@ -517,8 +527,8 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 			// and redirect it to the target URL
 			if (window.opener && !window.opener.closed) {
 				window.opener.postMessage({ cbo3ds: 'success' }, '*' );
-				window.opener.location.href = target;  
-				window.close();                      
+				window.opener.location.href = target;
+				window.close();
 			} else {
 				window.location.href = target;
 			}
