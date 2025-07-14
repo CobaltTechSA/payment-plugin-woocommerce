@@ -32,7 +32,6 @@ class WC_CBO_Telered_Gateway extends WC_Payment_Gateway {
 		$this->enabled = $this->get_option( 'enabled' );
 		$this->testmode = 'yes' === $this->get_option( 'testmode' );
 		$this->api_url = $this->testmode ? $this->get_option( 'test_api_url' ) : $this->get_option( 'api_url' );
-		$this->api_key = $this->testmode ? $this->get_option( 'test_api_key' ) : $this->get_option( 'api_key' );
         $this->api_client_id = $this->testmode ? $this->get_option( 'test_api_client_id' ) : $this->get_option( 'api_client_id' );
         $this->api_client_secret = $this->testmode ? $this->get_option( 'test_api_client_secret' ) : $this->get_option( 'api_client_secret' );
 
@@ -104,10 +103,6 @@ class WC_CBO_Telered_Gateway extends WC_Payment_Gateway {
                 'title'       => __('Test API URL', 'cbo-payment-gateway'),
                 'type'        => 'text'
             ),
-            'test_api_key' => array(
-                'title'       => __('Test API Key', 'cbo-payment-gateway'),
-                'type'        => 'password',
-            ),
             'test_api_client_id' => array(
                 'title'       => __('Test API Client Id', 'cbo-payment-gateway'),
                 'type'        => 'text',
@@ -119,10 +114,6 @@ class WC_CBO_Telered_Gateway extends WC_Payment_Gateway {
             'api_url' => array(
                 'title'       => __('Production API URL', 'cbo-payment-gateway'),
                 'type'        => 'text'
-            ),
-            'api_key' => array(
-                'title'       => __('Production API Key', 'cbo-payment-gateway'),
-                'type'        => 'password'
             ),
             'api_client_id' => array(
                 'title'       => __('Production API Client Id', 'cbo-payment-gateway'),
@@ -201,8 +192,8 @@ class WC_CBO_Telered_Gateway extends WC_Payment_Gateway {
 		// we need it to get any order detailes
 		$order = wc_get_order( $order_id );
 
-        CBOLog::debug("api_key=$this->api_key, api_client_id=$this->api_client_id, api_client_secret=$this->api_client_secret");
-        $cboClient = new CBOClient($this->api_url, $this->api_key, $this->api_client_id, $this->api_client_secret);
+        CBOLog::debug("api_client_id=$this->api_client_id, api_client_secret=$this->api_client_secret");
+        $cboClient = new CBOClient($this->api_url, $this->api_client_id, $this->api_client_secret);
 		try {
 			$checkout = $cboClient->checkout($order, CBOConstants::PAYMENT_TYPE_TELERED);
 			CBOLog::debug("Checkout data: " . json_encode($checkout));
@@ -227,7 +218,7 @@ class WC_CBO_Telered_Gateway extends WC_Payment_Gateway {
 	public function callback_url() {
 		$order_id = $_GET['oid'];
 
-		CBOLog::debug("callback_url: " . $order_id);
+		// CBOLog::debug("callback_url: " . $order_id);
 
 		$order = wc_get_order( $order_id );
 		
@@ -238,7 +229,6 @@ class WC_CBO_Telered_Gateway extends WC_Payment_Gateway {
 		}
 
 		if ($order->is_paid()) {
-			CBOLog::debug("callback_url: PAGADO, redirigiendo a order-received");
 			wp_safe_redirect($order->get_checkout_order_received_url());
 			exit;
 		}
@@ -257,7 +247,7 @@ class WC_CBO_Telered_Gateway extends WC_Payment_Gateway {
 		$data = json_decode(file_get_contents('php://input'), true);
 		CBOLog::debug("Webhook: Tx #" . $data['identifier'] . ": " . json_encode($data));
 
-		//$client = new CBOClient($this->api_url, $this->api_key);
+		//$client = new CBOClient($this->api_url);
 
 		try {
 			//$transaction = $client->transaction($data['tid']);

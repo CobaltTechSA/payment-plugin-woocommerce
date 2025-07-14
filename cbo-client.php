@@ -3,12 +3,6 @@
 include_once 'cbo-constants.php';
 class CBOClient {
 
-    const API_V1_ROUTES = [
-        'sale' => '/api/transactions/sale',
-        'transaction' => '/api/transactions/',
-        'checkout' => '/api/checkout'
-    ];
-
     const API_V2_ROUTES = [
         'sale' => '/api/v2/transactions/sale',
         'transaction' => '/api/v2/transactions/',
@@ -121,25 +115,12 @@ class CBOClient {
 	}
 
     /**
-     * @return string
-     */
-    public function hasV2Credentials(): string
-    {
-        return $this->clientId != null && $this->clientSecret != null;
-    }
-
-    /**
      * @param string $action
      * @return string
      */
     public function getRoute(string $action)
     {
-        if ($this->hasV2Credentials()) {
-            return self::API_V2_ROUTES[$action];
-        }
-
-        return self::API_V1_ROUTES[$action];
-
+        return self::API_V2_ROUTES[$action];
     }
 
     /**
@@ -159,26 +140,13 @@ class CBOClient {
     public function login()
     {
         $this->authorization = null;
-
-        //API v2
-        if ($this->hasV2Credentials()) {
-            CBOLog::info("API V2 Detected");
-            $accessToken = $this->getAccessToken();
-            if ($accessToken) {
-                $this->authorization = 'Authorization: Bearer ' . $accessToken;
-                return true;
-            }
+        $accessToken = $this->getAccessToken();
+        if (!$accessToken) {
+            throw new CBOException("Could not authenticate via OAuth2");
         }
 
-        if ($this->apiKey != null) {
-            //API v1 token
-            CBOLog::info("API V1 Detected");
-            $this->authorization = 'Authorization: Bearer ' . $this->apiKey;
-            return true;
-        }
-
-        CBOLog::error("No credentials detected");
-        return false;
+        $this->authorization = 'Authorization: Bearer ' . $accessToken;
+        return true;
     }
 
     /**
@@ -304,7 +272,7 @@ class CBOClient {
 		$totalWithoutTax = $total - $tax;
 		$body = [
 			'metadatas' => [
-				'entry' => 'e-Commerce',
+				'entry' => get_bloginfo('name') . ' - Plugin Woocommerce v' . CBOConstants::PLUGIN_VERSION,
 				'platform' => 'Woocommerce',
 				'version' => CBOConstants::PLUGIN_VERSION,
 				'order_id' => $order->get_id(),
@@ -344,7 +312,7 @@ class CBOClient {
 		$totalWithoutTax = $total - $tax;
 
         $finalMetadatas = [
-            'entry' => 'e-Commerce',
+            'entry' => get_bloginfo('name') . ' - Plugin Woocommerce v' . CBOConstants::PLUGIN_VERSION,
             'platform' => 'Woocommerce',
             'version' => CBOConstants::PLUGIN_VERSION,
             'order_id' => $order->get_id(),
