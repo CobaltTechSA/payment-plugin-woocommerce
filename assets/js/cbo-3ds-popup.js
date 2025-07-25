@@ -119,3 +119,13 @@ jQuery(($) => {
     }, 500);
   }
 });
+
+window.addEventListener('message', function(event) {
+  if (event.data && event.data.cbo3ds === 'success') {
+    if (event.data.redirect_to) {
+      window.location.href = event.data.redirect_to;
+    } else {
+      location.reload();
+    }
+  }
+});

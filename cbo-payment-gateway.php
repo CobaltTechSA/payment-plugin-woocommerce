@@ -293,7 +293,7 @@ class WC_CBO_Loader {
 		deactivate_plugins( plugin_basename( __FILE__ ) );
 
 		if ( isset( $_GET['activate'] ) ) {
-			unset( $_GET['activate'] );
+		$activate = sanitize_text_field( $_GET['activate'] );
 		}
 	}
 

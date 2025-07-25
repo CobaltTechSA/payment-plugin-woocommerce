@@ -220,7 +220,7 @@ class WC_CBO_Telered_Gateway extends WC_Payment_Gateway {
 	}
 
 	public function callback_url() {
-		$order_id = $_GET['oid'];
+		$order_id = isset($_GET['oid']) ? absint($_GET['oid']) : 0;
 
 		// CBOLog::debug("callback_url: " . $order_id);
 
@@ -249,40 +249,40 @@ class WC_CBO_Telered_Gateway extends WC_Payment_Gateway {
 		global $woocommerce;
 
 		$data = json_decode(file_get_contents('php://input'), true);
+    	$data = is_array($data) ? array_map('sanitize_text_field', $data) : [];
 		CBOLog::debug("Webhook: Tx #" . $data['identifier'] . ": " . json_encode($data));
 
 		//$client = new CBOClient($this->api_url);
 
 		try {
-			//$transaction = $client->transaction($data['tid']);
-			$transaction = $data;
+        $transaction = $data;
+        $metas = $transaction['metadatas'] ?? [];
+        $order_id = $metas['order_id'] ?? null;
+        $order = $order_id ? wc_get_order($order_id) : null;
 
+        $status = $transaction['status'] ?? '';
+        $successStatus = ['authorized', 'notified'];
 
-			$metas = $transaction['metadatas'];
-			$order_id = $metas['order_id'];
-			$order = wc_get_order( $order_id );
+        if ($order) {
+            $order->add_meta_data('cbo_bank_code', $transaction['response_code'] ?? '');
+            $order->add_meta_data('cbo_transaction_id', $transaction['identifier'] ?? '');
+            $order->add_meta_data('cbo_bank_authorization', $transaction['authorization_number'] ?? '');
 
-			$status = $transaction['status'];
-			$successStatus = ['authorized', 'notified'];
-			$order->add_meta_data('cbo_bank_code', $transaction['response_code']);
-			$order->add_meta_data('cbo_transaction_id', $transaction['identifier']);
-			$order->add_meta_data('cbo_bank_authorization', $transaction['authorization_number']);
+            if (in_array($status, $successStatus)) {
+                $order->update_status('completed', __('Pago completado', 'cbo-payment-gateway'));
+                $order->payment_complete($transaction['identifier'] ?? '');
+                $woocommerce->cart->empty_cart();
+            } else {
+                $order->update_status('failed', __('Pago fallido', 'cbo-payment-gateway'));
+            }
+        }
 
-			if (in_array($status, $successStatus)) {
-				$order->update_status('completed', __( 'Pago completado', 'cbo-payment-gateway' ));
-				$order->payment_complete($transaction['identifier']);
-				$woocommerce->cart->empty_cart();
-			} else {
-				$order->update_status('failed', __( 'Pago fallido', 'cbo-payment-gateway' ));
-			}
+        header('HTTP/1.1 204 OK');
 
-			header( 'HTTP/1.1 204 OK' );
-
-		} catch (\CBOException $e) {
-			CBOLog::debug("Error getting transaction " . $data['tid'] . ' - ' .$e->getMessage());
-			header( 'HTTP/1.1 400 Bad Request' );
-
-		}
+    } catch (\CBOException $e) {
+        CBOLog::debug("Error getting transaction " . ($data['tid'] ?? '') . ' - ' . $e->getMessage());
+        header('HTTP/1.1 400 Bad Request');
+    }
 
 		return;
 

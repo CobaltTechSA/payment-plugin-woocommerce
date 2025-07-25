@@ -28,9 +28,8 @@ class CBOClient {
      * @param string|null $clientId
      * @param string|null $clientSecret
      */
-	public function __construct( string $baseUrl, string $apiKey, string $clientId = null, string $clientSecret = null ) {
+	public function __construct( string $baseUrl, string $clientId = null, string $clientSecret = null ) {
 		$this->baseUrl = $baseUrl;
-		$this->apiKey  = $apiKey;
         $this->clientId = $clientId;
         $this->clientSecret = $clientSecret;
 	}
