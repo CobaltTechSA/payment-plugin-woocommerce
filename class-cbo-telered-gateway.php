@@ -1,5 +1,5 @@
 <?php
-
+if ( ! defined( 'ABSPATH' ) ) exit;
 include_once 'cbo-constants.php';
 class WC_CBO_Telered_Gateway extends WC_Payment_Gateway {
 

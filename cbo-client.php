@@ -1,5 +1,5 @@
 <?php
-
+if ( ! defined( 'ABSPATH' ) ) exit;
 include_once 'cbo-constants.php';
 class CBOClient {
 
@@ -13,9 +13,6 @@ class CBOClient {
 	/** @var string */
 	private $baseUrl;
 
-	/** @var string */
-	private $apiKey;
-
     private $clientId;
     private $clientSecret;
 
@@ -24,7 +21,6 @@ class CBOClient {
 
     /**
      * @param string $baseUrl
-     * @param string $apiKey
      * @param string|null $clientId
      * @param string|null $clientSecret
      */

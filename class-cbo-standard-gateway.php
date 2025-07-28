@@ -1,5 +1,6 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) exit;
 include_once 'cbo-constants.php';
 include_once 'cbo-helpers.php';
 include_once 'class-cbo-payment-gateway-cc.php';
@@ -157,13 +158,15 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 		$base = plugin_dir_url( __FILE__ ) . 'assets/js/';
 		$ver  = CBOConstants::PLUGIN_VERSION;
 
-		wp_enqueue_script(
-			'sweetalert',
-			'https://unpkg.com/sweetalert/dist/sweetalert.min.js',
+		wp_register_script(
+			'cbo-sweetalert',
+			plugins_url( 'assets/js/sweetAlert/sweetalert.min.js', __FILE__ ),
 			[],
-			'2.1.2',
+			'2.1.2', 
 			true
 		);
+
+		wp_enqueue_script('cbo-sweetalert');
 
 		// Script for the standard payment method
 		wp_enqueue_script(
@@ -178,7 +181,7 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 		wp_enqueue_script(
 			'cbo-3ds-popup',
 			$base . 'cbo-3ds-popup.js',
-			[ 'jquery', 'wc-checkout', 'sweetalert' ],
+			[ 'jquery', 'wc-checkout', 'cbo-sweetalert' ],
 			$ver,
 			true
 		);
@@ -536,7 +539,7 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 		$target = ($order && $order->is_paid())
 			? $order->get_checkout_order_received_url()
 			: $order->get_checkout_payment_url();
-
+		CBOLog::debug("callback_url: order_id=$order_id, target=$target");
 		?>
 		<!DOCTYPE html>
 		<html lang="es">
@@ -545,6 +548,8 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 		<script>
 			(function(){
 				var target = <?php echo wp_json_encode($target); ?>;
+				
+				// Si el popup fue abierto desde otra ventana
 				if (window.opener && !window.opener.closed) {
 					window.opener.postMessage({ cbo3ds: 'success', redirect_to: target }, '*');
 					window.close();

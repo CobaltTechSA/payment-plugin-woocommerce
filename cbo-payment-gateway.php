@@ -1,5 +1,5 @@
 <?php
-
+if ( ! defined( 'ABSPATH' ) ) exit;
 /*
  * Plugin Name: CBO Payment Gateway
  * Plugin URI: https://cobalt.tech/plugins/wc
