@@ -47,7 +47,19 @@ class CBOPAGA_Telered_Gateway extends WC_Payment_Gateway {
 		//URL OK y KO
 		add_action( "woocommerce_api_" . $this->id . '_status', array( $this, 'callback_url' ) );
 
+		// Add nonce field for security
+		add_action('woocommerce_admin_field_cbopaga_nonce', function () {
+    	wp_nonce_field('cbopaga_telered_save_settings', 'cbopaga_telered_nonce');
+		});
 
+	}
+
+	public function process_admin_options() {
+		if ( ! isset( $_POST['cbopaga_telered_nonce'] ) || 
+			! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['cbopaga_telered_nonce'] ) ), 'cbopaga_telered_save_settings' ) ) {
+			wp_die( __( 'Acción no autorizada.', 'cbo-payment-gateway' ), __( 'Error de seguridad', 'cbo-payment-gateway' ), 403 );
+		}
+		parent::process_admin_options();
 	}
 
 	public function get_icon() {
@@ -129,6 +141,21 @@ class CBOPAGA_Telered_Gateway extends WC_Payment_Gateway {
             ),
         );
 
+	}
+
+	public function admin_options() {
+		?>
+		<h2><?php echo esc_html( $this->get_method_title() ); ?></h2>
+		<p><?php echo esc_html( $this->get_method_description() ); ?></p>
+		<table class="form-table">
+			<?php
+			// Nonce field for security
+			wp_nonce_field( 'cbopaga_telered_save_settings', 'cbopaga_telered_nonce' );
+
+			$this->generate_settings_html();
+			?>
+		</table>
+		<?php
 	}
 
 	/**
@@ -246,8 +273,6 @@ class CBOPAGA_Telered_Gateway extends WC_Payment_Gateway {
 	 */
 	public function webhook() {
 
-		global $woocommerce;
-
 		$data = json_decode(file_get_contents('php://input'), true);
     	$data = is_array($data) ? array_map('sanitize_text_field', $data) : [];
 		CBOPAGA_Log::debug("Webhook: Tx #" . $data['identifier'] . ": " . json_encode($data));
@@ -264,14 +289,16 @@ class CBOPAGA_Telered_Gateway extends WC_Payment_Gateway {
         $successStatus = ['authorized', 'notified'];
 
         if ($order) {
-            $order->add_meta_data('cbopg_bank_code', $transaction['response_code'] ?? '');
-            $order->add_meta_data('cbopg_transaction_id', $transaction['identifier'] ?? '');
-            $order->add_meta_data('cbopg_bank_authorization', $transaction['authorization_number'] ?? '');
+            $order->add_meta_data('cbopaga_bank_code', $transaction['response_code'] ?? '');
+            $order->add_meta_data('cbopaga_transaction_id', $transaction['identifier'] ?? '');
+            $order->add_meta_data('cbopaga_bank_authorization', $transaction['authorization_number'] ?? '');
 
             if (in_array($status, $successStatus)) {
                 $order->update_status('completed', __('Pago completado', 'cbo-payment-gateway'));
                 $order->payment_complete($transaction['identifier'] ?? '');
-                $woocommerce->cart->empty_cart();
+                if ( function_exists( 'WC' ) && WC()->cart ) {
+					WC()->cart->empty_cart();
+				}
             } else {
                 $order->update_status('failed', __('Pago fallido', 'cbo-payment-gateway'));
             }

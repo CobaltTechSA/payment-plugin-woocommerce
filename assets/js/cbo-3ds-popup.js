@@ -36,6 +36,7 @@ jQuery(($) => {
   });
 
   let popup;
+  let popupMonitor;
 
   // checkout classic
   $(document).ajaxComplete((e, xhr, settings) => {
@@ -104,7 +105,7 @@ jQuery(($) => {
     popup.location = url;
     let popupClosed = false;
 
-  let popupMonitor = setInterval(function () {
+  popupMonitor = setInterval(function () {
   if (popup && popup.closed && !popupClosed) {
     popupClosed = true;
     clearInterval(popupMonitor);
@@ -122,9 +123,14 @@ jQuery(($) => {
   }
 
 window.addEventListener('message', function(event) {
+  if (event.origin !== window.location.origin) return;
+  
   if (!event.data || !event.data.cbo3ds) return;
 
-  clearInterval(popupMonitor); // Ya no hace falta revisar
+   if (popupMonitor) {
+    clearInterval(popupMonitor);
+    popupMonitor = undefined;
+  }
 
   if (event.data.cbo3ds === 'success') {
     window.location.href = event.data.redirect_to || window.location.href;

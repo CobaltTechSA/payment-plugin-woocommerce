@@ -54,7 +54,22 @@ class CBOPAGA_Standard_Gateway extends WC_Payment_Gateway {
 
         //JS Scripts
 		add_action('wp_enqueue_scripts', [ $this, 'register_plugin_scripts' ], 20);
+
+		// Add nonce field for security
+		add_action('woocommerce_admin_field_cbopaga_nonce', function () {
+    	wp_nonce_field('cbopaga_standard_save_settings', 'cbopaga_standard_nonce');
+		});
+
 	}
+
+	public function process_admin_options() {
+		if ( ! isset( $_POST['cbopaga_standard_nonce'] ) || 
+			! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['cbopaga_standard_nonce'] ) ), 'cbopaga_standard_save_settings' ) ) {
+			wp_die( __( 'Acción no autorizada.', 'cbo-payment-gateway' ), __( 'Error de seguridad', 'cbo-payment-gateway' ), 403 );
+		}
+		parent::process_admin_options();
+	}
+
 
 	public function get_icon() {
 		$path = plugin_dir_url( __FILE__ );
@@ -141,10 +156,25 @@ class CBOPAGA_Standard_Gateway extends WC_Payment_Gateway {
             'api_client_secret' => array(
                 'title'       => __('Production API Client Secret', 'cbo-payment-gateway'),
                 'type'        => 'password',
-            ),
+            )
 		);
-
 	}
+
+	public function admin_options() {
+		?>
+		<h2><?php echo esc_html( $this->get_method_title() ); ?></h2>
+		<p><?php echo esc_html( $this->get_method_description() ); ?></p>
+		<table class="form-table">
+			<?php
+			// Nonce field for security
+			wp_nonce_field( 'cbopaga_standard_save_settings', 'cbopaga_standard_nonce' );
+
+			$this->generate_settings_html();
+			?>
+		</table>
+		<?php
+	}
+
 
 	/**
 	 * Register scripts for the plugin.
@@ -272,23 +302,23 @@ class CBOPAGA_Standard_Gateway extends WC_Payment_Gateway {
         $valid = true;
 
         $cardNumber = str_replace(" ", "", $cardNumber);
-        if (!cbo_is_valid_luhn($cardNumber)) {
+        if (!cbopaga_is_valid_luhn($cardNumber)) {
             wc_add_notice( __('Invalid card number', 'cbo-payment-gateway'), 'error' );
             $valid = false;
         }
 
         $cardExpiry = str_replace(" ", "", $cardExpiry);
-        if (!cbo_is_valid_expiry_date($cardExpiry)) {
+        if (!cbopaga_is_valid_expiry_date($cardExpiry)) {
             wc_add_notice( __('Invalid expiry date', 'cbo-payment-gateway'), 'error' );
             $valid = false;
         }
 
-        if (!cbo_is_valid_card_holder($cardHolder)) {
+        if (!cbopaga_is_valid_card_holder($cardHolder)) {
             wc_add_notice( __('Invalid card holder', 'cbo-payment-gateway'), 'error' );
             $valid = false;
         }
 
-        if (!cbo_is_valid_cvv($cardCvv)) {
+        if (!cbopaga_is_valid_cvv($cardCvv)) {
             wc_add_notice( __('Invalid card code (CVV)', 'cbo-payment-gateway'), 'error' );
             $valid = false;
         }
@@ -300,7 +330,12 @@ class CBOPAGA_Standard_Gateway extends WC_Payment_Gateway {
 
 	public function process_refund($order_id, $amount = 0, $reason = '')
 	{
-		CBOPAGA_Log::debug("api_client_id={$this->api_client_id}, api_client_secret={$this->api_client_secret}");
+		if ( ! isset( $_REQUEST['security'] ) || ! check_ajax_referer( 'order-item', 'security', false ) ) {
+			CBOPAGA_Log::debug("Refund rechazado: nonce inválido o ausente");
+			return new WP_Error('invalid_nonce', __('Acción no autorizada.', 'woocommerce'));
+		}
+
+		//CBOPAGA_Log::debug("api_client_id={$this->api_client_id}, api_client_secret={$this->api_client_secret}");
 		$cboClient = new CBOPAGA_Client(
 			$this->api_url,
 			$this->api_client_id,
@@ -316,7 +351,7 @@ class CBOPAGA_Standard_Gateway extends WC_Payment_Gateway {
 		if (! $order) {
 			return new WP_Error('invalid_order', 'Invalid order ID');
 		}
-		$txn = $order->get_meta('cbo_transaction_id');
+		$txn = $order->get_meta('cbopaga_transaction_id');
 		if (! $txn) {
 			return new WP_Error('no_transaction_id', 'No transaction ID found for this order');
 		}
@@ -325,7 +360,7 @@ class CBOPAGA_Standard_Gateway extends WC_Payment_Gateway {
 			$data = $cboClient->refund($txn, intval($amount * 100));
 		} catch (CBOPAGA_Exception $e) {
 			CBOPAGA_Log::debug("Error processing refund: " . $e->getMessage());
-			return new WP_Error('cbo_refund_error', $e->getMessage());
+			return new WP_Error('cbopaga_refund_error', $e->getMessage());
 		}
 
 		$order->add_order_note(sprintf(
@@ -347,7 +382,7 @@ class CBOPAGA_Standard_Gateway extends WC_Payment_Gateway {
 		CBOPAGA_Log::debug("process_payment: " . $order_id);
 		$order = wc_get_order($order_id);
 		 
-        CBOPAGA_Log::debug(" api_client_id=$this->api_client_id, api_client_secret=$this->api_client_secret");
+        //CBOPAGA_Log::debug(" api_client_id=$this->api_client_id, api_client_secret=$this->api_client_secret");
 		$cboClient = new CBOPAGA_Client($this->api_url, $this->api_client_id, $this->api_client_secret);
 		try {
             // detect if the request is from a block-based checkout or classic checkout
@@ -365,10 +400,10 @@ class CBOPAGA_Standard_Gateway extends WC_Payment_Gateway {
 					}
 				}
 			}
-			$cbo_is_block = ! empty($body['payment_data']);
+			$cbopaga_is_block = ! empty($body['payment_data']);
 
 			// if the request is from a block-based checkout, we need to handle it differently
-			if ($cbo_is_block) {
+			if ($cbopaga_is_block) {
 				CBOPAGA_Log::debug('Origin: Checkout Based Blocks');
 				$pdata    = $body['payment_data'];
 				$billing  = $body['billing_address']  ?? [];
@@ -508,7 +543,6 @@ class CBOPAGA_Standard_Gateway extends WC_Payment_Gateway {
 
     private function validate_payment($transaction)
     {
-        global $woocommerce;
 
         $metas = $transaction['metadatas'];
         $order_id = $metas['order_id'];
@@ -516,14 +550,16 @@ class CBOPAGA_Standard_Gateway extends WC_Payment_Gateway {
 
         $status = $transaction['status'];
         $successStatus = ['authorized', 'notified'];
-        $order->add_meta_data('cbopg_bank_code', $transaction['response_code']);
-        $order->add_meta_data('cbopg_transaction_id', $transaction['identifier']);
-        $order->add_meta_data('cbopg_bank_authorization', $transaction['authorization_number']);
+        $order->add_meta_data('cbopaga_bank_code', $transaction['response_code']);
+        $order->add_meta_data('cbopaga_transaction_id', $transaction['identifier']);
+        $order->add_meta_data('cbopaga_bank_authorization', $transaction['authorization_number']);
 
         if (in_array($status, $successStatus)) {
             $order->update_status('completed', __( 'Payment completed', 'cbo-payment-gateway' ));
             $order->payment_complete($transaction['identifier']);
-            $woocommerce->cart->empty_cart();
+			if ( function_exists( 'WC' ) && WC()->cart ) {
+				WC()->cart->empty_cart();
+			}
             return true;
         } else {
             $order->update_status('failed', __( 'Failed payment', 'cbo-payment-gateway' ));
@@ -545,7 +581,7 @@ class CBOPAGA_Standard_Gateway extends WC_Payment_Gateway {
 		<html lang="es">
 		<head><meta charset="utf-8"><title>Procesando 3DS…</title></head>
 		<body>
-		<script>
+			<script>
 		(function(){
 			var target = <?php echo wp_json_encode($target); ?>;
 			var success = <?php echo $order && $order->is_paid() ? 'true' : 'false'; ?>;

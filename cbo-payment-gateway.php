@@ -79,7 +79,7 @@ class CBOPAGA_Loader {
 		\CBO\Blocks\CBOPAGA_Blocks_Support::init();
 		
 		// fire it up!
-        cbo_payment_gateway();
+        cbopaga_payment_gateway();
 	}
 
     public function load_translations() {
@@ -391,7 +391,7 @@ class CBOPAGA_Loader {
 /*
  * This action hook registers our PHP class as a WooCommerce payment gateway
  */
-function cbo_add_payment_gateway_class( $gateways ) {
+function cbopaga_add_payment_gateway_class( $gateways ) {
     $gateways[] = 'CBOPAGA_Telered_Gateway'; // your class name is here
     $gateways[] = 'CBOPAGA_Standard_Gateway'; // your class name is here
     return $gateways;
@@ -400,8 +400,8 @@ function cbo_add_payment_gateway_class( $gateways ) {
 /**
  * @return CBOPAGA_Telered_Gateway
  */
-function cbo_payment_gateway() {
-    add_filter('woocommerce_payment_gateways', 'cbo_add_payment_gateway_class');
+function cbopaga_payment_gateway() {
+    add_filter('woocommerce_payment_gateways', 'cbopaga_add_payment_gateway_class');
 	add_action('before_woocommerce_init', function () {
 
 		if (class_exists('\Automattic\WooCommerce\Utilities\FeaturesUtil')) {
@@ -441,7 +441,7 @@ function cbo_payment_gateway() {
 	 * Add the payment method to the list of available payment methods in the Store API.
 	 *   This is required for Checkout Blocks to display the payment method.
 	 */
-	add_filter('woocommerce_store_api_payment_methods', 'cbo_add_payment_gateway_class');
+	add_filter('woocommerce_store_api_payment_methods', 'cbopaga_add_payment_gateway_class');
 
 	// Add the gateway ID to the list of payment method IDs
 	add_filter('woocommerce_store_api_payment_method_ids', function ($ids) {
