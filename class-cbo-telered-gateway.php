@@ -273,9 +273,15 @@ class CBOPAGA_Telered_Gateway extends WC_Payment_Gateway {
 	 */
 	public function webhook() {
 
-		$data = json_decode(file_get_contents('php://input'), true);
-    	$data = is_array($data) ? array_map('sanitize_text_field', $data) : [];
-		CBOPAGA_Log::debug("Webhook: Tx #" . $data['identifier'] . ": " . json_encode($data));
+		$data_raw = json_decode( file_get_contents( 'php://input' ), true );
+		if ( ! is_array( $data_raw ) ) {
+			CBOPAGA_Log::debug( 'Webhook error: payload no es JSON' );
+			header( 'HTTP/1.1 400 Bad Request' );
+			exit;
+		}
+
+		$data = $this->cbopaga_recursive_sanitize( $data_raw );
+		CBOPAGA_Log::debug( 'Webhook: Tx # ' . ( $data['identifier'] ?? 'N/A' ) . ' - ' . json_encode( $data ) );
 
 		//$client = new CBOPAGA_Client($this->api_url);
 
@@ -313,6 +319,19 @@ class CBOPAGA_Telered_Gateway extends WC_Payment_Gateway {
 
 		return;
 
+	}
+
+	private function cbopaga_recursive_sanitize( $value ) {
+		if ( is_array( $value ) ) {
+			foreach ( $value as $k => $v ) {
+				$value[ $k ] = $this->cbopaga_recursive_sanitize( $v );
+			}
+			return $value;
+		}
+		if ( is_string( $value ) ) {
+			return sanitize_text_field( $value );
+		}
+		return $value; 
 	}
 
 	public static function instance() {
