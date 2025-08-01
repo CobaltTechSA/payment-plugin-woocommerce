@@ -40,36 +40,36 @@ msgid "https://cobalt.tech"
 msgstr ""
 
 #. translators: %1$s - plugin name, %2$s - minimum WordPress version required, %3$s - update WordPress link open, %4$s - update WordPress link close
-#: cbo-payment-gateway.php:134
+#: cbo-payment-gateway.php:129
 #, php-format
 msgid "%1$s requiere WordPress %2$s or higher. Porfavor %3$sactualiza WordPress &raquo;%4$s"
 msgstr ""
 
 #. translators: %1$s - Plugin Name, %2$s - activate WooCommerce link open, %3$s - activate WooCommerce link close.
-#: cbo-payment-gateway.php:160
+#: cbo-payment-gateway.php:155
 #, php-format
 msgid "%1$s requiere que WooCommerce esté activado. Por favor %2$sactiva WooCommerce%3$s."
 msgstr ""
 
 #. translators: %1$s - Plugin Name, %2$s - install WooCommerce link open, %3$s - install WooCommerce link close.
-#: cbo-payment-gateway.php:177
+#: cbo-payment-gateway.php:172
 #, php-format
 msgid "%1$s requiere que WooCommerce esté instalado y activado. por favor, %2$sinstala WooCommerce%3$s."
 msgstr ""
 
 #. translators: %1$s - Plugin Name, %2$s - minimum WooCommerce version, %3$s - update WooCommerce link open, %4$s - update WooCommerce link close, %5$s - download minimum WooCommerce link open, %6$s - download minimum WooCommerce link close.
-#: cbo-payment-gateway.php:197
+#: cbo-payment-gateway.php:192
 #, php-format
 msgid "%1$s requiere WooCommerce %2$s o superior. Por favor, %3$sactualiza WooCommerce%4$s a la última versión, o %5$sdescarga la versión mínima requerida &raquo;%6$s"
 msgstr ""
 
 #. translators: %1$s - Plugin Name, %2$s - minimum WooCommerce version, %3$s - update WooCommerce link open, %4$s - update WooCommerce link close, %5$s - download minimum WooCommerce link open, %6$s - download minimum WooCommerce link close.
-#: cbo-payment-gateway.php:213
+#: cbo-payment-gateway.php:208
 #, php-format
 msgid "%1$s solo está disponible para tiendas localizadas en Panamá."
 msgstr ""
 
-#: cbo-payment-gateway.php:423
+#: cbo-payment-gateway.php:419
 #: includes/blocks/class-cbo-standard-blocks.php:40
 #: assets/js/blocks/cbo-standard.js:15
 #: build/cbo-standard.js:1
@@ -172,46 +172,46 @@ msgstr "API ClientSecret de producción"
 msgid "TEST MODE ENABLED"
 msgstr "MODO DE PRUEBAS HABILITADO"
 
-#: class-cbo-standard-gateway.php:306
+#: class-cbo-standard-gateway.php:316
 #: assets/js/blocks/cbo-standard.js:67
 #: assets/js/blocks/components/CardFields.js:98
 #: build/cbo-standard.js:1
 msgid "Invalid card number"
 msgstr "Número de tarjeta no válido"
 
-#: class-cbo-standard-gateway.php:312
+#: class-cbo-standard-gateway.php:322
 msgid "Invalid expiry date"
 msgstr "Fecha no válida"
 
-#: class-cbo-standard-gateway.php:317
+#: class-cbo-standard-gateway.php:327
 msgid "Invalid card holder"
 msgstr "Nombre de tarjeta no válido"
 
-#: class-cbo-standard-gateway.php:322
+#: class-cbo-standard-gateway.php:332
 msgid "Invalid card code (CVV)"
 msgstr "CVV no válido"
 
-#: class-cbo-standard-gateway.php:488
+#: class-cbo-standard-gateway.php:505
 msgid "We were unable to complete the payment. Please contact with commerce."
 msgstr "No pudimos completar el pago. Por favor, contacte con el departamento de comercio."
 
-#: class-cbo-standard-gateway.php:490
+#: class-cbo-standard-gateway.php:507
 msgid "We were unable to complete the payment. Please check your card details or contact your bank."
 msgstr "No pudimos completar el pago. Por favor, revise los datos de su tarjeta o contacte con su banco."
 
-#: class-cbo-standard-gateway.php:496
+#: class-cbo-standard-gateway.php:513
 msgid "Cannot generate the payment. Please, contact with commerce."
 msgstr "No se puede generar el pago. Por favor, contacte con el comercio."
 
-#: class-cbo-standard-gateway.php:498
+#: class-cbo-standard-gateway.php:515
 msgid "Cannot process the payment. Please, contact with commerce."
 msgstr "No se puede procesar el pago. Por favor, contacte con el comercio."
 
-#: class-cbo-standard-gateway.php:558
+#: class-cbo-standard-gateway.php:579
 msgid "Payment completed"
 msgstr "Pago completado"
 
-#: class-cbo-standard-gateway.php:565
+#: class-cbo-standard-gateway.php:586
 msgid "Failed payment"
 msgstr "Pago fallido"
 
@@ -258,14 +258,15 @@ msgid "MM / YY"
 msgstr "MM / AA"
 
 #: class-cbo-standard-gateway.php:68
+#: class-cbo-standard-gateway.php:345
 #: class-cbo-telered-gateway.php:60
-msgid "Acción no autorizada."
-msgstr ""
+msgid "Unauthorized action."
+msgstr "Unauthorized action."
 
 #: class-cbo-standard-gateway.php:68
 #: class-cbo-telered-gateway.php:60
-msgid "Error de seguridad"
-msgstr ""
+msgid "Security Error"
+msgstr "Error de seguridad"
 
 #: class-cbo-standard-gateway.php:81
 msgid "Visa"
@@ -279,10 +280,87 @@ msgstr ""
 msgid "Telered"
 msgstr ""
 
-#: class-cbo-telered-gateway.php:297
+#: class-cbo-telered-gateway.php:305
 msgid "Pago completado"
 msgstr "Pago completado"
 
-#: class-cbo-telered-gateway.php:303
+#: class-cbo-telered-gateway.php:311
 msgid "Pago fallido"
 msgstr "Pago fallido"
+
+#: cbo-client.php:225
+msgid "Invalid transaction ID"
+msgstr "ID de transacción no válida"
+
+#: cbo-client.php:230
+msgid "Refund route not defined"
+msgstr "Ruta de reembolso no definida"
+
+#: cbo-client.php:246
+msgid "Error requesting refund"
+msgstr "Error al solicitar reembolso"
+
+#: cbo-client.php:252
+msgid "Refund failed"
+msgstr "Refund failed"
+
+#: cbo-client.php:386
+msgid "Error getting commerce"
+msgstr "Error al obtener comercio"
+
+#: class-cbo-standard-gateway.php:281
+#: class-cbo-standard-gateway.php:394
+msgid "Security check failed. Please try again."
+msgstr "Error en la comprobación de seguridad. Inténtalo de nuevo."
+
+#: assets/js/blocks/cbo-standard.js:73
+#: assets/js/blocks/components/CardFields.js:127
+#: build/cbo-standard.js:1
+msgid "Invalid date"
+msgstr "Fecha no válida"
+
+#: assets/js/blocks/cbo-standard.js:79
+#: assets/js/blocks/components/CardFields.js:148
+#: build/cbo-standard.js:1
+msgid "Invalid CVC"
+msgstr "CVC no válido"
+
+#: assets/js/blocks/cbo-standard.js:85
+#: build/cbo-standard.js:1
+msgid "Holder name is required"
+msgstr "El nombre del titular es obligatorio."
+
+#: assets/js/blocks/cbo-standard.js:109
+#: build/cbo-standard.js:1
+msgid "CBO Standard Gateway"
+msgstr ""
+
+#: assets/js/blocks/cbo-telered.js:17
+#: build/cbo-telered.js:1
+msgid "CBO Telered Gateway"
+msgstr ""
+
+#: assets/js/blocks/cbo-telered.js:24
+#: build/cbo-telered.js:1
+msgid "Pay with Clave"
+msgstr "Pagar con Clave"
+
+#: assets/js/blocks/components/CardFields.js:64
+#: build/cbo-standard.js:1
+msgid "Full name"
+msgstr "Nombre completo"
+
+#: assets/js/blocks/components/CardFields.js:73
+#: build/cbo-standard.js:1
+msgid "You must enter the holder name"
+msgstr "Debe ingresar el nombre del titular"
+
+#: assets/js/blocks/components/CardFields.js:107
+#: build/cbo-standard.js:1
+msgid "Expiration date"
+msgstr "Fecha de expiración"
+
+#: assets/js/blocks/components/CardFields.js:112
+#: build/cbo-standard.js:1
+msgid "MM/YY"
+msgstr "MM/AA"

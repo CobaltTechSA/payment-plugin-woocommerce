@@ -57,7 +57,7 @@ class CBOPAGA_Telered_Gateway extends WC_Payment_Gateway {
 	public function process_admin_options() {
 		if ( ! isset( $_POST['cbopaga_telered_nonce'] ) || 
 			! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['cbopaga_telered_nonce'] ) ), 'cbopaga_telered_save_settings' ) ) {
-			wp_die( __( 'Acción no autorizada.', 'cbo-payment-gateway' ), __( 'Error de seguridad', 'cbo-payment-gateway' ), 403 );
+			wp_die(esc_html__( 'Unauthorized action.', 'cbo-payment-gateway' ), esc_html__( 'Security Error', 'cbo-payment-gateway' ), 403);
 		}
 		parent::process_admin_options();
 	}
@@ -247,6 +247,8 @@ class CBOPAGA_Telered_Gateway extends WC_Payment_Gateway {
 	}
 
 	public function callback_url() {
+		// Returning user from payment gateway, read-only param. Nonce not applicable.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$order_id = isset($_GET['oid']) ? absint($_GET['oid']) : 0;
 
 		// CBOPAGA_Log::debug("callback_url: " . $order_id);

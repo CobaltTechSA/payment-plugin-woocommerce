@@ -65,7 +65,7 @@ class CBOPAGA_Standard_Gateway extends WC_Payment_Gateway {
 	public function process_admin_options() {
 		if ( ! isset( $_POST['cbopaga_standard_nonce'] ) || 
 			! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['cbopaga_standard_nonce'] ) ), 'cbopaga_standard_save_settings' ) ) {
-			wp_die( __( 'Acción no autorizada.', 'cbo-payment-gateway' ), __( 'Error de seguridad', 'cbo-payment-gateway' ), 403 );
+			wp_die(esc_html__( 'Unauthorized action.', 'cbo-payment-gateway' ), esc_html__( 'Security Error', 'cbo-payment-gateway' ), 403);
 		}
 		parent::process_admin_options();
 	}
@@ -257,6 +257,9 @@ class CBOPAGA_Standard_Gateway extends WC_Payment_Gateway {
 			// display the description with <p> tags etc.
 			echo wp_kses_post( wpautop( $this->description ) );
 		}
+		// nonce field for security
+		wp_nonce_field($this->id . '_process_payment', $this->id . '_nonce');
+
         $this->credit_card_form();
 	}
 
@@ -271,6 +274,13 @@ class CBOPAGA_Standard_Gateway extends WC_Payment_Gateway {
 	  * Fields validation, more in Step 5
 	 */
 	public function validate_fields() {
+
+		// check if the nonce is set and valid
+		if ( isset( $_POST[$this->id . '_nonce'] ) && 
+			! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST[$this->id . '_nonce'] ) ), $this->id . '_process_payment' ) ) {
+			wc_add_notice( __( 'Security check failed. Please try again.', 'cbo-payment-gateway' ), 'error' );
+			return false;
+		}
 
 		// detect if the request is from a block-based checkout or classic checkout
 		$raw_input = file_get_contents('php://input');
@@ -293,10 +303,10 @@ class CBOPAGA_Standard_Gateway extends WC_Payment_Gateway {
 		}
 
 		//CBOPAGA_Log::debug( 'POST Data: ' . print_r( $_POST, true ) );
-		$cardNumber = sanitize_text_field($_POST[$this->id . '-card-number'] ?? '');
-		$cardExpiry = sanitize_text_field($_POST[$this->id . '-card-expiry'] ?? '');
-		$cardCvv    = sanitize_text_field($_POST[$this->id . '-card-cvc'] ?? '');
-		$cardHolder = sanitize_text_field($_POST[$this->id . '-card-holder'] ?? '');
+		$cardNumber = isset($_POST[$this->id . '-card-number']) ? sanitize_text_field(wp_unslash($_POST[$this->id . '-card-number'])) : '';
+		$cardExpiry = isset($_POST[$this->id . '-card-expiry']) ? sanitize_text_field(wp_unslash($_POST[$this->id . '-card-expiry'])) : '';
+		$cardCvv    = isset($_POST[$this->id . '-card-cvc']) ? sanitize_text_field(wp_unslash($_POST[$this->id . '-card-cvc'])) : '';
+		$cardHolder = isset($_POST[$this->id . '-card-holder']) ? sanitize_text_field(wp_unslash($_POST[$this->id . '-card-holder'])) : '';
 
         //CBOPAGA_Log::debug("cardNumber=$cardNumber, cardExpiry=$cardExpiry, cardCvv=$cardCvv, cardHolder=$cardHolder");
         $valid = true;
@@ -332,7 +342,7 @@ class CBOPAGA_Standard_Gateway extends WC_Payment_Gateway {
 	{
 		if ( ! isset( $_REQUEST['security'] ) || ! check_ajax_referer( 'order-item', 'security', false ) ) {
 			CBOPAGA_Log::debug("Refund rechazado: nonce inválido o ausente");
-			return new WP_Error('invalid_nonce', __('Acción no autorizada.', 'woocommerce'));
+			return new WP_Error('invalid_nonce', __('Unauthorized action.', 'cbo-payment-gateway'));
 		}
 
 		//CBOPAGA_Log::debug("api_client_id={$this->api_client_id}, api_client_secret={$this->api_client_secret}");
@@ -378,6 +388,13 @@ class CBOPAGA_Standard_Gateway extends WC_Payment_Gateway {
 	 */
 	public function process_payment( $order_id ) {
 
+		// check if the nonce is set and valid
+		if ( isset( $_POST[$this->id . '_nonce'] ) ) {
+			if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST[$this->id . '_nonce'] ) ), $this->id . '_process_payment' ) ) {
+				wc_add_notice( __( 'Security check failed. Please try again.', 'cbo-payment-gateway' ), 'error' );
+				return;
+			}
+		}
 		// we need it to get any order details
 		CBOPAGA_Log::debug("process_payment: " . $order_id);
 		$order = wc_get_order($order_id);
@@ -435,7 +452,7 @@ class CBOPAGA_Standard_Gateway extends WC_Payment_Gateway {
 					'browserUserAgent'          => $data['browserUserAgent']         ?? null,
 					'challengeWindowSize'       => $data['challengeWindowSize']      ?? null,
 
-					'browserIP' => isset($_SERVER['REMOTE_ADDR']) ? sanitize_text_field($_SERVER['REMOTE_ADDR']) : '',
+					'browserIP'                 => isset($_SERVER['REMOTE_ADDR']) ? sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'])) : '',
 					'email'                     => $billing['email']                ?? $order->get_billing_email(),
 					'billAddrCountry'           => $this->get_iso_alpha3_cc($billing['country'] ?? $order->get_billing_country()),
 					'billAddrCity'              => $billing['city']                 ?? $order->get_billing_city(),
@@ -453,10 +470,10 @@ class CBOPAGA_Standard_Gateway extends WC_Payment_Gateway {
 
 			} else {
 				CBOPAGA_Log::debug('Origin: Classic Checkout');
-				$cardNumber = sanitize_text_field($_POST[$this->id . '-card-number'] ?? '');
-				$cardExpiry = sanitize_text_field($_POST[$this->id . '-card-expiry'] ?? '');
-				$cardCvc = sanitize_text_field($_POST[$this->id . '-card-cvc'] ?? '');
-				$cardHolder = sanitize_text_field($_POST[$this->id . '-card-holder'] ?? '');
+				$cardNumber = sanitize_text_field(wp_unslash($_POST[$this->id . '-card-number'] ?? ''));
+				$cardExpiry = sanitize_text_field(wp_unslash($_POST[$this->id . '-card-expiry'] ?? ''));
+				$cardCvc    = sanitize_text_field(wp_unslash($_POST[$this->id . '-card-cvc'] ?? ''));
+				$cardHolder = sanitize_text_field(wp_unslash($_POST[$this->id . '-card-holder'] ?? ''));
 
 
 				$cardNumber = str_replace(" ", "", $cardNumber);
@@ -505,38 +522,42 @@ class CBOPAGA_Standard_Gateway extends WC_Payment_Gateway {
      */
     private function get3DSParams()
     {
+		if ( isset( $_POST['_wpnonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ), 'woocommerce-process_checkout' ) ) {
+			$threeDSParams['email'] = isset( $_POST['billing_email'] ) ? sanitize_email( wp_unslash( $_POST['billing_email'] ) ) : '';
+		}
+
         $threeDSAttrs = ['browserJavaEnabled', 'browserJavascriptEnabled', 'browserLanguage', 'browserColorDepth',
             'browserScreenWidth', 'browserScreenHeight', 'browserTZ', 'browserUserAgent', 'challengeWindowSize'];
 
         $threeDSParams = [];
 
         foreach ($threeDSAttrs as $attr) {
-            $threeDSParams[$attr] = sanitize_text_field($_POST[$attr] ?? '');
+           $threeDSParams[$attr] = isset($_POST[$attr]) ? sanitize_text_field(wp_unslash($_POST[$attr])) : '';
         }
 
         //Order additional data
 		$threeDSParams['transType']     = 'goods';
 		$threeDSParams['deviceChannel'] = 'browser';
-		$threeDSParams['browserIP'] = isset($_SERVER['REMOTE_ADDR']) ? sanitize_text_field($_SERVER['REMOTE_ADDR']) : '';
-		$threeDSParams['email'] = sanitize_email($_POST['billing_email'] ?? '');
+		$threeDSParams['browserIP']     = isset($_SERVER['REMOTE_ADDR']) ? sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'])) : '';
+    	$threeDSParams['email']         = isset($_POST['billing_email']) ? sanitize_email(wp_unslash($_POST['billing_email'])) : '';
 
-		$threeDSParams['billAddrCountry']  = $this->get_iso_alpha3_cc(sanitize_text_field($_POST['billing_country'] ?? '')) ?: 'DIG';
-		$threeDSParams['billAddrCity']     = sanitize_text_field(trim($_POST['billing_city'] ?? '')) ?: 'digital';
-		$threeDSParams['billAddrState']    = parse_state(sanitize_text_field($_POST['billing_state'] ?? '')) ?: 'DIG';
-		$threeDSParams['billAddrLine1']    = sanitize_text_field(trim($_POST['billing_address_1'] ?? '')) ?: 'digital';
+		$threeDSParams['billAddrCountry']  = $this->get_iso_alpha3_cc(sanitize_text_field(wp_unslash($_POST['billing_country'] ?? ''))) ?: 'DIG';
+		$threeDSParams['billAddrCity']     = sanitize_text_field(wp_unslash($_POST['billing_city'] ?? '')) ?: 'digital';
+		$threeDSParams['billAddrState']    = parse_state(sanitize_text_field(wp_unslash($_POST['billing_state'] ?? ''))) ?: 'DIG';
+		$threeDSParams['billAddrLine1']    = sanitize_text_field(wp_unslash($_POST['billing_address_1'] ?? '')) ?: 'digital';
 		$threeDSParams['billAddrLine2']    = 'none';
-		$threeDSParams['billAddrPostCode'] = sanitize_text_field(trim($_POST['billing_postcode'] ?? '')) ?: '0000';
+		$threeDSParams['billAddrPostCode'] = sanitize_text_field(wp_unslash($_POST['billing_postcode'] ?? '')) ?: '0000';
 
 		$billingCity  = $threeDSParams['billAddrCity'];
 		$billingLine1 = $threeDSParams['billAddrLine1'];
 		$billingPost  = $threeDSParams['billAddrPostCode'];
 
-		$threeDSParams['shipAddrCountry']  = $this->get_iso_alpha3_cc(sanitize_text_field($_POST['shipping_country'] ?? '')) ?: 'DIG';
-		$threeDSParams['shipAddrCity']     = sanitize_text_field(trim($_POST['shipping_city'] ?? '')) ?: $billingCity ?: 'digital';
-		$threeDSParams['shipAddrState']    = parse_state(sanitize_text_field($_POST['shipping_state'] ?? '')) ?: 'DIG';
-		$threeDSParams['shipAddrLine1']    = sanitize_text_field(trim($_POST['shipping_address_1'] ?? '')) ?: $billingLine1 ?: 'digital';
+		$threeDSParams['shipAddrCountry']  = $this->get_iso_alpha3_cc(sanitize_text_field(wp_unslash($_POST['shipping_country'] ?? ''))) ?: 'DIG';
+		$threeDSParams['shipAddrCity']     = sanitize_text_field(wp_unslash($_POST['shipping_city'] ?? '')) ?: $billingCity ?: 'digital';
+		$threeDSParams['shipAddrState']    = parse_state(sanitize_text_field(wp_unslash($_POST['shipping_state'] ?? ''))) ?: 'DIG';
+		$threeDSParams['shipAddrLine1']    = sanitize_text_field(wp_unslash($_POST['shipping_address_1'] ?? '')) ?: $billingLine1 ?: 'digital';
 		$threeDSParams['shipAddrLine2']    = 'none';
-		$threeDSParams['shipAddrPostCode'] = sanitize_text_field(trim($_POST['shipping_postcode'] ?? '')) ?: $billingPost ?: '0000';
+		$threeDSParams['shipAddrPostCode'] = sanitize_text_field(wp_unslash($_POST['shipping_postcode'] ?? '')) ?: $billingPost ?: '0000';
 
         return $threeDSParams;
     }
@@ -569,6 +590,7 @@ class CBOPAGA_Standard_Gateway extends WC_Payment_Gateway {
     }
 
 	public function callback_url() {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$order_id = isset($_GET['oid']) ? absint($_GET['oid']) : 0;
 		$order    = wc_get_order($order_id);
 

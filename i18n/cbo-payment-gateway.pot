@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-07-30T15:17:41+00:00\n"
+"POT-Creation-Date: 2025-08-01T16:46:22+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: cbo-payment-gateway\n"
@@ -39,37 +39,57 @@ msgstr ""
 msgid "https://cobalt.tech"
 msgstr ""
 
+#: cbo-client.php:225
+msgid "Invalid transaction ID"
+msgstr ""
+
+#: cbo-client.php:230
+msgid "Refund route not defined"
+msgstr ""
+
+#: cbo-client.php:246
+msgid "Error requesting refund"
+msgstr ""
+
+#: cbo-client.php:252
+msgid "Refund failed"
+msgstr ""
+
+#: cbo-client.php:386
+msgid "Error getting commerce"
+msgstr ""
+
 #. translators: %1$s - plugin name, %2$s - minimum WordPress version required, %3$s - update WordPress link open, %4$s - update WordPress link close
-#: cbo-payment-gateway.php:134
+#: cbo-payment-gateway.php:129
 #, php-format
 msgid "%1$s requiere WordPress %2$s or higher. Porfavor %3$sactualiza WordPress &raquo;%4$s"
 msgstr ""
 
 #. translators: %1$s - Plugin Name, %2$s - activate WooCommerce link open, %3$s - activate WooCommerce link close.
-#: cbo-payment-gateway.php:160
+#: cbo-payment-gateway.php:155
 #, php-format
 msgid "%1$s requiere que WooCommerce esté activado. Por favor %2$sactiva WooCommerce%3$s."
 msgstr ""
 
 #. translators: %1$s - Plugin Name, %2$s - install WooCommerce link open, %3$s - install WooCommerce link close.
-#: cbo-payment-gateway.php:177
+#: cbo-payment-gateway.php:172
 #, php-format
 msgid "%1$s requiere que WooCommerce esté instalado y activado. por favor, %2$sinstala WooCommerce%3$s."
 msgstr ""
 
 #. translators: %1$s - Plugin Name, %2$s - minimum WooCommerce version, %3$s - update WooCommerce link open, %4$s - update WooCommerce link close, %5$s - download minimum WooCommerce link open, %6$s - download minimum WooCommerce link close.
-#: cbo-payment-gateway.php:197
+#: cbo-payment-gateway.php:192
 #, php-format
 msgid "%1$s requiere WooCommerce %2$s o superior. Por favor, %3$sactualiza WooCommerce%4$s a la última versión, o %5$sdescarga la versión mínima requerida &raquo;%6$s"
 msgstr ""
 
 #. translators: %1$s - Plugin Name, %2$s - minimum WooCommerce version, %3$s - update WooCommerce link open, %4$s - update WooCommerce link close, %5$s - download minimum WooCommerce link open, %6$s - download minimum WooCommerce link close.
-#: cbo-payment-gateway.php:213
+#: cbo-payment-gateway.php:208
 #, php-format
 msgid "%1$s solo está disponible para tiendas localizadas en Panamá."
 msgstr ""
 
-#: cbo-payment-gateway.php:423
+#: cbo-payment-gateway.php:419
 #: includes/blocks/class-cbo-standard-blocks.php:40
 #: assets/js/blocks/cbo-standard.js:15
 #: build/cbo-standard.js:1
@@ -112,13 +132,14 @@ msgid "Acceptance of payments with Visa / Mastercard"
 msgstr ""
 
 #: class-cbo-standard-gateway.php:68
+#: class-cbo-standard-gateway.php:345
 #: class-cbo-telered-gateway.php:60
-msgid "Acción no autorizada."
+msgid "Unauthorized action."
 msgstr ""
 
 #: class-cbo-standard-gateway.php:68
 #: class-cbo-telered-gateway.php:60
-msgid "Error de seguridad"
+msgid "Security Error"
 msgstr ""
 
 #: class-cbo-standard-gateway.php:81
@@ -214,46 +235,51 @@ msgstr ""
 msgid "TEST MODE ENABLED"
 msgstr ""
 
-#: class-cbo-standard-gateway.php:306
+#: class-cbo-standard-gateway.php:281
+#: class-cbo-standard-gateway.php:394
+msgid "Security check failed. Please try again."
+msgstr ""
+
+#: class-cbo-standard-gateway.php:316
 #: assets/js/blocks/cbo-standard.js:67
 #: assets/js/blocks/components/CardFields.js:98
 #: build/cbo-standard.js:1
 msgid "Invalid card number"
 msgstr ""
 
-#: class-cbo-standard-gateway.php:312
+#: class-cbo-standard-gateway.php:322
 msgid "Invalid expiry date"
 msgstr ""
 
-#: class-cbo-standard-gateway.php:317
+#: class-cbo-standard-gateway.php:327
 msgid "Invalid card holder"
 msgstr ""
 
-#: class-cbo-standard-gateway.php:322
+#: class-cbo-standard-gateway.php:332
 msgid "Invalid card code (CVV)"
 msgstr ""
 
-#: class-cbo-standard-gateway.php:488
+#: class-cbo-standard-gateway.php:505
 msgid "We were unable to complete the payment. Please contact with commerce."
 msgstr ""
 
-#: class-cbo-standard-gateway.php:490
+#: class-cbo-standard-gateway.php:507
 msgid "We were unable to complete the payment. Please check your card details or contact your bank."
 msgstr ""
 
-#: class-cbo-standard-gateway.php:496
+#: class-cbo-standard-gateway.php:513
 msgid "Cannot generate the payment. Please, contact with commerce."
 msgstr ""
 
-#: class-cbo-standard-gateway.php:498
+#: class-cbo-standard-gateway.php:515
 msgid "Cannot process the payment. Please, contact with commerce."
 msgstr ""
 
-#: class-cbo-standard-gateway.php:558
+#: class-cbo-standard-gateway.php:579
 msgid "Payment completed"
 msgstr ""
 
-#: class-cbo-standard-gateway.php:565
+#: class-cbo-standard-gateway.php:586
 msgid "Failed payment"
 msgstr ""
 
@@ -265,11 +291,11 @@ msgstr ""
 msgid "Telered"
 msgstr ""
 
-#: class-cbo-telered-gateway.php:297
+#: class-cbo-telered-gateway.php:305
 msgid "Pago completado"
 msgstr ""
 
-#: class-cbo-telered-gateway.php:303
+#: class-cbo-telered-gateway.php:311
 msgid "Pago fallido"
 msgstr ""
 

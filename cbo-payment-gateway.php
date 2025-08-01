@@ -47,8 +47,6 @@ class CBOPAGA_Loader {
 		// If the environment check fails, initialize the plugin.
 		if ( $this->is_environment_compatible() ) {
 			add_action( 'plugins_loaded', array( $this, 'init_plugin' ) );
-            add_action( 'init', array($this, 'load_translations' ) );
-
         }
 	}
 
@@ -82,9 +80,6 @@ class CBOPAGA_Loader {
         cbopaga_payment_gateway();
 	}
 
-    public function load_translations() {
-        load_plugin_textdomain( 'cbo-payment-gateway', false, basename( dirname( __FILE__ ) ) . '/i18n/' );
-    }
 	/**
 	 * Checks the server environment and other factors and deactivates plugins as necessary.
 	 *
@@ -292,8 +287,9 @@ class CBOPAGA_Loader {
 
 		deactivate_plugins( plugin_basename( __FILE__ ) );
 
-		if ( isset( $_GET['activate'] ) ) {
-		$activate = sanitize_text_field( $_GET['activate'] );
+		if (isset( $_GET['activate'], $_GET['_wpnonce'] ) &&
+			wp_verify_nonce(sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ),'cbo_activate_action')) {
+			$activate = sanitize_text_field( wp_unslash( $_GET['activate'] ) );
 		}
 	}
 

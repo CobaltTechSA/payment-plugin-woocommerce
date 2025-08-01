@@ -1,8 +1,14 @@
 
-# WooCommerce Cobalt Tech Gateway
+# CBO Payment Gateway
 
 **Author:** [Cobalt Tech](https://cobalt.tech)  
-**Tags:** `woocommerce`  
+**Tags:** woocommerce 
+Requires at least: 5.3
+Tested up to: 6.8
+Stable tag: 2.4.0
+Requires PHP: 7.2
+License: GPLv2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Accept credit card payments in WooCommerce using the Cobalt Tech payment gateway.
 
 ---

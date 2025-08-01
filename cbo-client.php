@@ -48,32 +48,49 @@ class CBOPAGA_Client {
             }
         }
 
-		$ch = curl_init( $this->baseUrl . $endpoint );
-		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-		curl_setopt( $ch, CURLOPT_POST, true );
-		curl_setopt( $ch, CURLOPT_POSTFIELDS, json_encode( $data ) );
-
         $headers = [
-            'Content-Type: application/json',
             'Accept: application/json',
             'User-Agent: Cobalt-WC-Plugin ' . CBOPAGA_Constants::PLUGIN_VERSION
         ];
 
-        if ($this->authorization) {
-            $headers[] = $this->authorization;
+        // When requesting an OAuth token, the content type must be 
+        // 'application/x-www-form-urlencoded' as required by OAuth2 specifications.
+        // All other endpoints use 'application/json'.
+        // This prevents authentication failures and cURL errors during checkout request
+        if ($endpoint === '/oauth/token') {
+            $headers['Content-Type'] = 'application/x-www-form-urlencoded';
+            $body = http_build_query($data);
+        } else {
+            $headers['Content-Type'] = 'application/json';
+            $body = wp_json_encode($data);
         }
 
-		curl_setopt( $ch, CURLOPT_HTTPHEADER, $headers );
+        if ($this->authorization && $endpoint !== '/oauth/token') {
+            $headers['Authorization'] = str_replace('Authorization: ', '', $this->authorization);
+        }
 
-		$response = curl_exec( $ch );
+		$response = wp_remote_post(
+            $this->baseUrl . $endpoint,
+            [
+                'headers'     => $headers,
+                'body'        => $body,
+                'timeout'     => 60,
+                'data_format' => 'body',
+            ]
+        );
 
-		$data = [
-			'body' => json_decode($response, true),
-			'code' => curl_getinfo( $ch, CURLINFO_HTTP_CODE ),
-		];
+        if ( is_wp_error( $response ) ) {
+            return [
+                'body'  => null,
+                'code'  => 500,
+                'error' => $response->get_error_message(),
+            ];
+        }
 
-		curl_close( $ch );
-		return $data;
+        return [
+            'body' => json_decode( wp_remote_retrieve_body( $response ), true ),
+            'code' => wp_remote_retrieve_response_code( $response ),
+        ];
 	}
 
     /**
@@ -89,28 +106,36 @@ class CBOPAGA_Client {
             }
         }
 
-		$ch = curl_init( $this->baseUrl . $endpoint );
-		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
         $headers = [
             'Accept: application/json',
             'User-Agent: Cobalt-WC-Plugin ' . CBOPAGA_Constants::PLUGIN_VERSION
         ];
 
         if ($this->authorization) {
-            $headers[] = $this->authorization;
+            $headers['Authorization'] = str_replace('Authorization: ', '', $this->authorization);
         }
 
-        curl_setopt( $ch, CURLOPT_HTTPHEADER, $headers );
 
-		$response = curl_exec( $ch );
+        $response = wp_remote_get(
+            $this->baseUrl . $endpoint,
+            [
+                'headers' => $headers,
+                'timeout' => 60,
+            ]
+        );
 
-		$data = [
-			'body' => json_decode($response, true),
-			'code' => curl_getinfo( $ch, CURLINFO_HTTP_CODE ),
-		];
+        if ( is_wp_error( $response ) ) {
+            return [
+                'body'  => null,
+                'code'  => 500,
+                'error' => $response->get_error_message(),
+            ];
+        }
 
-		curl_close( $ch );
-		return $data;
+        return [
+            'body' => json_decode( wp_remote_retrieve_body( $response ), true ),
+            'code' => wp_remote_retrieve_response_code( $response ),
+        ];
 	}
 
     /**
@@ -197,12 +222,12 @@ class CBOPAGA_Client {
         $parseId = (int) $transactionId;
         $id = $parseId - 130000000;
         if ($id <= 0) {
-            throw new CBOPAGA_Exception('ID de transacción inválido');
+             throw new CBOPAGA_Exception( esc_html__( 'Invalid transaction ID', 'cbo-payment-gateway' ) );
         }
 
         $route = $this->getRoute('refund'); 
         if (empty($route)) {
-            throw new CBOPAGA_Exception('Ruta de reembolso no definida');
+            throw new CBOPAGA_Exception( esc_html__( 'Refund route not defined', 'cbo-payment-gateway' ) );
         }
       
         $endpoint = sprintf(
@@ -213,19 +238,19 @@ class CBOPAGA_Client {
         );
 
         $response = $this->get($endpoint);
-        \CBOPAGA_Log::debug("Respuesta de reembolso: " . json_encode($response));
+         \CBOPAGA_Log::debug( 'Respuesta de reembolso: ' . esc_html( wp_json_encode( $response ) ) );
 
 
         if ($response['code'] !== 200) {
-            \CBOPAGA_Log::error("Error al solicitar reembolso: " . json_encode($response));
-            throw new CBOPAGA_Exception('Error al solicitar reembolso', $response);
+            \CBOPAGA_Log::error( 'Error al solicitar reembolso: ' . esc_html( wp_json_encode( $response ) ) );
+            throw new CBOPAGA_Exception(esc_html__( 'Error requesting refund', 'cbo-payment-gateway' ), esc_html( wp_json_encode( $response ) ) );
         }
 
         $body = $response['body'];
 
         if (empty($body['status']) || $body['status'] !== 'ok') {
-            $msg = $body['message'] ?? 'Reembolso fallido';
-            throw new CBOPAGA_Exception($msg, $response);
+             $msg = ! empty($body['message']) ? $body['message'] : __( 'Refund failed', 'cbo-payment-gateway' );
+            throw new CBOPAGA_Exception(esc_html($msg), esc_html( wp_json_encode( $response ) ));
         }
 
         return $body['data'];
@@ -358,7 +383,7 @@ class CBOPAGA_Client {
 		if ($response['code'] == 200) {
 			return $response['body']['data'];
 		} else {
-			throw new CBOPAGA_Exception('Error getting commerce', $response);
+            throw new CBOPAGA_Exception(esc_html__( 'Error getting commerce', 'cbo-payment-gateway' ), esc_html( wp_json_encode( $response ) ));
 		}
 	}
 
