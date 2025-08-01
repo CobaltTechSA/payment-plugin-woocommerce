@@ -342,7 +342,7 @@ class CBOPAGA_Standard_Gateway extends WC_Payment_Gateway {
 	{
 		if ( ! isset( $_REQUEST['security'] ) || ! check_ajax_referer( 'order-item', 'security', false ) ) {
 			CBOPAGA_Log::debug("Refund rechazado: nonce inválido o ausente");
-			return new WP_Error('invalid_nonce', __('Acción no autorizada.', 'woocommerce'));
+			return new WP_Error('invalid_nonce', __('Unauthorized action.', 'cbo-payment-gateway'));
 		}
 
 		//CBOPAGA_Log::debug("api_client_id={$this->api_client_id}, api_client_secret={$this->api_client_secret}");
