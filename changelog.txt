@@ -1,3 +1,6 @@
+2025.08.07 - version 2.4.1
+* Security fixes
+
 2025.07.14 - version 2.4.0
 * Show 3DS Challenge on Popup
 * Added support for refunds
