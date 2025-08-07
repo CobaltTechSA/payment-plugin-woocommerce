@@ -1,13 +1,13 @@
 <?php
 
-class CBO_Payment_Gateway_CC extends WC_Payment_Gateway_CC {
+class CBOPAGA_Payment_Gateway_CC extends WC_Payment_Gateway_CC {
 
      public function __construct()
     {
-        add_filter('woocommerce_credit_card_form_fields', [$this, 'reorder_credit_card_fields'], 20, 2);
+        add_filter('woocommerce_credit_card_form_fields', [$this, 'cbopaga_reorder_credit_card_fields'], 20, 2);
     }
 
-     public function reorder_credit_card_fields($fields, $gateway_id)
+     public function cbopaga_reorder_credit_card_fields($fields, $gateway_id)
     {
         if ($gateway_id === $this->id) {
             $ordered   = [];
@@ -52,8 +52,8 @@ class CBO_Payment_Gateway_CC extends WC_Payment_Gateway_CC {
      * @param  string $name Field name.
      * @return string
      */
-    public function field_name( $name ) {
-        return $this->supports( 'tokenization' ) ? '' : ' name="' . esc_attr( $this->id . '-' . $name ) . '" ';
+     public function cbopaga_field_name($name) {
+        return $this->supports('tokenization') ? '' : ' name="' . esc_attr($this->id . '-' . $name) . '" ';
     }
 
     /**
@@ -97,22 +97,22 @@ class CBO_Payment_Gateway_CC extends WC_Payment_Gateway_CC {
 
         $cvc_field = '<p class="form-row form-row-last">
             <label for="' . esc_attr( $this->id ) . '-card-cvc">' . esc_html__( 'Card code', 'cbo-payment-gateway' ) . '&nbsp;<span class="required">*</span></label>
-            <input id="' . esc_attr( $this->id ) . '-card-cvc" class="input-text wc-credit-card-form-card-cvc" inputmode="password" autocomplete="off" autocorrect="no" autocapitalize="no" spellcheck="no" type="password" maxlength="4" placeholder="' . esc_attr__( 'CVC', 'cbo-payment-gateway' ) . '" ' . $this->field_name( 'card-cvc' ) . ' style="width:100px" />
+            <input id="' . esc_attr( $this->id ) . '-card-cvc" class="input-text wc-credit-card-form-card-cvc" inputmode="password" autocomplete="off" autocorrect="no" autocapitalize="no" spellcheck="no" type="password" maxlength="4" placeholder="' . esc_attr__( 'CVC', 'cbo-payment-gateway' ) . '" ' . $this->cbopaga_field_name( 'card-cvc' ) . ' style="width:100px" />
         </p>';
 
         $card_holder_field = '<p class="form-row form-row-wide">
             <label for="' . esc_attr( $this->id ) . '-card-holder">' . esc_html__( 'Card holder', 'cbo-payment-gateway' ) . '&nbsp;<span class="required">*</span></label>
-            <input id="' . esc_attr( $this->id ) . '-card-holder" class="input-text wc-credit-card-form-card-holder" inputmode="text" autocomplete="cc-card-holder" autocorrect="no" autocapitalize="no" spellcheck="no" type="text" placeholder="' . esc_attr__( 'Card holder', 'cbo-payment-gateway' ) . '" ' . $this->field_name( 'card-holder' ) . ' />
+            <input id="' . esc_attr( $this->id ) . '-card-holder" class="input-text wc-credit-card-form-card-holder" inputmode="text" autocomplete="cc-card-holder" autocorrect="no" autocapitalize="no" spellcheck="no" type="text" placeholder="' . esc_attr__( 'Card holder', 'cbo-payment-gateway' ) . '" ' . $this->cbopaga_field_name( 'card-holder' ) . ' />
         </p>';
 
         $default_fields = array(
             'card-number-field' => '<p class="form-row form-row-wide">
                 <label for="' . esc_attr( $this->id ) . '-card-number">' . esc_html__( 'Card number', 'cbo-payment-gateway' ) . '&nbsp;<span class="required">*</span></label>
-                <input id="' . esc_attr( $this->id ) . '-card-number" class="input-text wc-credit-card-form-card-number" inputmode="numeric" autocomplete="cc-number" autocorrect="no" autocapitalize="no" spellcheck="no" type="tel" placeholder="&bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull;" ' . $this->field_name( 'card-number' ) . ' />
+                <input id="' . esc_attr( $this->id ) . '-card-number" class="input-text wc-credit-card-form-card-number" inputmode="numeric" autocomplete="cc-number" autocorrect="no" autocapitalize="no" spellcheck="no" type="tel" placeholder="&bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull;" ' . $this->cbopaga_field_name( 'card-number' ) . ' />
             </p>',
             'card-expiry-field' => '<p class="form-row form-row-first">
                 <label for="' . esc_attr( $this->id ) . '-card-expiry">' . esc_html__( 'Expiry (MM/YY)', 'cbo-payment-gateway' ) . '&nbsp;<span class="required">*</span></label>
-                <input id="' . esc_attr( $this->id ) . '-card-expiry" class="input-text wc-credit-card-form-card-expiry" inputmode="numeric" autocomplete="cc-exp" autocorrect="no" autocapitalize="no" spellcheck="no" type="tel" placeholder="' . esc_attr__( 'MM / YY', 'cbo-payment-gateway' ) . '" ' . $this->field_name( 'card-expiry' ) . ' />
+                <input id="' . esc_attr( $this->id ) . '-card-expiry" class="input-text wc-credit-card-form-card-expiry" inputmode="numeric" autocomplete="cc-exp" autocorrect="no" autocapitalize="no" spellcheck="no" type="tel" placeholder="' . esc_attr__( 'MM / YY', 'cbo-payment-gateway' ) . '" ' . $this->cbopaga_field_name( 'card-expiry' ) . ' />
             </p>',
         );
 

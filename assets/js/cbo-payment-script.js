@@ -35,7 +35,7 @@ let jq = null;
             setTimeout(_ => {
                 let onPaymentMethodChange = function (paymentMethod) {
                     console.log(paymentMethod);
-                    if (paymentMethod === 'cbo_standard_gateway') {
+                    if (paymentMethod === 'cbopaga_standard_gateway') {
                         addBrowserData();
                     } else {
                         removeBrowserData();

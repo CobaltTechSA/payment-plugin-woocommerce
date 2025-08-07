@@ -1,10 +1,11 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) exit;
 include_once 'cbo-constants.php';
 include_once 'cbo-helpers.php';
 include_once 'class-cbo-payment-gateway-cc.php';
 
-class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
+class CBOPAGA_Standard_Gateway extends WC_Payment_Gateway {
 
 	protected static $instance;
 
@@ -13,7 +14,7 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 	 */
 	public function __construct() {
 
-		$this->id = CBOConstants::STANDARD_GATEWAY_ID; // payment gateway plugin ID
+		$this->id = CBOPAGA_Constants::STANDARD_GATEWAY_ID; // payment gateway plugin ID
 		$this->icon = ''; // URL of the icon that will be displayed on checkout page near your gateway name
 		$this->has_fields = true; // in case you need a custom credit card form
 		$this->method_title = 'CBO Standard Gateway';
@@ -53,7 +54,22 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 
         //JS Scripts
 		add_action('wp_enqueue_scripts', [ $this, 'register_plugin_scripts' ], 20);
+
+		// Add nonce field for security
+		add_action('woocommerce_admin_field_cbopaga_nonce', function () {
+    	wp_nonce_field('cbopaga_standard_save_settings', 'cbopaga_standard_nonce');
+		});
+
 	}
+
+	public function process_admin_options() {
+		if ( ! isset( $_POST['cbopaga_standard_nonce'] ) || 
+			! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['cbopaga_standard_nonce'] ) ), 'cbopaga_standard_save_settings' ) ) {
+			wp_die(esc_html__( 'Unauthorized action.', 'cbo-payment-gateway' ), esc_html__( 'Security Error', 'cbo-payment-gateway' ), 403);
+		}
+		parent::process_admin_options();
+	}
+
 
 	public function get_icon() {
 		$path = plugin_dir_url( __FILE__ );
@@ -140,10 +156,25 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
             'api_client_secret' => array(
                 'title'       => __('Production API Client Secret', 'cbo-payment-gateway'),
                 'type'        => 'password',
-            ),
+            )
 		);
-
 	}
+
+	public function admin_options() {
+		?>
+		<h2><?php echo esc_html( $this->get_method_title() ); ?></h2>
+		<p><?php echo esc_html( $this->get_method_description() ); ?></p>
+		<table class="form-table">
+			<?php
+			// Nonce field for security
+			wp_nonce_field( 'cbopaga_standard_save_settings', 'cbopaga_standard_nonce' );
+
+			$this->generate_settings_html();
+			?>
+		</table>
+		<?php
+	}
+
 
 	/**
 	 * Register scripts for the plugin.
@@ -155,19 +186,21 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 		}
 
 		$base = plugin_dir_url( __FILE__ ) . 'assets/js/';
-		$ver  = CBOConstants::PLUGIN_VERSION;
+		$ver  = CBOPAGA_Constants::PLUGIN_VERSION;
 
-		wp_enqueue_script(
-			'sweetalert',
-			'https://unpkg.com/sweetalert/dist/sweetalert.min.js',
+		wp_register_script(
+			'cbopaga-sweetalert',
+			plugins_url( 'assets/js/sweetAlert/sweetalert.min.js', __FILE__ ),
 			[],
-			'2.1.2',
+			'2.1.2', 
 			true
 		);
 
+		wp_enqueue_script('cbo-sweetalert');
+
 		// Script for the standard payment method
 		wp_enqueue_script(
-			'cbo-standard-payment',
+			'cbopaga-standard-payment',
 			$base . 'cbo-payment-script.js',
 			[ 'jquery' ],
 			$ver,
@@ -176,9 +209,9 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 
 		// Script for the 3DS popup + classic checkout
 		wp_enqueue_script(
-			'cbo-3ds-popup',
+			'cbopaga-3ds-popup',
 			$base . 'cbo-3ds-popup.js',
-			[ 'jquery', 'wc-checkout', 'sweetalert' ],
+			[ 'jquery', 'wc-checkout', 'cbopaga-sweetalert' ],
 			$ver,
 			true
 		);
@@ -187,8 +220,8 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 		$callback = esc_url_raw( home_url( "/wc-api/{$this->id}_status" ) );
 
 		wp_localize_script(
-			'cbo-3ds-popup',
-			'CBO3DS',
+			'cbopaga-3ds-popup',
+			'CBOPAGA3DS',
 			[
 				'url_ok' => $callback,
 				'url_ko' => $callback,
@@ -203,7 +236,7 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
      */
     public function credit_card_form($args = array(), $fields = array())
     {
-        $cc_form           = new CBO_Payment_Gateway_CC();
+        $cc_form           = new CBOPAGA_Payment_Gateway_CC();
         $cc_form->id       = $this->id;
         $cc_form->supports = $this->supports;
         $cc_form->form();
@@ -224,6 +257,9 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 			// display the description with <p> tags etc.
 			echo wp_kses_post( wpautop( $this->description ) );
 		}
+		// nonce field for security
+		wp_nonce_field($this->id . '_process_payment', $this->id . '_nonce');
+
         $this->credit_card_form();
 	}
 
@@ -239,42 +275,60 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 	 */
 	public function validate_fields() {
 
+		// check if the nonce is set and valid
+		if ( isset( $_POST[$this->id . '_nonce'] ) && 
+			! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST[$this->id . '_nonce'] ) ), $this->id . '_process_payment' ) ) {
+			wc_add_notice( __( 'Security check failed. Please try again.', 'cbo-payment-gateway' ), 'error' );
+			return false;
+		}
+
 		// detect if the request is from a block-based checkout or classic checkout
 		$raw_input = file_get_contents('php://input');
 		$body      = json_decode($raw_input, true) ?: [];
 
+		foreach ($body as $key => $value) {
+			if (is_string($value)) {
+				$body[$key] = sanitize_text_field($value);
+			} elseif (is_array($value)) {
+				foreach ($value as $subkey => $subvalue) {
+					if (is_string($subvalue)) {
+						$body[$key][$subkey] = sanitize_text_field($subvalue);
+					}
+				}
+			}
+		}
 		// if the request is from a block-based checkout, omit the validation
 		if (! empty($body['payment_data'])) {
 			return true;
 		}
 
-		//CBOLog::debug( 'POST Data: ' . print_r( $_POST, true ) );
-        $cardNumber = $_POST[$this->id . '-card-number'];
-        $cardExpiry = $_POST[$this->id . '-card-expiry'];
-        $cardCvv = $_POST[$this->id . '-card-cvc'];
-        $cardHolder = $_POST[$this->id . '-card-holder'];
+		//CBOPAGA_Log::debug( 'POST Data: ' . print_r( $_POST, true ) );
+		$cardNumber = isset($_POST[$this->id . '-card-number']) ? sanitize_text_field(wp_unslash($_POST[$this->id . '-card-number'])) : '';
+		$cardExpiry = isset($_POST[$this->id . '-card-expiry']) ? sanitize_text_field(wp_unslash($_POST[$this->id . '-card-expiry'])) : '';
+		$cardCvv    = isset($_POST[$this->id . '-card-cvc']) ? sanitize_text_field(wp_unslash($_POST[$this->id . '-card-cvc'])) : '';
+		$cardHolder = isset($_POST[$this->id . '-card-holder']) ? sanitize_text_field(wp_unslash($_POST[$this->id . '-card-holder'])) : '';
 
-        //CBOLog::debug("cardNumber=$cardNumber, cardExpiry=$cardExpiry, cardCvv=$cardCvv, cardHolder=$cardHolder");
+        //CBOPAGA_Log::debug("cardNumber=$cardNumber, cardExpiry=$cardExpiry, cardCvv=$cardCvv, cardHolder=$cardHolder");
         $valid = true;
 
         $cardNumber = str_replace(" ", "", $cardNumber);
-        if (!is_valid_luhn($cardNumber)) {
+        if (!cbopaga_is_valid_luhn($cardNumber)) {
             wc_add_notice( __('Invalid card number', 'cbo-payment-gateway'), 'error' );
             $valid = false;
         }
 
         $cardExpiry = str_replace(" ", "", $cardExpiry);
-        if (!is_valid_expiry_date($cardExpiry)) {
+        if (!cbopaga_is_valid_expiry_date($cardExpiry)) {
             wc_add_notice( __('Invalid expiry date', 'cbo-payment-gateway'), 'error' );
             $valid = false;
         }
 
-        if (!is_valid_card_holder($cardHolder)) {
+        if (!cbopaga_is_valid_card_holder($cardHolder)) {
             wc_add_notice( __('Invalid card holder', 'cbo-payment-gateway'), 'error' );
             $valid = false;
         }
 
-        if (!is_valid_cvv($cardCvv)) {
+        if (!cbopaga_is_valid_cvv($cardCvv)) {
             wc_add_notice( __('Invalid card code (CVV)', 'cbo-payment-gateway'), 'error' );
             $valid = false;
         }
@@ -286,8 +340,13 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 
 	public function process_refund($order_id, $amount = 0, $reason = '')
 	{
-		CBOLog::debug("api_client_id={$this->api_client_id}, api_client_secret={$this->api_client_secret}");
-		$cboClient = new CBOClient(
+		if ( ! isset( $_REQUEST['security'] ) || ! check_ajax_referer( 'order-item', 'security', false ) ) {
+			CBOPAGA_Log::debug("Refund rechazado: nonce inválido o ausente");
+			return new WP_Error('invalid_nonce', __('Unauthorized action.', 'cbo-payment-gateway'));
+		}
+
+		//CBOPAGA_Log::debug("api_client_id={$this->api_client_id}, api_client_secret={$this->api_client_secret}");
+		$cboClient = new CBOPAGA_Client(
 			$this->api_url,
 			$this->api_client_id,
 			$this->api_client_secret
@@ -296,22 +355,22 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 		if (! $order_id || ! $amount) {
 			return new WP_Error('invalid_order', 'Invalid order ID or amount');
 		}
-		CBOLog::debug("process_refund: order_id={$order_id}, amount={$amount}, reason={$reason}");
+		CBOPAGA_Log::debug("process_refund: order_id={$order_id}, amount={$amount}, reason={$reason}");
 		$order = wc_get_order($order_id);
 		
 		if (! $order) {
 			return new WP_Error('invalid_order', 'Invalid order ID');
 		}
-		$txn = $order->get_meta('cbo_transaction_id');
+		$txn = $order->get_meta('cbopaga_transaction_id');
 		if (! $txn) {
 			return new WP_Error('no_transaction_id', 'No transaction ID found for this order');
 		}
 
 		try {
 			$data = $cboClient->refund($txn, intval($amount * 100));
-		} catch (CBOException $e) {
-			CBOLog::debug("Error processing refund: " . $e->getMessage());
-			return new WP_Error('cbo_refund_error', $e->getMessage());
+		} catch (CBOPAGA_Exception $e) {
+			CBOPAGA_Log::debug("Error processing refund: " . $e->getMessage());
+			return new WP_Error('cbopaga_refund_error', $e->getMessage());
 		}
 
 		$order->add_order_note(sprintf(
@@ -329,21 +388,40 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 	 */
 	public function process_payment( $order_id ) {
 
+		// check if the nonce is set and valid
+		if ( isset( $_POST[$this->id . '_nonce'] ) ) {
+			if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST[$this->id . '_nonce'] ) ), $this->id . '_process_payment' ) ) {
+				wc_add_notice( __( 'Security check failed. Please try again.', 'cbo-payment-gateway' ), 'error' );
+				return;
+			}
+		}
 		// we need it to get any order details
-		CBOLog::debug("process_payment: " . $order_id);
+		CBOPAGA_Log::debug("process_payment: " . $order_id);
 		$order = wc_get_order($order_id);
 		 
-        CBOLog::debug(" api_client_id=$this->api_client_id, api_client_secret=$this->api_client_secret");
-		$cboClient = new CBOClient($this->api_url, $this->api_client_id, $this->api_client_secret);
+        //CBOPAGA_Log::debug(" api_client_id=$this->api_client_id, api_client_secret=$this->api_client_secret");
+		$cboClient = new CBOPAGA_Client($this->api_url, $this->api_client_id, $this->api_client_secret);
 		try {
             // detect if the request is from a block-based checkout or classic checkout
 			$raw_input = file_get_contents('php://input');
 			$body = json_decode($raw_input, true) ?: [];
-			$is_block = ! empty($body['payment_data']);
+
+			foreach ($body as $key => $value) {
+				if (is_string($value)) {
+					$body[$key] = sanitize_text_field($value);
+				} elseif (is_array($value)) {
+					foreach ($value as $subkey => $subvalue) {
+						if (is_string($subvalue)) {
+							$body[$key][$subkey] = sanitize_text_field($subvalue);
+						}
+					}
+				}
+			}
+			$cbopaga_is_block = ! empty($body['payment_data']);
 
 			// if the request is from a block-based checkout, we need to handle it differently
-			if ($is_block) {
-				CBOLog::debug('Origin: Checkout Based Blocks');
+			if ($cbopaga_is_block) {
+				CBOPAGA_Log::debug('Origin: Checkout Based Blocks');
 				$pdata    = $body['payment_data'];
 				$billing  = $body['billing_address']  ?? [];
 				$shipping = $body['shipping_address'] ?? [];
@@ -374,7 +452,7 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 					'browserUserAgent'          => $data['browserUserAgent']         ?? null,
 					'challengeWindowSize'       => $data['challengeWindowSize']      ?? null,
 
-					'browserIP'                 => $_SERVER['REMOTE_ADDR'],
+					'browserIP'                 => isset($_SERVER['REMOTE_ADDR']) ? sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'])) : '',
 					'email'                     => $billing['email']                ?? $order->get_billing_email(),
 					'billAddrCountry'           => $this->get_iso_alpha3_cc($billing['country'] ?? $order->get_billing_country()),
 					'billAddrCity'              => $billing['city']                 ?? $order->get_billing_city(),
@@ -391,21 +469,22 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 				];
 
 			} else {
-				CBOLog::debug('Origin: Classic Checkout');
-				$cardNumber = $_POST[$this->id . '-card-number'];
-				$cardExpiry = $_POST[$this->id . '-card-expiry'];
-				$cardCvc = $_POST[$this->id . '-card-cvc'];
-				$cardHolder = $_POST[$this->id . '-card-holder'];
+				CBOPAGA_Log::debug('Origin: Classic Checkout');
+				$cardNumber = sanitize_text_field(wp_unslash($_POST[$this->id . '-card-number'] ?? ''));
+				$cardExpiry = sanitize_text_field(wp_unslash($_POST[$this->id . '-card-expiry'] ?? ''));
+				$cardCvc    = sanitize_text_field(wp_unslash($_POST[$this->id . '-card-cvc'] ?? ''));
+				$cardHolder = sanitize_text_field(wp_unslash($_POST[$this->id . '-card-holder'] ?? ''));
+
 
 				$cardNumber = str_replace(" ", "", $cardNumber);
 				$cardExpiry = str_replace(" ", "", $cardExpiry);
 
 				$threeDSParams = $this->get3DSParams();
 			}
-            CBOLog::debug("threeDSParams=" . json_encode($threeDSParams));
+            CBOPAGA_Log::debug("threeDSParams=" . json_encode($threeDSParams));
 
 			$transaction = $cboClient->sale($order, $cardNumber, $cardExpiry, $cardCvc, $cardHolder, $threeDSParams);
-			CBOLog::debug("Checkout data: " . json_encode($transaction));
+			CBOPAGA_Log::debug("Checkout data: " . json_encode($transaction));
 
          if ($transaction['status'] === 'authenticating') {
 			return [
@@ -428,9 +507,9 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
                 wc_add_notice(  __('We were unable to complete the payment. Please check your card details or contact your bank.', 'cbo-payment-gateway'), 'error' );
 
             }
-		} catch (\CBOException $e) {
+		} catch (\CBOPAGA_Exception $e) {
 			if (!$e->isSuccessResponse()) {
-				CBOLog::debug($e->getMessage() . " - " . json_encode($e->getResponse()));
+				CBOPAGA_Log::debug($e->getMessage() . " - " . json_encode($e->getResponse()));
 				wc_add_notice(  __('Cannot generate the payment. Please, contact with commerce.', 'cbo-payment-gateway'), 'error' );
 			} else {
 				wc_add_notice(  __('Cannot process the payment. Please, contact with commerce.', 'cbo-payment-gateway'), 'error' );
@@ -443,46 +522,48 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
      */
     private function get3DSParams()
     {
+		if ( isset( $_POST['_wpnonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ), 'woocommerce-process_checkout' ) ) {
+			$threeDSParams['email'] = isset( $_POST['billing_email'] ) ? sanitize_email( wp_unslash( $_POST['billing_email'] ) ) : '';
+		}
+
         $threeDSAttrs = ['browserJavaEnabled', 'browserJavascriptEnabled', 'browserLanguage', 'browserColorDepth',
             'browserScreenWidth', 'browserScreenHeight', 'browserTZ', 'browserUserAgent', 'challengeWindowSize'];
 
         $threeDSParams = [];
 
         foreach ($threeDSAttrs as $attr) {
-            $threeDSParams[$attr] = $_POST[$attr];
+           $threeDSParams[$attr] = isset($_POST[$attr]) ? sanitize_text_field(wp_unslash($_POST[$attr])) : '';
         }
 
         //Order additional data
 		$threeDSParams['transType']     = 'goods';
 		$threeDSParams['deviceChannel'] = 'browser';
-		$threeDSParams['browserIP']     = $_SERVER['REMOTE_ADDR'];
-		$threeDSParams['email']         = $_POST['billing_email'] ?? '';
+		$threeDSParams['browserIP']     = isset($_SERVER['REMOTE_ADDR']) ? sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'])) : '';
+    	$threeDSParams['email']         = isset($_POST['billing_email']) ? sanitize_email(wp_unslash($_POST['billing_email'])) : '';
 
-		$threeDSParams['billAddrCountry']  = $this->get_iso_alpha3_cc( $_POST['billing_country'] ?? '' ) ?: 'DIG';
-		$threeDSParams['billAddrCity']     = trim( $_POST['billing_city'] ?? '' )        ?: 'digital';
-		$threeDSParams['billAddrState']    = parse_state( $_POST['billing_state'] ?? '' ) ?: 'DIG';
-		$threeDSParams['billAddrLine1']    = trim( $_POST['billing_address_1'] ?? '' )   ?: 'digital';
+		$threeDSParams['billAddrCountry']  = $this->get_iso_alpha3_cc(sanitize_text_field(wp_unslash($_POST['billing_country'] ?? ''))) ?: 'DIG';
+		$threeDSParams['billAddrCity']     = sanitize_text_field(wp_unslash($_POST['billing_city'] ?? '')) ?: 'digital';
+		$threeDSParams['billAddrState']    = parse_state(sanitize_text_field(wp_unslash($_POST['billing_state'] ?? ''))) ?: 'DIG';
+		$threeDSParams['billAddrLine1']    = sanitize_text_field(wp_unslash($_POST['billing_address_1'] ?? '')) ?: 'digital';
 		$threeDSParams['billAddrLine2']    = 'none';
-		$threeDSParams['billAddrPostCode'] = trim( $_POST['billing_postcode'] ?? '' )   ?: '0000';
+		$threeDSParams['billAddrPostCode'] = sanitize_text_field(wp_unslash($_POST['billing_postcode'] ?? '')) ?: '0000';
 
 		$billingCity  = $threeDSParams['billAddrCity'];
 		$billingLine1 = $threeDSParams['billAddrLine1'];
 		$billingPost  = $threeDSParams['billAddrPostCode'];
 
-		$threeDSParams['shipAddrCountry']  = $this->get_iso_alpha3_cc( $_POST['shipping_country'] ?? '' ) ?: 'DIG';
-		$threeDSParams['shipAddrCity']     = trim( $_POST['shipping_city'] ?? '' )          ?: $billingCity  ?: 'digital';
-		$threeDSParams['shipAddrState']    = parse_state( $_POST['shipping_state'] ?? '' ) ?: 'DIG';
-		$threeDSParams['shipAddrLine1']    = trim( $_POST['shipping_address_1'] ?? '' )     ?: $billingLine1 ?: 'digital';
+		$threeDSParams['shipAddrCountry']  = $this->get_iso_alpha3_cc(sanitize_text_field(wp_unslash($_POST['shipping_country'] ?? ''))) ?: 'DIG';
+		$threeDSParams['shipAddrCity']     = sanitize_text_field(wp_unslash($_POST['shipping_city'] ?? '')) ?: $billingCity ?: 'digital';
+		$threeDSParams['shipAddrState']    = parse_state(sanitize_text_field(wp_unslash($_POST['shipping_state'] ?? ''))) ?: 'DIG';
+		$threeDSParams['shipAddrLine1']    = sanitize_text_field(wp_unslash($_POST['shipping_address_1'] ?? '')) ?: $billingLine1 ?: 'digital';
 		$threeDSParams['shipAddrLine2']    = 'none';
-		$threeDSParams['shipAddrPostCode'] = trim( $_POST['shipping_postcode'] ?? '' )     ?: $billingPost  ?: '0000';
-
+		$threeDSParams['shipAddrPostCode'] = sanitize_text_field(wp_unslash($_POST['shipping_postcode'] ?? '')) ?: $billingPost ?: '0000';
 
         return $threeDSParams;
     }
 
     private function validate_payment($transaction)
     {
-        global $woocommerce;
 
         $metas = $transaction['metadatas'];
         $order_id = $metas['order_id'];
@@ -490,14 +571,16 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 
         $status = $transaction['status'];
         $successStatus = ['authorized', 'notified'];
-        $order->add_meta_data('cbo_bank_code', $transaction['response_code']);
-        $order->add_meta_data('cbo_transaction_id', $transaction['identifier']);
-        $order->add_meta_data('cbo_bank_authorization', $transaction['authorization_number']);
+        $order->add_meta_data('cbopaga_bank_code', $transaction['response_code']);
+        $order->add_meta_data('cbopaga_transaction_id', $transaction['identifier']);
+        $order->add_meta_data('cbopaga_bank_authorization', $transaction['authorization_number']);
 
         if (in_array($status, $successStatus)) {
             $order->update_status('completed', __( 'Payment completed', 'cbo-payment-gateway' ));
             $order->payment_complete($transaction['identifier']);
-            $woocommerce->cart->empty_cart();
+			if ( function_exists( 'WC' ) && WC()->cart ) {
+				WC()->cart->empty_cart();
+			}
             return true;
         } else {
             $order->update_status('failed', __( 'Failed payment', 'cbo-payment-gateway' ));
@@ -507,32 +590,34 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
     }
 
 	public function callback_url() {
-		$order_id = absint($_GET['oid']);
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$order_id = isset($_GET['oid']) ? absint($_GET['oid']) : 0;
 		$order    = wc_get_order($order_id);
 
 		$target = ($order && $order->is_paid())
-		? $order->get_checkout_order_received_url()
-		: $order->get_checkout_payment_url();
-
-
+			? $order->get_checkout_order_received_url()
+			: $order->get_checkout_payment_url();
+		CBOPAGA_Log::debug("callback_url: order_id=$order_id, target=$target");
 		?>
 		<!DOCTYPE html>
 		<html lang="es">
 		<head><meta charset="utf-8"><title>Procesando 3DS…</title></head>
 		<body>
-		<script>
-			(function(){
+			<script>
+		(function(){
 			var target = <?php echo wp_json_encode($target); ?>;
-			// if the opener is still open, we can notify it
-			// and redirect it to the target URL
+			var success = <?php echo $order && $order->is_paid() ? 'true' : 'false'; ?>;
+
 			if (window.opener && !window.opener.closed) {
-				window.opener.postMessage({ cbo3ds: 'success' }, '*' );
-				window.opener.location.href = target;
-				window.close();
+			window.opener.postMessage({
+				cbo3ds: success ? 'success' : 'fail',
+				redirect_to: target
+			}, '*');
+			window.close();
 			} else {
-				window.location.href = target;
+			window.location.href = target;
 			}
-			})();
+		})();
 		</script>
 		</body>
 		</html>
@@ -541,29 +626,41 @@ class WC_CBO_Standard_Gateway extends WC_Payment_Gateway {
 	}
 
 
+
 	/*
 	 * In case you need a webhook, like PayPal IPN etc
 	 */
 	public function webhook() {
+		$raw_input = file_get_contents('php://input');
+		$data = json_decode($raw_input, true);
 
-		$data = json_decode(file_get_contents('php://input'), true);
-		CBOLog::debug("Webhook: Tx #" . $data['identifier'] /*. ": " . json_encode($data)*/);
+		if (!is_array($data)) {
+			CBOPAGA_Log::debug("Webhook error: input no es array válido");
+			header('HTTP/1.1 400 Bad Request');
+			exit;
+		}
+
+		foreach ($data as $key => $value) {
+			if (is_string($value)) {
+				$data[$key] = sanitize_text_field($value);
+			}
+		}
+
+		CBOPAGA_Log::debug("Webhook recibido: " . json_encode($data));
 
 		try {
-			//$transaction = $client->transaction($data['tid']);
 			$validTransaction = $this->validate_payment($data);
-
-			header( 'HTTP/1.1 204 OK' );
-
-		} catch (\CBOException $e) {
-			CBOLog::debug("Error getting transaction " . $data['tid'] . ' - ' .$e->getMessage());
-			header( 'HTTP/1.1 400 Bad Request' );
-
+			header('HTTP/1.1 204 OK');
+		} catch (\CBOPAGA_Exception $e) {
+			$tid = isset($data['tid']) ? $data['tid'] : 'N/A';
+			CBOPAGA_Log::debug("Error en webhook. TID: $tid - " . $e->getMessage());
+			header('HTTP/1.1 400 Bad Request');
 		}
+		exit;
 	}
 
     function get_iso_alpha3_cc($country) {
-        return isset(CBOConstants::COUNTRIES[$country]) ? CBOConstants::COUNTRIES[$country] : $country;
+        return isset(CBOPAGA_Constants::COUNTRIES[$country]) ? CBOPAGA_Constants::COUNTRIES[$country] : $country;
     }
 
 	public static function instance() {

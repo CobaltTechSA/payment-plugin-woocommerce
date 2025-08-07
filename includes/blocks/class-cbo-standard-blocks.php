@@ -11,10 +11,10 @@ if (! defined('ABSPATH')) {
 /**
  * Integration for the CBO Standard Blocks payment method.
  */
-final class CBO_Standard_Blocks extends AbstractPaymentMethodType
+final class CBOPAGA_Standard_Blocks extends AbstractPaymentMethodType
 {
 
-    protected $name = 'cbo_standard_gateway';
+    protected $name = 'cbopaga_standard_gateway';
 
 
     public function initialize() {}

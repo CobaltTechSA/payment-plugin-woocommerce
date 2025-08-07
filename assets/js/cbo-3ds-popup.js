@@ -36,6 +36,7 @@ jQuery(($) => {
   });
 
   let popup;
+  let popupMonitor;
 
   // checkout classic
   $(document).ajaxComplete((e, xhr, settings) => {
@@ -102,20 +103,47 @@ jQuery(($) => {
   function _openPopup(url) {
     popup = window.open('', '_blank', `width=${POPUP_WIDTH},height=${POPUP_HEIGHT}`);
     popup.location = url;
+    let popupClosed = false;
 
-    const checkClosed = setInterval(() => {
-      if (!popup || popup.closed) {
-        clearInterval(checkClosed);
+  popupMonitor = setInterval(function () {
+  if (popup && popup.closed && !popupClosed) {
+    popupClosed = true;
+    clearInterval(popupMonitor);
+    
+    swal({
+      title: 'Autenticación Cancelada',
+      text: 'Cerraste la ventana emergente antes de completar la autenticación. Por favor inténtalo de nuevo.',
+      icon: 'warning',
+      button: 'Entendido'
+    }).then(() => {
+      location.reload();
+    });
+  }
+}, 500);
+  }
 
-        swal({
-          title: 'Autenticación cancelada',
-          text: 'La ventana de 3DS se cerró. Por favor inténtalo de nuevo.',
-          icon: 'warning',
-          button: 'Entendido'
-        }).then(() => {
-          location.reload();
-        });
-      }
-    }, 500);
+window.addEventListener('message', function(event) {
+  if (event.origin !== window.location.origin) return;
+  
+  if (!event.data || !event.data.cbo3ds) return;
+
+   if (popupMonitor) {
+    clearInterval(popupMonitor);
+    popupMonitor = undefined;
+  }
+
+  if (event.data.cbo3ds === 'success') {
+    window.location.href = event.data.redirect_to || window.location.href;
+  } else {
+    swal({
+      title: 'Autenticación Fallida',
+      text: 'Por favor inténtalo de nuevo. Mantén la ventana emergente activa.',
+      icon: 'warning',
+      button: 'Entendido'
+    }).then(() => {
+      location.reload();
+    });
   }
 });
+});
+

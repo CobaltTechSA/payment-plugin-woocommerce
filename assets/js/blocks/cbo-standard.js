@@ -104,7 +104,7 @@ function PaymentMethod({
 };
 
 registerPaymentMethod({
-  name: 'cbo_standard_gateway',
+  name: 'cbopaga_standard_gateway',
   label: <Label />,
   ariaLabel: __('CBO Standard Gateway', 'cbo-payment-gateway'),
   canMakePayment: () => true,

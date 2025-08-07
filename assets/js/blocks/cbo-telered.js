@@ -13,13 +13,13 @@ const Label = ({ label }) => (
 );
 
 const settings = {
-  name: 'cbo_telered_gateway',
+  name: 'cbopaga_telered_gateway',
   ariaLabel: __('CBO Telered Gateway', 'cbo-payment-gateway'),
   label: <Label />,
   canMakePayment: () => true,
   content: <ProcessPaymentHandler />,
   edit: <ProcessPaymentHandler />,
-  paymentMethodId: 'cbo_telered_gateway',
+  paymentMethodId: 'cbopaga_telered_gateway',
   supports: { features: ['products'] },
   placeOrderButtonLabel: __('Pay with Clave', 'cbo-payment-gateway'),
 }

@@ -4,7 +4,7 @@
  * @param $number
  * @return bool
  */
-function is_valid_luhn($number) {
+function cbopaga_is_valid_luhn($number) {
     if (empty($number)) {
         return false;
     }
@@ -25,7 +25,7 @@ function is_valid_luhn($number) {
  * @param $expiry_date
  * @return bool
  */
-function is_valid_expiry_date($expiry_date) {
+function cbopaga_is_valid_expiry_date($expiry_date) {
     if (empty($expiry_date)) {
         return false;
     }
@@ -41,7 +41,7 @@ function is_valid_expiry_date($expiry_date) {
  * @param $card_holder
  * @return bool
  */
-function is_valid_card_holder($card_holder) {
+function cbopaga_is_valid_card_holder($card_holder) {
     if (empty($card_holder)) {
         return false;
     }
@@ -57,7 +57,7 @@ function is_valid_card_holder($card_holder) {
  * @param $cvv
  * @return bool
  */
-function is_valid_cvv($cvv) {
+function cbopaga_is_valid_cvv($cvv) {
     if (empty($cvv)) {
         return false;
     }

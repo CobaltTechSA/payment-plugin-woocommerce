@@ -1,15 +1,15 @@
 # Copyright (C) 2025 Cobalt Tech
-# This file is distributed under the same license as the CBO Payment Gateway plugin.
+# This file is distributed under the GPL-2.0.
 msgid ""
 msgstr ""
-"Project-Id-Version: CBO Payment Gateway 2.2.0\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/cbo-payment-gateway\n"
+"Project-Id-Version: CBO Payment Gateway 2.4.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/payment-plugin-woocommerce\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-07-14T15:26:20+00:00\n"
+"POT-Creation-Date: 2025-08-01T16:46:22+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: cbo-payment-gateway\n"
@@ -39,194 +39,264 @@ msgstr ""
 msgid "https://cobalt.tech"
 msgstr ""
 
+#: cbo-client.php:225
+msgid "Invalid transaction ID"
+msgstr ""
+
+#: cbo-client.php:230
+msgid "Refund route not defined"
+msgstr ""
+
+#: cbo-client.php:246
+msgid "Error requesting refund"
+msgstr ""
+
+#: cbo-client.php:252
+msgid "Refund failed"
+msgstr ""
+
+#: cbo-client.php:386
+msgid "Error getting commerce"
+msgstr ""
+
 #. translators: %1$s - plugin name, %2$s - minimum WordPress version required, %3$s - update WordPress link open, %4$s - update WordPress link close
-#: cbo-payment-gateway.php:133
+#: cbo-payment-gateway.php:129
 #, php-format
 msgid "%1$s requiere WordPress %2$s or higher. Porfavor %3$sactualiza WordPress &raquo;%4$s"
 msgstr ""
 
 #. translators: %1$s - Plugin Name, %2$s - activate WooCommerce link open, %3$s - activate WooCommerce link close.
-#: cbo-payment-gateway.php:159
+#: cbo-payment-gateway.php:155
 #, php-format
 msgid "%1$s requiere que WooCommerce esté activado. Por favor %2$sactiva WooCommerce%3$s."
 msgstr ""
 
 #. translators: %1$s - Plugin Name, %2$s - install WooCommerce link open, %3$s - install WooCommerce link close.
-#: cbo-payment-gateway.php:176
+#: cbo-payment-gateway.php:172
 #, php-format
 msgid "%1$s requiere que WooCommerce esté instalado y activado. por favor, %2$sinstala WooCommerce%3$s."
 msgstr ""
 
 #. translators: %1$s - Plugin Name, %2$s - minimum WooCommerce version, %3$s - update WooCommerce link open, %4$s - update WooCommerce link close, %5$s - download minimum WooCommerce link open, %6$s - download minimum WooCommerce link close.
-#: cbo-payment-gateway.php:196
+#: cbo-payment-gateway.php:192
 #, php-format
 msgid "%1$s requiere WooCommerce %2$s o superior. Por favor, %3$sactualiza WooCommerce%4$s a la última versión, o %5$sdescarga la versión mínima requerida &raquo;%6$s"
 msgstr ""
 
 #. translators: %1$s - Plugin Name, %2$s - minimum WooCommerce version, %3$s - update WooCommerce link open, %4$s - update WooCommerce link close, %5$s - download minimum WooCommerce link open, %6$s - download minimum WooCommerce link close.
-#: cbo-payment-gateway.php:212
+#: cbo-payment-gateway.php:208
 #, php-format
 msgid "%1$s solo está disponible para tiendas localizadas en Panamá."
 msgstr ""
 
-#: cbo-payment-gateway.php:422
+#: cbo-payment-gateway.php:419
 #: includes/blocks/class-cbo-standard-blocks.php:40
 #: assets/js/blocks/cbo-standard.js:15
 #: build/cbo-standard.js:1
 msgid "Card (Visa/Mastercard)"
 msgstr ""
 
-#: class-cbo-payment-gateway-cc.php:76
-#: class-cbo-payment-gateway-cc.php:77
+#: class-cbo-payment-gateway-cc.php:99
+msgid "Card code"
+msgstr ""
+
+#: class-cbo-payment-gateway-cc.php:100
+#: assets/js/blocks/components/CardFields.js:134
+#: build/cbo-standard.js:1
+msgid "CVC"
+msgstr ""
+
+#: class-cbo-payment-gateway-cc.php:104
+#: class-cbo-payment-gateway-cc.php:105
 #: assets/js/blocks/components/CardFields.js:59
 #: build/cbo-standard.js:1
 msgid "Card holder"
 msgstr ""
 
-#: class-cbo-standard-gateway.php:20
+#: class-cbo-payment-gateway-cc.php:110
+#: assets/js/blocks/components/CardFields.js:80
+#: build/cbo-standard.js:1
+msgid "Card number"
+msgstr ""
+
+#: class-cbo-payment-gateway-cc.php:114
+msgid "Expiry (MM/YY)"
+msgstr ""
+
+#: class-cbo-payment-gateway-cc.php:115
+msgid "MM / YY"
+msgstr ""
+
+#: class-cbo-standard-gateway.php:21
 msgid "Acceptance of payments with Visa / Mastercard"
 msgstr ""
 
-#: class-cbo-standard-gateway.php:82
-#: class-cbo-telered-gateway.php:76
+#: class-cbo-standard-gateway.php:68
+#: class-cbo-standard-gateway.php:345
+#: class-cbo-telered-gateway.php:60
+msgid "Unauthorized action."
+msgstr ""
+
+#: class-cbo-standard-gateway.php:68
+#: class-cbo-telered-gateway.php:60
+msgid "Security Error"
+msgstr ""
+
+#: class-cbo-standard-gateway.php:81
+msgid "Visa"
+msgstr ""
+
+#: class-cbo-standard-gateway.php:87
+msgid "Mastercard"
+msgstr ""
+
+#: class-cbo-standard-gateway.php:107
+#: class-cbo-telered-gateway.php:91
 msgid "Enable/Disable"
 msgstr ""
 
-#: class-cbo-standard-gateway.php:83
-#: class-cbo-telered-gateway.php:77
+#: class-cbo-standard-gateway.php:108
+#: class-cbo-telered-gateway.php:92
 msgid "Enable CBO Payment Gateway"
 msgstr ""
 
-#: class-cbo-standard-gateway.php:89
-#: class-cbo-telered-gateway.php:83
+#: class-cbo-standard-gateway.php:114
+#: class-cbo-telered-gateway.php:98
 msgid "Title"
 msgstr ""
 
-#: class-cbo-standard-gateway.php:91
-#: class-cbo-telered-gateway.php:85
+#: class-cbo-standard-gateway.php:116
+#: class-cbo-telered-gateway.php:100
 msgid "This controls the title which the user sees during checkout."
 msgstr ""
 
-#: class-cbo-standard-gateway.php:96
-#: class-cbo-telered-gateway.php:90
+#: class-cbo-standard-gateway.php:121
+#: class-cbo-telered-gateway.php:105
 msgid "Description"
 msgstr ""
 
-#: class-cbo-standard-gateway.php:98
-#: class-cbo-telered-gateway.php:92
+#: class-cbo-standard-gateway.php:123
+#: class-cbo-telered-gateway.php:107
 msgid "This controls the description which the user sees during checkout."
 msgstr ""
 
-#: class-cbo-standard-gateway.php:99
-#: class-cbo-telered-gateway.php:93
+#: class-cbo-standard-gateway.php:124
+#: class-cbo-telered-gateway.php:108
 msgid "Pay with your VISA or Mastercard card"
 msgstr ""
 
-#: class-cbo-standard-gateway.php:102
-#: class-cbo-telered-gateway.php:96
+#: class-cbo-standard-gateway.php:127
+#: class-cbo-telered-gateway.php:111
 msgid "Test mode"
 msgstr ""
 
-#: class-cbo-standard-gateway.php:103
-#: class-cbo-telered-gateway.php:97
+#: class-cbo-standard-gateway.php:128
+#: class-cbo-telered-gateway.php:112
 msgid "Enable Test Mode"
 msgstr ""
 
-#: class-cbo-standard-gateway.php:105
-#: class-cbo-telered-gateway.php:99
+#: class-cbo-standard-gateway.php:130
+#: class-cbo-telered-gateway.php:114
 msgid "Place the payment gateway in test mode using test API keys."
 msgstr ""
 
-#: class-cbo-standard-gateway.php:110
-#: class-cbo-telered-gateway.php:104
+#: class-cbo-standard-gateway.php:135
+#: class-cbo-telered-gateway.php:119
 msgid "Test API URL"
 msgstr ""
 
-#: class-cbo-standard-gateway.php:114
-#: class-cbo-telered-gateway.php:108
-msgid "Test API Key"
-msgstr ""
-
-#: class-cbo-standard-gateway.php:118
-#: class-cbo-telered-gateway.php:112
+#: class-cbo-standard-gateway.php:140
+#: class-cbo-telered-gateway.php:123
 msgid "Test API Client Id"
 msgstr ""
 
-#: class-cbo-standard-gateway.php:122
-#: class-cbo-telered-gateway.php:116
+#: class-cbo-standard-gateway.php:144
+#: class-cbo-telered-gateway.php:127
 msgid "Test API Client Secret"
 msgstr ""
 
-#: class-cbo-standard-gateway.php:126
-#: class-cbo-telered-gateway.php:120
+#: class-cbo-standard-gateway.php:148
+#: class-cbo-telered-gateway.php:131
 msgid "Production API URL"
 msgstr ""
 
-#: class-cbo-standard-gateway.php:130
-#: class-cbo-telered-gateway.php:124
-msgid "Production API Key"
-msgstr ""
-
-#: class-cbo-standard-gateway.php:134
-#: class-cbo-telered-gateway.php:128
+#: class-cbo-standard-gateway.php:153
+#: class-cbo-telered-gateway.php:135
 msgid "Production API Client Id"
 msgstr ""
 
-#: class-cbo-standard-gateway.php:138
-#: class-cbo-telered-gateway.php:132
+#: class-cbo-standard-gateway.php:157
+#: class-cbo-telered-gateway.php:139
 msgid "Production API Client Secret"
 msgstr ""
 
-#: class-cbo-standard-gateway.php:218
-#: class-cbo-telered-gateway.php:148
+#: class-cbo-standard-gateway.php:254
+#: class-cbo-telered-gateway.php:170
 msgid "TEST MODE ENABLED"
 msgstr ""
 
-#: class-cbo-standard-gateway.php:259
+#: class-cbo-standard-gateway.php:281
+#: class-cbo-standard-gateway.php:394
+msgid "Security check failed. Please try again."
+msgstr ""
+
+#: class-cbo-standard-gateway.php:316
 #: assets/js/blocks/cbo-standard.js:67
 #: assets/js/blocks/components/CardFields.js:98
 #: build/cbo-standard.js:1
 msgid "Invalid card number"
 msgstr ""
 
-#: class-cbo-standard-gateway.php:265
+#: class-cbo-standard-gateway.php:322
 msgid "Invalid expiry date"
 msgstr ""
 
-#: class-cbo-standard-gateway.php:270
+#: class-cbo-standard-gateway.php:327
 msgid "Invalid card holder"
 msgstr ""
 
-#: class-cbo-standard-gateway.php:275
+#: class-cbo-standard-gateway.php:332
 msgid "Invalid card code (CVV)"
 msgstr ""
 
-#: class-cbo-standard-gateway.php:424
+#: class-cbo-standard-gateway.php:505
 msgid "We were unable to complete the payment. Please contact with commerce."
 msgstr ""
 
-#: class-cbo-standard-gateway.php:426
+#: class-cbo-standard-gateway.php:507
 msgid "We were unable to complete the payment. Please check your card details or contact your bank."
 msgstr ""
 
-#: class-cbo-standard-gateway.php:432
+#: class-cbo-standard-gateway.php:513
 msgid "Cannot generate the payment. Please, contact with commerce."
 msgstr ""
 
-#: class-cbo-standard-gateway.php:434
+#: class-cbo-standard-gateway.php:515
 msgid "Cannot process the payment. Please, contact with commerce."
 msgstr ""
 
-#: class-cbo-standard-gateway.php:496
+#: class-cbo-standard-gateway.php:579
 msgid "Payment completed"
 msgstr ""
 
-#: class-cbo-standard-gateway.php:501
+#: class-cbo-standard-gateway.php:586
 msgid "Failed payment"
 msgstr ""
 
 #: class-cbo-telered-gateway.php:17
 msgid "Acceptance of payments with Clave"
+msgstr ""
+
+#: class-cbo-telered-gateway.php:71
+msgid "Telered"
+msgstr ""
+
+#: class-cbo-telered-gateway.php:305
+msgid "Pago completado"
+msgstr ""
+
+#: class-cbo-telered-gateway.php:311
+msgid "Pago fallido"
 msgstr ""
 
 #: includes/blocks/class-cbo-standard-blocks.php:41
@@ -285,11 +355,6 @@ msgstr ""
 msgid "You must enter the holder name"
 msgstr ""
 
-#: assets/js/blocks/components/CardFields.js:80
-#: build/cbo-standard.js:1
-msgid "Card number"
-msgstr ""
-
 #: assets/js/blocks/components/CardFields.js:107
 #: build/cbo-standard.js:1
 msgid "Expiration date"
@@ -298,9 +363,4 @@ msgstr ""
 #: assets/js/blocks/components/CardFields.js:112
 #: build/cbo-standard.js:1
 msgid "MM/YY"
-msgstr ""
-
-#: assets/js/blocks/components/CardFields.js:134
-#: build/cbo-standard.js:1
-msgid "CVC"
 msgstr ""

@@ -1,9 +1,9 @@
 <?php
 
-class CBOConstants {
+class CBOPAGA_Constants {
 
-	const STANDARD_GATEWAY_ID = 'cbo_standard_gateway';
-	const TELERED_GATEWAY_ID = 'cbo_telered_gateway';
+	const STANDARD_GATEWAY_ID = 'cbopaga_standard_gateway';
+	const TELERED_GATEWAY_ID = 'cbopaga_telered_gateway';
 
 	const PLUGIN_VERSION = '2.4.0';
 	const PLUGIN_NAME = 'CBO Payment Gateway';

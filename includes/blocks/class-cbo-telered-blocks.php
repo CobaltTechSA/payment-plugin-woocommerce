@@ -11,10 +11,10 @@ if (! defined('ABSPATH')) {
 /**
  * Integration for the CBO Telered Blocks payment method.
  */
-final class CBO_Telered_Blocks extends AbstractPaymentMethodType
+final class CBOPAGA_Telered_Blocks extends AbstractPaymentMethodType
 {
 
-    protected $name = 'cbo_telered_gateway';
+    protected $name = 'cbopaga_telered_gateway';
 
     public function initialize() {}
 

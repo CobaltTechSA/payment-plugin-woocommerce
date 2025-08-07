@@ -1,6 +1,8 @@
 <?php
-
-class CBOLog {
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+class CBOPAGA_Log {
 
 	private static $instance = null;
 

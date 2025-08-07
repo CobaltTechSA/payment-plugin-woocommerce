@@ -8,13 +8,13 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-final class CBO_Blocks_Support
+final class CBOPAGA_Blocks_Support
 {
     public static function init()
     {
         // Integrations for the CBO Standard and Telered Blocks payment methods
-        require_once CBO_PG_PATH . 'includes/blocks/class-cbo-standard-blocks.php';
-        require_once CBO_PG_PATH . 'includes/blocks/class-cbo-telered-blocks.php';
+        require_once CBOPAGA_PATH . 'includes/blocks/class-cbo-standard-blocks.php';
+        require_once CBOPAGA_PATH . 'includes/blocks/class-cbo-telered-blocks.php';
 
         // Integrations registration
         add_action(
@@ -29,11 +29,11 @@ final class CBO_Blocks_Support
     // clases AbstractPaymentMethodType 
     public static function register_blocks(PaymentMethodRegistry $registry)
     {
-        if (class_exists('\CBO\Blocks\CBO_Standard_Blocks')) {
-            $registry->register(new \CBO\Blocks\CBO_Standard_Blocks());
+        if (class_exists('\CBO\Blocks\CBOPAGA_Standard_Blocks')) {
+            $registry->register(new \CBO\Blocks\CBOPAGA_Standard_Blocks());
         }
-        if (class_exists('\CBO\Blocks\CBO_Telered_Blocks')) {
-            $registry->register(new \CBO\Blocks\CBO_Telered_Blocks());
+        if (class_exists('\CBO\Blocks\CBOPAGA_Telered_Blocks')) {
+            $registry->register(new \CBO\Blocks\CBOPAGA_Telered_Blocks());
         }
     }
 
@@ -42,11 +42,11 @@ final class CBO_Blocks_Support
     {
 
         // Standard
-        if (file_exists(CBO_PG_PATH . 'build/cbo-standard.asset.php')) {
-            $asset = include CBO_PG_PATH . 'build/cbo-standard.asset.php';
+        if (file_exists(CBOPAGA_PATH . 'build/cbo-standard.asset.php')) {
+            $asset = include CBOPAGA_PATH . 'build/cbo-standard.asset.php';
             wp_register_script(
                 'cbo-standard-blocks-js',
-                CBO_PG_URL . 'build/cbo-standard.js',
+                CBOPAGA_URL . 'build/cbo-standard.js',
                 $asset['dependencies'],
                 $asset['version'],
                 true
@@ -55,12 +55,12 @@ final class CBO_Blocks_Support
             wp_set_script_translations(
                 'cbo-standard-blocks-js',
                 'cbo-payment-gateway',
-                CBO_PG_PATH . 'build/i18n'
+                CBOPAGA_PATH . 'build/i18n'
             );
 
              wp_register_script(
                 'cbo-3ds-popup', 
-                CBO_PG_URL . 'assets/js/cbo-3ds-popup.js',
+                CBOPAGA_URL . 'assets/js/cbo-3ds-popup.js',
                 [ 'jquery' ],
                 "2.3.0",
                 true
@@ -68,20 +68,20 @@ final class CBO_Blocks_Support
 
             wp_localize_script(
                 'cbo-3ds-popup',
-                'CBO3DS',
+                'CBOPAGA3DS',
                 [
-                    'url_ok' => esc_url_raw( home_url( "/wc-api/cbo_standard_gateway_status" ) ),
-                    'url_ko' => esc_url_raw( home_url( "/wc-api/cbo_standard_gateway_status" ) ),
+                    'url_ok' => esc_url_raw( home_url( "/wc-api/cbopaga_standard_gateway_status" ) ),
+                    'url_ko' => esc_url_raw( home_url( "/wc-api/cbopaga_standard_gateway_status" ) ),
                 ]
             );
         }
 
         // Clave
-        if (file_exists(CBO_PG_PATH . 'build/cbo-telered.asset.php')) {
-            $asset = include CBO_PG_PATH . 'build/cbo-telered.asset.php';
+        if (file_exists(CBOPAGA_PATH . 'build/cbo-telered.asset.php')) {
+            $asset = include CBOPAGA_PATH . 'build/cbo-telered.asset.php';
             wp_register_script(
                 'cbo-telered-blocks-js',
-                CBO_PG_URL . 'build/cbo-telered.js',
+                CBOPAGA_URL . 'build/cbo-telered.js',
                 $asset['dependencies'],
                 $asset['version'],
                 true
@@ -90,7 +90,7 @@ final class CBO_Blocks_Support
             wp_set_script_translations(
                 'cbo-telered-blocks-js',
                 'cbo-payment-gateway',
-                CBO_PG_PATH . 'build/i18n'
+                CBOPAGA_PATH . 'build/i18n'
             );
         }
     }
@@ -100,11 +100,11 @@ final class CBO_Blocks_Support
     {
         wp_enqueue_style(
             'cbo-card-fields-style',
-            CBO_PG_URL . 'assets/css/cbo-card-fields.css',
+            CBOPAGA_URL . 'assets/css/cbo-card-fields.css',
             [],
             '1.0.0'
         );
     }
 }
 
-CBO_Blocks_Support::init();
+CBOPAGA_Blocks_Support::init();

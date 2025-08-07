@@ -1,7 +1,7 @@
 <?php
-
+if ( ! defined( 'ABSPATH' ) ) exit;
 include_once 'cbo-constants.php';
-class WC_CBO_Telered_Gateway extends WC_Payment_Gateway {
+class CBOPAGA_Telered_Gateway extends WC_Payment_Gateway {
 
 	protected static $instance;
 
@@ -10,7 +10,7 @@ class WC_CBO_Telered_Gateway extends WC_Payment_Gateway {
 	 */
 	public function __construct() {
 
-		$this->id = CBOConstants::TELERED_GATEWAY_ID; // payment gateway plugin ID
+		$this->id = CBOPAGA_Constants::TELERED_GATEWAY_ID; // payment gateway plugin ID
 		$this->icon = ''; // URL of the icon that will be displayed on checkout page near your gateway name
 		$this->has_fields = false; // in case you need a custom credit card form
 		$this->method_title = 'CBO Clave Gateway';
@@ -47,7 +47,19 @@ class WC_CBO_Telered_Gateway extends WC_Payment_Gateway {
 		//URL OK y KO
 		add_action( "woocommerce_api_" . $this->id . '_status', array( $this, 'callback_url' ) );
 
+		// Add nonce field for security
+		add_action('woocommerce_admin_field_cbopaga_nonce', function () {
+    	wp_nonce_field('cbopaga_telered_save_settings', 'cbopaga_telered_nonce');
+		});
 
+	}
+
+	public function process_admin_options() {
+		if ( ! isset( $_POST['cbopaga_telered_nonce'] ) || 
+			! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['cbopaga_telered_nonce'] ) ), 'cbopaga_telered_save_settings' ) ) {
+			wp_die(esc_html__( 'Unauthorized action.', 'cbo-payment-gateway' ), esc_html__( 'Security Error', 'cbo-payment-gateway' ), 403);
+		}
+		parent::process_admin_options();
 	}
 
 	public function get_icon() {
@@ -131,6 +143,21 @@ class WC_CBO_Telered_Gateway extends WC_Payment_Gateway {
 
 	}
 
+	public function admin_options() {
+		?>
+		<h2><?php echo esc_html( $this->get_method_title() ); ?></h2>
+		<p><?php echo esc_html( $this->get_method_description() ); ?></p>
+		<table class="form-table">
+			<?php
+			// Nonce field for security
+			wp_nonce_field( 'cbopaga_telered_save_settings', 'cbopaga_telered_nonce' );
+
+			$this->generate_settings_html();
+			?>
+		</table>
+		<?php
+	}
+
 	/**
 	 * You will need it if you want your custom credit card form, Step 4 is about it
 	 */
@@ -196,11 +223,11 @@ class WC_CBO_Telered_Gateway extends WC_Payment_Gateway {
 		// we need it to get any order detailes
 		$order = wc_get_order( $order_id );
 
-        CBOLog::debug("api_client_id=$this->api_client_id, api_client_secret=$this->api_client_secret");
-        $cboClient = new CBOClient($this->api_url, $this->api_client_id, $this->api_client_secret);
+        CBOPAGA_Log::debug("api_client_id=$this->api_client_id, api_client_secret=$this->api_client_secret");
+        $cboClient = new CBOPAGA_Client($this->api_url, $this->api_client_id, $this->api_client_secret);
 		try {
-			$checkout = $cboClient->checkout($order, CBOConstants::PAYMENT_TYPE_TELERED);
-			CBOLog::debug("Checkout data: " . json_encode($checkout));
+			$checkout = $cboClient->checkout($order, CBOPAGA_Constants::PAYMENT_TYPE_TELERED);
+			CBOPAGA_Log::debug("Checkout data: " . json_encode($checkout));
 
 			// Mark as on-hold (we're awaiting the cheque)
 			//$order->update_status('on-hold', __( 'Awaiting cheque payment', 'woocommerce' ));
@@ -209,9 +236,9 @@ class WC_CBO_Telered_Gateway extends WC_Payment_Gateway {
 				'result' => 'success',
 				'redirect' => $this->api_url . '/checkout/' . $checkout['slug']
 			);
-		} catch (\CBOException $e) {
+		} catch (\CBOPAGA_Exception $e) {
 			if (!$e->isSuccessResponse()) {
-				CBOLog::debug($e->getMessage() . " - " . json_encode($e->getResponse()));
+				CBOPAGA_Log::debug($e->getMessage() . " - " . json_encode($e->getResponse()));
 				wc_add_notice(  'No se ha podido generar el pago. Por favor contacte con el comercio.', 'error' );
 			} else {
 				wc_add_notice(  'No se ha podido procesar el pago. Por favor contacte con el comercio.', 'error' );
@@ -220,9 +247,11 @@ class WC_CBO_Telered_Gateway extends WC_Payment_Gateway {
 	}
 
 	public function callback_url() {
-		$order_id = $_GET['oid'];
+		// Returning user from payment gateway, read-only param. Nonce not applicable.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$order_id = isset($_GET['oid']) ? absint($_GET['oid']) : 0;
 
-		// CBOLog::debug("callback_url: " . $order_id);
+		// CBOPAGA_Log::debug("callback_url: " . $order_id);
 
 		$order = wc_get_order( $order_id );
 		
@@ -246,46 +275,65 @@ class WC_CBO_Telered_Gateway extends WC_Payment_Gateway {
 	 */
 	public function webhook() {
 
-		global $woocommerce;
+		$data_raw = json_decode( file_get_contents( 'php://input' ), true );
+		if ( ! is_array( $data_raw ) ) {
+			CBOPAGA_Log::debug( 'Webhook error: payload no es JSON' );
+			header( 'HTTP/1.1 400 Bad Request' );
+			exit;
+		}
 
-		$data = json_decode(file_get_contents('php://input'), true);
-		CBOLog::debug("Webhook: Tx #" . $data['identifier'] . ": " . json_encode($data));
+		$data = $this->cbopaga_recursive_sanitize( $data_raw );
+		CBOPAGA_Log::debug( 'Webhook: Tx # ' . ( $data['identifier'] ?? 'N/A' ) . ' - ' . json_encode( $data ) );
 
-		//$client = new CBOClient($this->api_url);
+		//$client = new CBOPAGA_Client($this->api_url);
 
 		try {
-			//$transaction = $client->transaction($data['tid']);
-			$transaction = $data;
+        $transaction = $data;
+        $metas = $transaction['metadatas'] ?? [];
+        $order_id = $metas['order_id'] ?? null;
+        $order = $order_id ? wc_get_order($order_id) : null;
 
+        $status = $transaction['status'] ?? '';
+        $successStatus = ['authorized', 'notified'];
 
-			$metas = $transaction['metadatas'];
-			$order_id = $metas['order_id'];
-			$order = wc_get_order( $order_id );
+        if ($order) {
+            $order->add_meta_data('cbopaga_bank_code', $transaction['response_code'] ?? '');
+            $order->add_meta_data('cbopaga_transaction_id', $transaction['identifier'] ?? '');
+            $order->add_meta_data('cbopaga_bank_authorization', $transaction['authorization_number'] ?? '');
 
-			$status = $transaction['status'];
-			$successStatus = ['authorized', 'notified'];
-			$order->add_meta_data('cbo_bank_code', $transaction['response_code']);
-			$order->add_meta_data('cbo_transaction_id', $transaction['identifier']);
-			$order->add_meta_data('cbo_bank_authorization', $transaction['authorization_number']);
+            if (in_array($status, $successStatus)) {
+                $order->update_status('completed', __('Pago completado', 'cbo-payment-gateway'));
+                $order->payment_complete($transaction['identifier'] ?? '');
+                if ( function_exists( 'WC' ) && WC()->cart ) {
+					WC()->cart->empty_cart();
+				}
+            } else {
+                $order->update_status('failed', __('Pago fallido', 'cbo-payment-gateway'));
+            }
+        }
 
-			if (in_array($status, $successStatus)) {
-				$order->update_status('completed', __( 'Pago completado', 'cbo-payment-gateway' ));
-				$order->payment_complete($transaction['identifier']);
-				$woocommerce->cart->empty_cart();
-			} else {
-				$order->update_status('failed', __( 'Pago fallido', 'cbo-payment-gateway' ));
-			}
+        header('HTTP/1.1 204 OK');
 
-			header( 'HTTP/1.1 204 OK' );
-
-		} catch (\CBOException $e) {
-			CBOLog::debug("Error getting transaction " . $data['tid'] . ' - ' .$e->getMessage());
-			header( 'HTTP/1.1 400 Bad Request' );
-
-		}
+    } catch (\CBOPAGA_Exception $e) {
+        CBOPAGA_Log::debug("Error getting transaction " . ($data['tid'] ?? '') . ' - ' . $e->getMessage());
+        header('HTTP/1.1 400 Bad Request');
+    }
 
 		return;
 
+	}
+
+	private function cbopaga_recursive_sanitize( $value ) {
+		if ( is_array( $value ) ) {
+			foreach ( $value as $k => $v ) {
+				$value[ $k ] = $this->cbopaga_recursive_sanitize( $v );
+			}
+			return $value;
+		}
+		if ( is_string( $value ) ) {
+			return sanitize_text_field( $value );
+		}
+		return $value; 
 	}
 
 	public static function instance() {
