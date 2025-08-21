@@ -2,7 +2,7 @@
 /**
  * Blocks Standard class for CBO Payment Gateway plugin.
  *
- * @package CBOWCP_Payment_Gateway
+ * @package COBALT_BANK_OPERATIONS_Payment_Gateway
  */
 
 namespace CBO\Blocks;
@@ -16,14 +16,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Integration for the CBO Standard Blocks payment method.
  */
-final class CBOWCP_Standard_Blocks extends AbstractPaymentMethodType {
+final class COBALT_BANK_OPERATIONS_Standard_Blocks extends AbstractPaymentMethodType {
 
 	/**
 	 * Payment method name for the CBO Standard gateway.
 	 *
 	 * @var string
 	 */
-	protected $name = 'cbowcp_standard_gateway';
+	protected $name = 'cobalt_bank_operations_standard_gateway';
 
 
 	/**
@@ -39,7 +39,7 @@ final class CBOWCP_Standard_Blocks extends AbstractPaymentMethodType {
 	 * @return array
 	 */
 	public function get_payment_method_script_handles() {
-		return array( 'cbowcp-standard-blocks-js' );
+		return array( 'cobalt-bank-operations-standard-blocks-js' );
 	}
 
 	/**
@@ -66,13 +66,13 @@ final class CBOWCP_Standard_Blocks extends AbstractPaymentMethodType {
 		return array(
 			array(
 				'id'  => 'visa',
-				'src' => CBOWCP_URL . 'assets/images/visa.svg',
-				'alt' => __( 'Visa', 'class-cbowcp-payment-gateway' ),
+				'src' => COBALT_BANK_OPERATIONS_URL . 'assets/images/visa.svg',
+				'alt' => __( 'Visa', 'class-cobalt-bank-operations-payment-gateway' ),
 			),
 			array(
 				'id'  => 'mastercard',
-				'src' => CBOWCP_URL . 'assets/images/mastercard.svg',
-				'alt' => __( 'Mastercard', 'class-cbowcp-payment-gateway' ),
+				'src' => COBALT_BANK_OPERATIONS_URL . 'assets/images/mastercard.svg',
+				'alt' => __( 'Mastercard', 'class-cobalt-bank-operations-payment-gateway' ),
 			),
 		);
 	}

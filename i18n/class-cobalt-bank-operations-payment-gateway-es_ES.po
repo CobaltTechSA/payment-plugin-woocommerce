@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: CBO Payment Gateway 2.4.1\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/class-cbowcp-"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/class-cobalt-bank-operations-"
 "payment-gateway\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -13,86 +13,86 @@ msgstr ""
 "POT-Creation-Date: 2025-08-21T15:12:18+00:00\n"
 "PO-Revision-Date: 2025-08-21T15:12:18+00:00\n"
 "X-Generator: WP-CLI 2.12.0\n"
-"X-Domain: class-cbowcp-payment-gateway\n"
+"X-Domain: class-cobalt-bank-operations-payment-gateway\n"
 "Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. Plugin Name of the plugin
-#: class-cbowcp-payment-gateway.php
+#: class-cobalt-bank-operations-payment-gateway.php
 msgid "CBO Payment Gateway"
 msgstr ""
 
 #. Plugin URI of the plugin
 #. Author URI of the plugin
-#: class-cbowcp-payment-gateway.php
+#: class-cobalt-bank-operations-payment-gateway.php
 msgid "https://neopayment.com"
 msgstr ""
 
 #. Description of the plugin
-#: class-cbowcp-payment-gateway.php
+#: class-cobalt-bank-operations-payment-gateway.php
 msgid "Payments with VISA, MasterCard and Clave"
 msgstr "Pagos con VISA, MasterCard y Clave"
 
 #. Author of the plugin
-#: class-cbowcp-payment-gateway.php
+#: class-cobalt-bank-operations-payment-gateway.php
 msgid "Cobalt Tech"
 msgstr ""
 
-#: class-cbowcp-client.php:270
+#: class-cobalt-bank-operations-client.php:270
 msgid "Invalid transaction ID"
 msgstr "ID de transacción no válida"
 
-#: class-cbowcp-client.php:275
+#: class-cobalt-bank-operations-client.php:275
 msgid "Refund route not defined"
 msgstr "Ruta de reembolso no definida"
 
-#: class-cbowcp-client.php:290
+#: class-cobalt-bank-operations-client.php:290
 msgid "Error requesting refund"
 msgstr "Error al solicitar reembolso"
 
-#: class-cbowcp-client.php:296
+#: class-cobalt-bank-operations-client.php:296
 msgid "Refund failed"
 msgstr "Reembolso fallido"
 
-#: class-cbowcp-client.php:446
+#: class-cobalt-bank-operations-client.php:446
 msgid "Error getting commerce"
 msgstr "Error al obtener comercio"
 
-#: class-cbowcp-payment-gateway-cc.php:116
+#: class-cobalt-bank-operations-payment-gateway-cc.php:116
 msgid "Card code"
 msgstr "CVC"
 
-#: class-cbowcp-payment-gateway-cc.php:117
-#: assets/js/blocks/components/CardFields.js:134 build/cbowcp-standard.js:1
+#: class-cobalt-bank-operations-payment-gateway-cc.php:117
+#: assets/js/blocks/components/CardFields.js:134 build/cobalt-bank-operations-standard.js:1
 msgid "CVC"
 msgstr ""
 
-#: class-cbowcp-payment-gateway-cc.php:121
-#: class-cbowcp-payment-gateway-cc.php:122
-#: assets/js/blocks/components/CardFields.js:59 build/cbowcp-standard.js:1
+#: class-cobalt-bank-operations-payment-gateway-cc.php:121
+#: class-cobalt-bank-operations-payment-gateway-cc.php:122
+#: assets/js/blocks/components/CardFields.js:59 build/cobalt-bank-operations-standard.js:1
 msgid "Card holder"
 msgstr "Titular de la tarjeta"
 
-#: class-cbowcp-payment-gateway-cc.php:127
-#: assets/js/blocks/components/CardFields.js:80 build/cbowcp-standard.js:1
+#: class-cobalt-bank-operations-payment-gateway-cc.php:127
+#: assets/js/blocks/components/CardFields.js:80 build/cobalt-bank-operations-standard.js:1
 msgid "Card number"
 msgstr "Número de tarjeta"
 
-#: class-cbowcp-payment-gateway-cc.php:131
+#: class-cobalt-bank-operations-payment-gateway-cc.php:131
 msgid "Expiry (MM/YY)"
 msgstr "Fecha de vencimiento (MM/AA)"
 
-#: class-cbowcp-payment-gateway-cc.php:132
+#: class-cobalt-bank-operations-payment-gateway-cc.php:132
 msgid "MM / YY"
 msgstr "MM/AA"
 
-#: class-cbowcp-payment-gateway.php:143 assets/js/blocks/cbowcp-standard.js:15
-#: build/cbowcp-standard.js:1
+#: class-cobalt-bank-operations-payment-gateway.php:143 assets/js/blocks/cobalt-bank-operations-standard.js:15
+#: build/cobalt-bank-operations-standard.js:1
 msgid "Card (Visa/Mastercard)"
 msgstr "Tarjeta (Visa/Mastercard)"
 
 #. translators: %1$s - plugin name, %2$s - minimum WordPress version required, %3$s - update WordPress link open, %4$s - update WordPress link close
-#: class-cbowcp-payment-gateway.php:233
+#: class-cobalt-bank-operations-payment-gateway.php:233
 #, php-format
 msgid ""
 "%1$s requiere WordPress %2$s or higher. Porfavor %3$sactualiza WordPress "
@@ -100,7 +100,7 @@ msgid ""
 msgstr ""
 
 #. translators: %1$s - Plugin Name, %2$s - activate WooCommerce link open, %3$s - activate WooCommerce link close.
-#: class-cbowcp-payment-gateway.php:259
+#: class-cobalt-bank-operations-payment-gateway.php:259
 #, php-format
 msgid ""
 "%1$s requiere que WooCommerce esté activado. Por favor %2$sactiva "
@@ -108,7 +108,7 @@ msgid ""
 msgstr ""
 
 #. translators: %1$s - Plugin Name, %2$s - install WooCommerce link open, %3$s - install WooCommerce link close.
-#: class-cbowcp-payment-gateway.php:275
+#: class-cobalt-bank-operations-payment-gateway.php:275
 #, php-format
 msgid ""
 "%1$s requiere que WooCommerce esté instalado y activado. por favor, "
@@ -116,7 +116,7 @@ msgid ""
 msgstr ""
 
 #. translators: %1$s - Plugin Name, %2$s - minimum WooCommerce version, %3$s - update WooCommerce link open, %4$s - update WooCommerce link close, %5$s - download minimum WooCommerce link open, %6$s - download minimum WooCommerce link close.
-#: class-cbowcp-payment-gateway.php:294
+#: class-cobalt-bank-operations-payment-gateway.php:294
 #, php-format
 msgid ""
 "%1$s requiere WooCommerce %2$s o superior. Por favor, %3$sactualiza "
@@ -125,241 +125,242 @@ msgid ""
 msgstr ""
 
 #. translators: %1$s - Plugin Name, %2$s - minimum WooCommerce version, %3$s - update WooCommerce link open, %4$s - update WooCommerce link close, %5$s - download minimum WooCommerce link open, %6$s - download minimum WooCommerce link close.
-#: class-cbowcp-payment-gateway.php:310
+#: class-cobalt-bank-operations-payment-gateway.php:310
 #, php-format
 msgid "%1$s solo está disponible para tiendas localizadas en Panamá."
 msgstr ""
 
-#: class-cbowcp-standard-gateway.php:36
+#: class-cobalt-bank-operations-standard-gateway.php:36
 msgid "Acceptance of payments with Visa / Mastercard"
 msgstr "Aceptación de pagos con Visa / Mastercard"
 
-#: class-cbowcp-standard-gateway.php:87 class-cbowcp-standard-gateway.php:378
-#: class-cbowcp-telered-gateway.php:81
+#: class-cobalt-bank-operations-standard-gateway.php:87 class-cobalt-bank-operations-standard-gateway.php:378
+#: class-cobalt-bank-operations-telered-gateway.php:81
 msgid "Unauthorized action."
 msgstr "Acción no autorizada."
 
-#: class-cbowcp-standard-gateway.php:87 class-cbowcp-telered-gateway.php:81
+#: class-cobalt-bank-operations-standard-gateway.php:87 class-cobalt-bank-operations-telered-gateway.php:81
 msgid "Security Error"
 msgstr "Error de seguridad"
 
-#: class-cbowcp-standard-gateway.php:103
-#: includes/blocks/class-cbowcp-standard-blocks.php:70
+#: class-cobalt-bank-operations-standard-gateway.php:103
+#: includes/blocks/class-cobalt-bank-operations-standard-blocks.php:70
 msgid "Visa"
 msgstr ""
 
-#: class-cbowcp-standard-gateway.php:109
-#: includes/blocks/class-cbowcp-standard-blocks.php:75
+#: class-cobalt-bank-operations-standard-gateway.php:109
+#: includes/blocks/class-cobalt-bank-operations-standard-blocks.php:75
 msgid "Mastercard"
 msgstr ""
 
-#: class-cbowcp-standard-gateway.php:129 class-cbowcp-telered-gateway.php:116
+#: class-cobalt-bank-operations-standard-gateway.php:129 class-cobalt-bank-operations-telered-gateway.php:116
 msgid "Enable/Disable"
 msgstr "Habilitar/Deshabilitar"
 
-#: class-cbowcp-standard-gateway.php:130 class-cbowcp-telered-gateway.php:117
+#: class-cobalt-bank-operations-standard-gateway.php:130 class-cobalt-bank-operations-telered-gateway.php:117
 msgid "Enable CBO Payment Gateway"
 msgstr "Habilitar CBO Payment Gateway"
 
-#: class-cbowcp-standard-gateway.php:136 class-cbowcp-telered-gateway.php:123
+#: class-cobalt-bank-operations-standard-gateway.php:136 class-cobalt-bank-operations-telered-gateway.php:123
 msgid "Title"
 msgstr "Título"
 
-#: class-cbowcp-standard-gateway.php:138 class-cbowcp-telered-gateway.php:125
+#: class-cobalt-bank-operations-standard-gateway.php:138 class-cobalt-bank-operations-telered-gateway.php:125
 msgid "This controls the title which the user sees during checkout."
 msgstr "Esto controla el título que el usuario ve durante el pago."
 
-#: class-cbowcp-standard-gateway.php:143 class-cbowcp-telered-gateway.php:130
+#: class-cobalt-bank-operations-standard-gateway.php:143 class-cobalt-bank-operations-telered-gateway.php:130
 msgid "Description"
 msgstr "Descripción"
 
-#: class-cbowcp-standard-gateway.php:145 class-cbowcp-telered-gateway.php:132
+#: class-cobalt-bank-operations-standard-gateway.php:145 class-cobalt-bank-operations-telered-gateway.php:132
 msgid "This controls the description which the user sees during checkout."
 msgstr "Esto controla la descripción que el usuario ve durante el pago."
 
-#: class-cbowcp-standard-gateway.php:146 class-cbowcp-telered-gateway.php:133
+#: class-cobalt-bank-operations-standard-gateway.php:146 class-cobalt-bank-operations-telered-gateway.php:133
 msgid "Pay with your VISA or Mastercard card"
 msgstr "Paga con tu tarjeta VISA o Mastercard"
 
-#: class-cbowcp-standard-gateway.php:149 class-cbowcp-telered-gateway.php:136
+#: class-cobalt-bank-operations-standard-gateway.php:149 class-cobalt-bank-operations-telered-gateway.php:136
 msgid "Test mode"
 msgstr "Modo de pruebas"
 
-#: class-cbowcp-standard-gateway.php:150 class-cbowcp-telered-gateway.php:137
+#: class-cobalt-bank-operations-standard-gateway.php:150 class-cobalt-bank-operations-telered-gateway.php:137
 msgid "Enable Test Mode"
 msgstr "Habilitar modo de pruebas"
 
-#: class-cbowcp-standard-gateway.php:152 class-cbowcp-telered-gateway.php:139
+#: class-cobalt-bank-operations-standard-gateway.php:152 class-cobalt-bank-operations-telered-gateway.php:139
 msgid "Place the payment gateway in test mode using test API keys."
 msgstr "Coloque la pasarela de pago en modo de prueba utilizando claves API de prueba."
 
-#: class-cbowcp-standard-gateway.php:157 class-cbowcp-telered-gateway.php:144
+#: class-cobalt-bank-operations-standard-gateway.php:157 class-cobalt-bank-operations-telered-gateway.php:144
 msgid "Test API URL"
 msgstr "URL de la API de prueba"
 
-#: class-cbowcp-standard-gateway.php:162 class-cbowcp-telered-gateway.php:148
+#: class-cobalt-bank-operations-standard-gateway.php:162 class-cobalt-bank-operations-telered-gateway.php:148
 msgid "Test API Client Id"
 msgstr "API ClientId de prueba"
 
-#: class-cbowcp-standard-gateway.php:166 class-cbowcp-telered-gateway.php:152
+#: class-cobalt-bank-operations-standard-gateway.php:166 class-cobalt-bank-operations-telered-gateway.php:152
 msgid "Test API Client Secret"
 msgstr "API ClientSecret de prueba"
 
-#: class-cbowcp-standard-gateway.php:170 class-cbowcp-telered-gateway.php:156
+#: class-cobalt-bank-operations-standard-gateway.php:170 class-cobalt-bank-operations-telered-gateway.php:156
 msgid "Production API URL"
 msgstr "URL de la API de producción"
 
-#: class-cbowcp-standard-gateway.php:175 class-cbowcp-telered-gateway.php:160
+#: class-cobalt-bank-operations-standard-gateway.php:175 class-cobalt-bank-operations-telered-gateway.php:160
 msgid "Production API Client Id"
 msgstr "API ClientId de producción"
 
-#: class-cbowcp-standard-gateway.php:179 class-cbowcp-telered-gateway.php:164
+#: class-cobalt-bank-operations-standard-gateway.php:179 class-cobalt-bank-operations-telered-gateway.php:164
 msgid "Production API Client Secret"
 msgstr "API ClientSecret de producción"
 
-#: class-cbowcp-standard-gateway.php:280 class-cbowcp-telered-gateway.php:197
+#: class-cobalt-bank-operations-standard-gateway.php:280 class-cobalt-bank-operations-telered-gateway.php:197
 msgid "TEST MODE ENABLED"
 msgstr "MODO DE PRUEBAS HABILITADO"
 
-#: class-cbowcp-standard-gateway.php:310 class-cbowcp-standard-gateway.php:431
+#: class-cobalt-bank-operations-standard-gateway.php:310 class-cobalt-bank-operations-standard-gateway.php:431
 msgid "Security check failed. Please try again."
 msgstr "Error en la comprobación de seguridad. Inténtalo de nuevo."
 
-#: class-cbowcp-standard-gateway.php:344 assets/js/blocks/cbowcp-standard.js:67
-#: assets/js/blocks/components/CardFields.js:98 build/cbowcp-standard.js:1
+#: class-cobalt-bank-operations-standard-gateway.php:344 assets/js/blocks/cobalt-bank-operations-standard.js:67
+#: assets/js/blocks/components/CardFields.js:98 build/cobalt-bank-operations-standard.js:1
 msgid "Invalid card number"
 msgstr "Número de tarjeta no válido"
 
-#: class-cbowcp-standard-gateway.php:350
+#: class-cobalt-bank-operations-standard-gateway.php:350
 msgid "Invalid expiry date"
 msgstr "Fecha no válida"
 
-#: class-cbowcp-standard-gateway.php:355
+#: class-cobalt-bank-operations-standard-gateway.php:355
 msgid "Invalid card holder"
 msgstr "Nombre de tarjeta no válido"
 
-#: class-cbowcp-standard-gateway.php:360
+#: class-cobalt-bank-operations-standard-gateway.php:360
 msgid "Invalid card code (CVV)"
 msgstr "CVV no válido"
 
-#: class-cbowcp-standard-gateway.php:544
-#: class-cbowcp-standard-gateway.php:552
+#: class-cobalt-bank-operations-standard-gateway.php:544
+#: class-cobalt-bank-operations-standard-gateway.php:552
 msgid "We were unable to complete the payment. Please contact with commerce."
 msgstr "No pudimos completar el pago. Por favor, contacte con el departamento de comercio."
 
-#: class-cbowcp-standard-gateway.php:546
+#: class-cobalt-bank-operations-standard-gateway.php:546
 msgid ""
 "We were unable to complete the payment. Please check your card details or "
 "contact your bank."
 msgstr "No pudimos completar el pago. Por favor, revise los datos de su tarjeta o contacte con su banco."
 
-#: class-cbowcp-standard-gateway.php:666
+#: class-cobalt-bank-operations-standard-gateway.php:666
 msgid "Payment completed"
 msgstr "Pago completado"
 
-#: class-cbowcp-standard-gateway.php:673
+#: class-cobalt-bank-operations-standard-gateway.php:673
 msgid "Failed payment"
 msgstr "Pago fallido"
 
-#: class-cbowcp-standard-gateway.php:726
+#: class-cobalt-bank-operations-standard-gateway.php:726
 msgid "Processing 3DS…"
 msgstr "Procesando 3DS"
 
-#: class-cbowcp-standard-gateway.php:733
+#: class-cobalt-bank-operations-standard-gateway.php:733
 msgid ""
 "Please enable JavaScript to complete your payment. You will be automatically "
 "redirected..."
 msgstr "Habilite JavaScript para completar su pago. Será redirigido automáticamente..."
 
-#: class-cbowcp-telered-gateway.php:34
+#: class-cobalt-bank-operations-telered-gateway.php:34
 msgid "Acceptance of payments with Clave"
 msgstr "Aceptación de pagos con Clave"
 
-#: class-cbowcp-telered-gateway.php:96
+#: class-cobalt-bank-operations-telered-gateway.php:96
 msgid "Telered"
 msgstr ""
 
-#: class-cbowcp-telered-gateway.php:309
+#: class-cobalt-bank-operations-telered-gateway.php:309
 msgid "Pago completado"
 msgstr ""
 
-#: class-cbowcp-telered-gateway.php:315
+#: class-cobalt-bank-operations-telered-gateway.php:315
 msgid "Pago fallido"
 msgstr ""
 
-#: includes/blocks/class-cbowcp-telered-blocks.php:51
-#: assets/js/blocks/cbowcp-telered.js:8 build/cbowcp-telered.js:1
+#: includes/blocks/class-cobalt-bank-operations-telered-blocks.php:51
+#: assets/js/blocks/cobalt-bank-operations-telered.js:8 build/cobalt-bank-operations-telered.js:1
 msgid "Clave Card"
 msgstr "Tarjeta Clave"
 
-#: includes/blocks/class-cbowcp-telered-blocks.php:52
+#: includes/blocks/class-cobalt-bank-operations-telered-blocks.php:52
 msgid "Pay securely with your card"
 msgstr "Paga de forma segura con tu tarjeta."
 
-#: assets/js/blocks/cbowcp-standard.js:73
-#: assets/js/blocks/components/CardFields.js:127 build/cbowcp-standard.js:1
+#: assets/js/blocks/cobalt-bank-operations-standard.js:73
+#: assets/js/blocks/components/CardFields.js:127 build/cobalt-bank-operations-standard.js:1
 msgid "Invalid date"
 msgstr "Fecha no válida"
 
-#: assets/js/blocks/cbowcp-standard.js:79
-#: assets/js/blocks/components/CardFields.js:148 build/cbowcp-standard.js:1
+#: assets/js/blocks/cobalt-bank-operations-standard.js:79
+#: assets/js/blocks/components/CardFields.js:148 build/cobalt-bank-operations-standard.js:1
 msgid "Invalid CVC"
 msgstr "CVC no válido"
 
-#: assets/js/blocks/cbowcp-standard.js:85 build/cbowcp-standard.js:1
+#: assets/js/blocks/cobalt-bank-operations-standard.js:85 build/cobalt-bank-operations-standard.js:1
 msgid "Holder name is required"
 msgstr "El nombre del titular es obligatorio."
 
-#: assets/js/blocks/cbowcp-standard.js:109 build/cbowcp-standard.js:1
+#: assets/js/blocks/cobalt-bank-operations-standard.js:109 build/cobalt-bank-operations-standard.js:1
 msgid "CBO Standard Gateway"
 msgstr ""
 
-#: assets/js/blocks/cbowcp-telered.js:17 build/cbowcp-telered.js:1
+#: assets/js/blocks/cobalt-bank-operations-telered.js:17 build/cobalt-bank-operations-telered.js:1
 msgid "CBO Telered Gateway"
 msgstr ""
 
-#: assets/js/blocks/cbowcp-telered.js:24 build/cbowcp-telered.js:1
+#: class-cobalt-bank-operations-telered-gateway.php:81
+#: assets/js/blocks/cobalt-bank-operations-telered.js:24 build/cobalt-bank-operations-telered.js:1
 msgid "Pay with Clave"
 msgstr "Pagar con Clave"
 
-#: assets/js/blocks/components/CardFields.js:64 build/cbowcp-standard.js:1
+#: assets/js/blocks/components/CardFields.js:64 build/cobalt-bank-operations-standard.js:1
 msgid "Full name"
 msgstr "Nombre completo"
 
-#: assets/js/blocks/components/CardFields.js:73 build/cbowcp-standard.js:1
+#: assets/js/blocks/components/CardFields.js:73 build/cobalt-bank-operations-standard.js:1
 msgid "You must enter the holder name"
 msgstr "Debe ingresar el nombre del titular"
 
-#: assets/js/blocks/components/CardFields.js:107 build/cbowcp-standard.js:1
+#: assets/js/blocks/components/CardFields.js:107 build/cobalt-bank-operations-standard.js:1
 msgid "Expiration date"
 msgstr "Fecha de expiración"
 
-#: assets/js/blocks/components/CardFields.js:112 build/cbowcp-standard.js:1
+#: assets/js/blocks/components/CardFields.js:112 build/cobalt-bank-operations-standard.js:1
 msgid "MM/YY"
 msgstr "MM/AA"
 
-#: assets/js/cbowcp-3ds-popup.js:13
+#: assets/js/cobalt-bank-operations-3ds-popup.js:13
 msgid "Habilite las ventanas emergentes en su navegador y vuelva a intentarlo."
 msgstr ""
 
-#: assets/js/cbowcp-3ds-popup.js:108
+#: assets/js/cobalt-bank-operations-3ds-popup.js:108
 msgid "Error"
 msgstr ""
 
-#: assets/js/cbowcp-3ds-popup.js:109
+#: assets/js/cobalt-bank-operations-3ds-popup.js:109
 msgid ""
 "No se pudo abrir la ventana emergente. Active las ventanas emergentes en su "
 "navegador y vuelva a intentarlo."
 msgstr ""
 
-#: assets/js/cbowcp-3ds-popup.js:117
+#: assets/js/cobalt-bank-operations-3ds-popup.js:117
 msgid "Entendido"
 msgstr ""
 
-#: assets/js/cbowcp-3ds-popup.js:135
+#: assets/js/cobalt-bank-operations-3ds-popup.js:135
 msgid "Error de autenticación"
 msgstr ""
 
-#: assets/js/cbowcp-3ds-popup.js:136
+#: assets/js/cobalt-bank-operations-3ds-popup.js:136
 msgid "Inténtelo nuevamente y mantenga la ventana emergente activa."
 msgstr ""

@@ -2,7 +2,7 @@
 /**
  * Blocks Telered class for CBO Payment Gateway plugin.
  *
- * @package CBOWCP_Payment_Gateway
+ * @package COBALT_BANK_OPERATIONS_Payment_Gateway
  */
 
 namespace CBO\Blocks;
@@ -16,14 +16,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Integration for the CBO Telered Blocks payment method.
  */
-final class CBOWCP_Telered_Blocks extends AbstractPaymentMethodType {
+final class COBALT_BANK_OPERATIONS_Telered_Blocks extends AbstractPaymentMethodType {
 
 	/**
 	 * Payment method name for the CBO Telered gateway.
 	 *
 	 * @var string
 	 */
-	protected $name = 'cbowcp_telered_gateway';
+	protected $name = 'cobalt_bank_operations_telered_gateway';
 
 	/**
 	 * Initializes the blocks telered hooks.
@@ -38,7 +38,7 @@ final class CBOWCP_Telered_Blocks extends AbstractPaymentMethodType {
 	 * @return array Block Telered JS.
 	 */
 	public function get_payment_method_script_handles() {
-		return array( 'cbowcp-telered-blocks-js' );
+		return array( 'cobalt-bank-operations-telered-blocks-js' );
 	}
 
 	/**
@@ -48,8 +48,8 @@ final class CBOWCP_Telered_Blocks extends AbstractPaymentMethodType {
 	 */
 	public function get_payment_method_data() {
 		return array(
-			'title'       => __( 'Clave Card', 'class-cbowcp-payment-gateway' ),
-			'description' => __( 'Pay securely with your card', 'class-cbowcp-payment-gateway' ),
+			'title'       => __( 'Clave Card', 'class-cobalt-bank-operations-payment-gateway' ),
+			'description' => __( 'Pay securely with your card', 'class-cobalt-bank-operations-payment-gateway' ),
 			'supports'    => array( 'products' ),
 		);
 	}

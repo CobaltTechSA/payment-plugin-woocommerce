@@ -1,4 +1,4 @@
-.cbowcp-card-fields {
+.cobalt-bank-operations-card-fields {
 	padding: 10px;
 	display: flex;
 	flex-direction: column;
@@ -6,26 +6,26 @@
 	max-width: 100%;
 }
 
-.cbowcp-card-fields__row {
+.cobalt-bank-operations-card-fields__row {
 	display: flex;
 	gap: 15px;
 	flex-wrap: wrap;
 }
 
-.cbowcp-card-fields__group {
+.cobalt-bank-operations-card-fields__group {
 	flex: 1 1 1px;
 	display: flex;
 	flex-direction: column;
 }
 
-.cbowcp-card-fields input {
+.cobalt-bank-operations-card-fields input {
 	padding: 8px;
 	font-size: 14px;
 	border: 1px solid #ccc;
 	border-radius: 4px;
 }
 
-.cbowcp-card-fields__error {
+.cobalt-bank-operations-card-fields__error {
 	color: #e74c3c;
 	font-size: 0.875rem;
 	margin-top: 0.25rem;
@@ -41,7 +41,7 @@
 	font-size: 1rem;
 }
 
-.cbowcp-card-fields {
+.cobalt-bank-operations-card-fields {
 	padding: 10px;
 	display: flex;
 	flex-direction: column;
@@ -49,26 +49,26 @@
 	max-width: 100%;
 }
 
-.cbowcp-card-fields__row {
+.cobalt-bank-operations-card-fields__row {
 	display: flex;
 	gap: 15px;
 	flex-wrap: wrap;
 }
 
-.cbowcp-card-fields__group {
+.cobalt-bank-operations-card-fields__group {
 	flex: 1 1 1px;
 	display: flex;
 	flex-direction: column;
 }
 
-.cbowcp-card-fields input {
+.cobalt-bank-operations-card-fields input {
 	padding: 8px;
 	font-size: 14px;
 	border: 1px solid #ccc;
 	border-radius: 4px;
 }
 
-.cbowcp-card-fields__error {
+.cobalt-bank-operations-card-fields__error {
 	color: #e74c3c;
 	font-size: 0.875rem;
 	margin-top: 0.25rem;
@@ -83,20 +83,20 @@
 	font-size: 1rem;
 }
 
-.cbowcp-payment-label {
+.cobalt-bank-operations-payment-label {
 	display: flex;
 	align-items: center;
 	width: 100%;
 	padding-right: 1rem;
 }
 
-.cbowcp-payment-label__icons {
+.cobalt-bank-operations-payment-label__icons {
 	display: flex;
 	gap: 8px;
 	margin-left: auto;
 }
 
-.cbowcp-payment-label__icon {
+.cobalt-bank-operations-payment-label__icon {
 	width: 24px;
 	height: auto;
 }

@@ -11,18 +11,18 @@ import {
 } from '../includes/validators';
 
 const Label = ({ label }) => (
-  <div className="cbowcp-payment-label">
-    <span>{ __( 'Card (Visa/Mastercard)', 'class-cbowcp-payment-gateway' ) }</span>
-    <div className="cbowcp-payment-label__icons">
+  <div className="cobalt-bank-operations-payment-label">
+    <span>{ __( 'Card (Visa/Mastercard)', 'class-cobalt-bank-operations-payment-gateway' ) }</span>
+    <div className="cobalt-bank-operations-payment-label__icons">
       <img
         src={ visaUrl }
         alt="Visa"
-        className="cbowcp-payment-label__icon"
+        className="cobalt-bank-operations-payment-label__icon"
       />
       <img
         src={ mcUrl }
         alt="Mastercard"
-        className="cbowcp-payment-label__icon"
+        className="cobalt-bank-operations-payment-label__icon"
       />
     </div>
   </div>
@@ -64,25 +64,25 @@ function PaymentMethod({
       if (!validateLuhn(card_number)) {
         return {
           type: emitResponse.responseTypes.ERROR,
-          message: __('Invalid card number', 'class-cbowcp-payment-gateway'),
+          message: __('Invalid card number', 'class-cobalt-bank-operations-payment-gateway'),
         };
       }
       if (!validateExpiry(card_expiry)) {
         return {
           type: emitResponse.responseTypes.ERROR,
-          message: __('Invalid date', 'class-cbowcp-payment-gateway'),
+          message: __('Invalid date', 'class-cobalt-bank-operations-payment-gateway'),
         };
       }
       if (!validateCvc(card_cvc)) {
         return {
           type: emitResponse.responseTypes.ERROR,
-          message: __('Invalid CVC', 'class-cbowcp-payment-gateway'),
+          message: __('Invalid CVC', 'class-cobalt-bank-operations-payment-gateway'),
         };
       }
       if (!card_holder) {
         return {
           type: emitResponse.responseTypes.ERROR,
-          message: __('Holder name is required', 'class-cbowcp-payment-gateway'),
+          message: __('Holder name is required', 'class-cobalt-bank-operations-payment-gateway'),
         };
       }
       return {
@@ -104,9 +104,9 @@ function PaymentMethod({
 };
 
 registerPaymentMethod({
-  name: 'cbowcp_standard_gateway',
+  name: 'cobalt_bank_operations_standard_gateway',
   label: <Label />,
-  ariaLabel: __('CBO Standard Gateway', 'class-cbowcp-payment-gateway'),
+  ariaLabel: __('CBO Standard Gateway', 'class-cobalt-bank-operations-payment-gateway'),
   canMakePayment: () => true,
   content: <PaymentMethod />,
   edit: <PaymentMethod />,

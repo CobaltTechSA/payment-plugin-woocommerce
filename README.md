@@ -30,7 +30,7 @@ Accept credit card payments in WooCommerce using the Cobalt Tech payment gateway
    npm run build
    ```
 
-2. Upload the entire `class-cbowcp-payment-gateway` folder into:
+2. Upload the entire `class-cobalt-bank-operations-payment-gateway` folder into:
 
    ```
    /wp-content/plugins/
@@ -50,36 +50,36 @@ All user-facing strings are translatable. To generate and compile translation fi
 
 1. **Extract strings to a `.pot` file**  
    ```bash
-   wp i18n make-pot . i18n/class-cbowcp-payment-gateway.pot --slug=class-cbowcp-payment-gateway
+   wp i18n make-pot . i18n/class-cobalt-bank-operations-payment-gateway.pot --slug=class-cobalt-bank-operations-payment-gateway
    ```
 
 2. **Initialize a new locale** (example: Spanish – `es_ES`)  
    ```bash
    msginit \
      --no-translator \
-     --input=i18n/class-cbowcp-payment-gateway.pot \
+     --input=i18n/class-cobalt-bank-operations-payment-gateway.pot \
      --locale=es_ES \
-     --output-file=i18n/class-cbowcp-payment-gateway-es_ES.po
+     --output-file=i18n/class-cobalt-bank-operations-payment-gateway-es_ES.po
    ```
 
 3. **Translate strings**  
-   - Open `i18n/class-cbowcp-payment-gateway-es_ES.po`  
+   - Open `i18n/class-cobalt-bank-operations-payment-gateway-es_ES.po`  
    - Fill in each `msgstr` for every `msgid`  
    - Save your changes  
 
 4. **Compile the `.mo` file**  
    ```bash
    msgfmt \
-     i18n/class-cbowcp-payment-gateway-es_ES.po \
-     -o i18n/class-cbowcp-payment-gateway-es_ES.mo
+     i18n/class-cobalt-bank-operations-payment-gateway-es_ES.po \
+     -o i18n/class-cobalt-bank-operations-payment-gateway-es_ES.mo
    ```
 
 5. **Generate JSON for React/JS blocks**  
    ```bash
-   wp i18n make-json i18n i18n --domain=class-cbowcp-payment-gateway
+   wp i18n make-json i18n i18n --domain=class-cobalt-bank-operations-payment-gateway
    ```
    - **Input**: All `.pot` files inside `i18n/`  
-   - **Output**: `class-cbowcp-payment-gateway-<locale>.json` files in `i18n/`
+   - **Output**: `class-cobalt-bank-operations-payment-gateway-<locale>.json` files in `i18n/`
 
 6. **Copy JSON files into your build directory**  
    ```bash

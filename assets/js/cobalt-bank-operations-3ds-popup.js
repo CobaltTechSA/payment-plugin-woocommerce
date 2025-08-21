@@ -10,7 +10,7 @@ jQuery(($) => {
   function testPopupEnabled() {
     const w = window.open('', '_blank', 'width=100,height=100');
     if (!w) {
-      alert(__('Habilite las ventanas emergentes en su navegador y vuelva a intentarlo.', 'class-cbowcp-payment-gateway'));
+      alert(__('Habilite las ventanas emergentes en su navegador y vuelva a intentarlo.', 'class-cobalt-bank-operations-payment-gateway'));
       return false;
     }
     w.close();
@@ -47,7 +47,7 @@ jQuery(($) => {
           const response = JSON.parse(xhr.responseText);
           handleCheckoutResponse(response);
         } catch (error) {
-          console.error('[CBOWCP-3DS] Error parsing AJAX response:', error);
+          console.error('[CBO-3DS] Error parsing AJAX response:', error);
         }
       }
     });
@@ -66,7 +66,7 @@ jQuery(($) => {
               const json = await response.clone().json();
               handleCheckoutResponse(json);
             } catch (error) {
-              console.error('[CBOWCP-3DS] Error parsing fetch response:', error);
+              console.error('[CBO-3DS] Error parsing fetch response:', error);
             }
           }
         }
@@ -79,7 +79,7 @@ jQuery(($) => {
   function handleCheckoutResponse(response) {
     const orderId = response.order_id ?? response.payment_result?.order_id ?? null;
     if (orderId && openedOrders.has(orderId)) {
-      console.warn('[CBOWCP-3DS] This order_id has already been processed:', orderId);
+      console.warn('[CBO-3DS] This order_id has already been processed:', orderId);
       return;
     }
     if (orderId) {
@@ -118,18 +118,18 @@ jQuery(($) => {
   function open3DSPopup(url) {
     const popup = window.open(url, '_blank', `width=${POPUP_WIDTH},height=${POPUP_HEIGHT}`);
     if (!popup) {
-      console.warn('[CBOWCP-3DS] The browser blocked the popup.');
+      console.warn('[CBO-3DS] The browser blocked the popup.');
        showPopupWarning(
-        __( 'Error', 'class-cbowcp-payment-gateway' ),
-        __( 'No se pudo abrir la ventana emergente. Active las ventanas emergentes en su navegador y vuelva a intentarlo.', 'class-cbowcp-payment-gateway' )
+        __( 'Error', 'class-cobalt-bank-operations-payment-gateway' ),
+        __( 'No se pudo abrir la ventana emergente. Active las ventanas emergentes en su navegador y vuelva a intentarlo.', 'class-cobalt-bank-operations-payment-gateway' )
       );
     }
   }
 
   function showPopupWarning(title, text) {
-    console.warn(`[CBOWCP-3DS] ${title}: ${text}`);
+    console.warn(`[CBO-3DS] ${title}: ${text}`);
     if (typeof swal === 'function') {
-        window.swal({ title, text, icon: 'warning', button: __( 'Entendido', 'class-cbowcp-payment-gateway' ) }).then(() => {
+        window.swal({ title, text, icon: 'warning', button: __( 'Entendido', 'class-cobalt-bank-operations-payment-gateway' ) }).then(() => {
         location.reload();
       });
     } else {
@@ -145,10 +145,10 @@ jQuery(($) => {
       if (event.data.cbo3ds === 'success') {
         window.location.href = event.data.redirect_to || window.location.href;
       } else {
-        console.warn('[CBOWCP-3DS] Authentication failed.');
+        console.warn('[CBO-3DS] Authentication failed.');
         showPopupWarning(
-          __( 'Error de autenticación', 'class-cbowcp-payment-gateway' ),
-          __( 'Inténtelo nuevamente y mantenga la ventana emergente activa.', 'class-cbowcp-payment-gateway' )
+          __( 'Error de autenticación', 'class-cobalt-bank-operations-payment-gateway' ),
+          __( 'Inténtelo nuevamente y mantenga la ventana emergente activa.', 'class-cobalt-bank-operations-payment-gateway' )
         );
       }
     });

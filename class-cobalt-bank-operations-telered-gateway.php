@@ -2,18 +2,18 @@
 /**
  * Telered class for CBO Payment Gateway plugin.
  *
- * @package CBOWCP_Payment_Gateway
+ * @package COBALT_BANK_OPERATIONS_Payment_Gateway
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-require_once 'class-cbowcp-constants.php';
+require_once 'class-cobalt-bank-operations-constants.php';
 
 /**
  * Handles WooCommerce Telered integration for the payment gateway.
  */
-class CBOWCP_Telered_Gateway extends WC_Payment_Gateway {
+class COBALT_BANK_OPERATIONS_Telered_Gateway extends WC_Payment_Gateway {
 
 	/**
 	 * Instance for the CBO Telered gateway.
@@ -27,11 +27,11 @@ class CBOWCP_Telered_Gateway extends WC_Payment_Gateway {
 	 */
 	public function __construct() {
 
-		$this->id                 = CBOWCP_Constants::TELERED_GATEWAY_ID; // payment gateway plugin ID.
+		$this->id                 = COBALT_BANK_OPERATIONS_Constants::TELERED_GATEWAY_ID; // payment gateway plugin ID.
 		$this->icon               = ''; // URL of the icon that will be displayed on checkout page near your gateway name.
 		$this->has_fields         = false; // in case you need a custom credit card form.
 		$this->method_title       = 'CBO Clave Gateway';
-		$this->method_description = __( 'Acceptance of payments with Clave', 'class-cbowcp-payment-gateway' ); // will be displayed on the options page.
+		$this->method_description = __( 'Acceptance of payments with Clave', 'class-cobalt-bank-operations-payment-gateway' ); // will be displayed on the options page.
 
 		// gateways can support subscriptions, refunds, saved payment methods but in this tutorial we begin with simple payments.
 		$this->supports = array(
@@ -65,9 +65,9 @@ class CBOWCP_Telered_Gateway extends WC_Payment_Gateway {
 
 		// Add nonce field for security.
 		add_action(
-			'woocommerce_admin_field_cbowcp_nonce',
+			'woocommerce_admin_field_cobalt_bank_operations_nonce',
 			function () {
-				wp_nonce_field( 'cbowcp_telered_save_settings', 'cbowcp_telered_nonce' );
+				wp_nonce_field( 'cobalt_bank_operations_telered_save_settings', 'cobalt_bank_operations_telered_nonce' );
 			}
 		);
 	}
@@ -76,9 +76,9 @@ class CBOWCP_Telered_Gateway extends WC_Payment_Gateway {
 	 * Process Admin Validate.
 	 */
 	public function process_admin_options() {
-		if ( ! isset( $_POST['cbowcp_telered_nonce'] ) ||
-			! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['cbowcp_telered_nonce'] ) ), 'cbowcp_telered_save_settings' ) ) {
-			wp_die( esc_html__( 'Unauthorized action.', 'class-cbowcp-payment-gateway' ), esc_html__( 'Security Error', 'class-cbowcp-payment-gateway' ), 403 );
+		if ( ! isset( $_POST['cobalt_bank_operations_telered_nonce'] ) ||
+			! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['cobalt_bank_operations_telered_nonce'] ) ), 'cobalt_bank_operations_telered_save_settings' ) ) {
+			wp_die( esc_html__( 'Unauthorized action.', 'class-cobalt-bank-operations-payment-gateway' ), esc_html__( 'Security Error', 'class-cobalt-bank-operations-payment-gateway' ), 403 );
 		}
 		parent::process_admin_options();
 	}
@@ -91,9 +91,9 @@ class CBOWCP_Telered_Gateway extends WC_Payment_Gateway {
 		$icons = array(
 			sprintf(
 				'<img class="%s" src="%s" alt="%s" />',
-				esc_attr( 'cbowcp-gateway-icon' ),
+				esc_attr( 'cobalt-bank-operations-gateway-icon' ),
 				esc_url( WC_HTTPS::force_https_url( $path . 'assets/images/clave.svg' ) ),
-				esc_attr__( 'Telered', 'class-cbowcp-payment-gateway' )
+				esc_attr__( 'Telered', 'class-cobalt-bank-operations-payment-gateway' )
 			),
 		);
 
@@ -113,55 +113,55 @@ class CBOWCP_Telered_Gateway extends WC_Payment_Gateway {
 
 		$this->form_fields = array(
 			'enabled'                => array(
-				'title'       => __( 'Enable/Disable', 'class-cbowcp-payment-gateway' ),
-				'label'       => __( 'Enable CBO Payment Gateway', 'class-cbowcp-payment-gateway' ),
+				'title'       => __( 'Enable/Disable', 'class-cobalt-bank-operations-payment-gateway' ),
+				'label'       => __( 'Enable CBO Payment Gateway', 'class-cobalt-bank-operations-payment-gateway' ),
 				'type'        => 'checkbox',
 				'description' => '',
 				'default'     => 'no',
 			),
 			'title'                  => array(
-				'title'       => __( 'Title', 'class-cbowcp-payment-gateway' ),
+				'title'       => __( 'Title', 'class-cobalt-bank-operations-payment-gateway' ),
 				'type'        => 'text',
-				'description' => __( 'This controls the title which the user sees during checkout.', 'class-cbowcp-payment-gateway' ),
-				'default'     => 'VISA, Mastercard',
+				'description' => __( 'This controls the title which the user sees during checkout.', 'class-cobalt-bank-operations-payment-gateway' ),
+				'default'     => 'Clave',
 				'desc_tip'    => true,
 			),
 			'description'            => array(
-				'title'       => __( 'Description', 'class-cbowcp-payment-gateway' ),
+				'title'       => __( 'Description', 'class-cobalt-bank-operations-payment-gateway' ),
 				'type'        => 'textarea',
-				'description' => __( 'This controls the description which the user sees during checkout.', 'class-cbowcp-payment-gateway' ),
-				'default'     => __( 'Pay with your VISA or Mastercard card', 'class-cbowcp-payment-gateway' ),
+				'description' => __( 'This controls the description which the user sees during checkout.', 'class-cobalt-bank-operations-payment-gateway' ),
+				'default'     => __( 'Pay with Clave', 'class-cobalt-bank-operations-payment-gateway' ),
 			),
 			'testmode'               => array(
-				'title'       => __( 'Test mode', 'class-cbowcp-payment-gateway' ),
-				'label'       => __( 'Enable Test Mode', 'class-cbowcp-payment-gateway' ),
+				'title'       => __( 'Test mode', 'class-cobalt-bank-operations-payment-gateway' ),
+				'label'       => __( 'Enable Test Mode', 'class-cobalt-bank-operations-payment-gateway' ),
 				'type'        => 'checkbox',
-				'description' => __( 'Place the payment gateway in test mode using test API keys.', 'class-cbowcp-payment-gateway' ),
+				'description' => __( 'Place the payment gateway in test mode using test API keys.', 'class-cobalt-bank-operations-payment-gateway' ),
 				'default'     => 'yes',
 				'desc_tip'    => true,
 			),
 			'test_api_url'           => array(
-				'title' => __( 'Test API URL', 'class-cbowcp-payment-gateway' ),
+				'title' => __( 'Test API URL', 'class-cobalt-bank-operations-payment-gateway' ),
 				'type'  => 'text',
 			),
 			'test_api_client_id'     => array(
-				'title' => __( 'Test API Client Id', 'class-cbowcp-payment-gateway' ),
+				'title' => __( 'Test API Client Id', 'class-cobalt-bank-operations-payment-gateway' ),
 				'type'  => 'text',
 			),
 			'test_api_client_secret' => array(
-				'title' => __( 'Test API Client Secret', 'class-cbowcp-payment-gateway' ),
+				'title' => __( 'Test API Client Secret', 'class-cobalt-bank-operations-payment-gateway' ),
 				'type'  => 'password',
 			),
 			'api_url'                => array(
-				'title' => __( 'Production API URL', 'class-cbowcp-payment-gateway' ),
+				'title' => __( 'Production API URL', 'class-cobalt-bank-operations-payment-gateway' ),
 				'type'  => 'text',
 			),
 			'api_client_id'          => array(
-				'title' => __( 'Production API Client Id', 'class-cbowcp-payment-gateway' ),
+				'title' => __( 'Production API Client Id', 'class-cobalt-bank-operations-payment-gateway' ),
 				'type'  => 'text',
 			),
 			'api_client_secret'      => array(
-				'title' => __( 'Production API Client Secret', 'class-cbowcp-payment-gateway' ),
+				'title' => __( 'Production API Client Secret', 'class-cobalt-bank-operations-payment-gateway' ),
 				'type'  => 'password',
 			),
 		);
@@ -177,7 +177,7 @@ class CBOWCP_Telered_Gateway extends WC_Payment_Gateway {
 		<table class="form-table">
 			<?php
 			// Nonce field for security.
-			wp_nonce_field( 'cbowcp_telered_save_settings', 'cbowcp_telered_nonce' );
+			wp_nonce_field( 'cobalt_bank_operations_telered_save_settings', 'cobalt_bank_operations_telered_nonce' );
 
 			$this->generate_settings_html();
 			?>
@@ -194,7 +194,7 @@ class CBOWCP_Telered_Gateway extends WC_Payment_Gateway {
 		if ( $this->description ) {
 			// you can instructions for test mode, I mean test card numbers etc.
 			if ( $this->testmode ) {
-				$this->description .= ' ' . __( 'TEST MODE ENABLED', 'class-cbowcp-payment-gateway' ) . '.';
+				$this->description .= ' ' . __( 'TEST MODE ENABLED', 'class-cobalt-bank-operations-payment-gateway' ) . '.';
 				$this->description  = trim( $this->description );
 			}
 			// display the description with <p> tags etc.
@@ -226,12 +226,12 @@ class CBOWCP_Telered_Gateway extends WC_Payment_Gateway {
 		// we need it to get any order detailes.
 		$order = wc_get_order( $order_id );
 
-		CBOWCP_Log::debug( "api_client_id=$this->api_client_id, api_client_secret=$this->api_client_secret" );
-		$cbowcp_client = new CBOWCP_Client( $this->api_url, $this->api_client_id, $this->api_client_secret );
+		COBALT_BANK_OPERATIONS_Log::debug( "api_client_id=$this->api_client_id, api_client_secret=$this->api_client_secret" );
+		$cobalt_bank_operations_client = new COBALT_BANK_OPERATIONS_Client( $this->api_url, $this->api_client_id, $this->api_client_secret );
 		try {
-			$checkout = $cbowcp_client->checkout( $order, CBOWCP_Constants::PAYMENT_TYPE_TELERED );
+			$checkout = $cobalt_bank_operations_client->checkout( $order, COBALT_BANK_OPERATIONS_Constants::PAYMENT_TYPE_TELERED );
 
-			CBOWCP_Log::debug( 'Checkout data: ' . wp_json_encode( $checkout ) );
+			COBALT_BANK_OPERATIONS_Log::debug( 'Checkout data: ' . wp_json_encode( $checkout ) );
 
 			// Mark as on-hold (we're awaiting the cheque).
 			// $order->update_status('on-hold', __( 'Awaiting cheque payment', 'woocommerce' ));.
@@ -240,9 +240,9 @@ class CBOWCP_Telered_Gateway extends WC_Payment_Gateway {
 				'result'   => 'success',
 				'redirect' => $this->api_url . '/checkout/' . $checkout['slug'],
 			);
-		} catch ( \CBOWCP_Exception $e ) {
+		} catch ( \COBALT_BANK_OPERATIONS_Exception $e ) {
 			if ( ! $e->isSuccessResponse() ) {
-				CBOWCP_Log::debug( $e->getMessage() . ' - ' . wp_json_encode( $e->getResponse() ) );
+				COBALT_BANK_OPERATIONS_Log::debug( $e->getMessage() . ' - ' . wp_json_encode( $e->getResponse() ) );
 				wc_add_notice( 'No se ha podido generar el pago. Por favor contacte con el comercio.', 'error' );
 			} else {
 				wc_add_notice( 'No se ha podido procesar el pago. Por favor contacte con el comercio.', 'error' );
@@ -283,13 +283,13 @@ class CBOWCP_Telered_Gateway extends WC_Payment_Gateway {
 
 		$data_raw = json_decode( file_get_contents( 'php://input' ), true );
 		if ( ! is_array( $data_raw ) ) {
-			CBOWCP_Log::debug( 'Webhook error: payload no es JSON' );
+			COBALT_BANK_OPERATIONS_Log::debug( 'Webhook error: payload no es JSON' );
 			status_header( 400 );
 			exit;
 		}
 
-		$data = $this->cbowcp_recursive_sanitize( $data_raw );
-		CBOWCP_Log::debug( 'Checkout data: ' . wp_json_encode( $checkout ) );
+		$data = $this->cobalt_bank_operations_recursive_sanitize( $data_raw );
+		COBALT_BANK_OPERATIONS_Log::debug( 'Checkout data: ' . wp_json_encode( $checkout ) );
 
 		try {
 			$transaction = $data;
@@ -301,25 +301,25 @@ class CBOWCP_Telered_Gateway extends WC_Payment_Gateway {
 			$success_status = array( 'authorized', 'notified' );
 
 			if ( $order ) {
-				$order->add_meta_data( 'cbowcp_bank_code', $transaction['response_code'] ?? '' );
-				$order->add_meta_data( 'cbowcp_transaction_id', $transaction['identifier'] ?? '' );
-				$order->add_meta_data( 'cbowcp_bank_authorization', $transaction['authorization_number'] ?? '' );
+				$order->add_meta_data( 'cobalt_bank_operations_bank_code', $transaction['response_code'] ?? '' );
+				$order->add_meta_data( 'cobalt_bank_operations_transaction_id', $transaction['identifier'] ?? '' );
+				$order->add_meta_data( 'cobalt_bank_operations_bank_authorization', $transaction['authorization_number'] ?? '' );
 
 				if ( in_array( $status, $success_status, true ) ) {
-					$order->update_status( 'completed', __( 'Pago completado', 'class-cbowcp-payment-gateway' ) );
+					$order->update_status( 'completed', __( 'Pago completado', 'class-cobalt-bank-operations-payment-gateway' ) );
 					$order->payment_complete( $transaction['identifier'] ?? '' );
 					if ( function_exists( 'WC' ) && WC()->cart ) {
 						WC()->cart->empty_cart();
 					}
 				} else {
-					$order->update_status( 'failed', __( 'Pago fallido', 'class-cbowcp-payment-gateway' ) );
+					$order->update_status( 'failed', __( 'Pago fallido', 'class-cobalt-bank-operations-payment-gateway' ) );
 				}
 			}
 
 			status_header( 204 );
 
-		} catch ( \CBOWCP_Exception $e ) {
-			CBOWCP_Log::debug( 'Error getting transaction ' . ( $data['tid'] ?? '' ) . ' - ' . $e->getMessage() );
+		} catch ( \COBALT_BANK_OPERATIONS_Exception $e ) {
+			COBALT_BANK_OPERATIONS_Log::debug( 'Error getting transaction ' . ( $data['tid'] ?? '' ) . ' - ' . $e->getMessage() );
 			status_header( 400 );
 		}
 	}
@@ -330,10 +330,10 @@ class CBOWCP_Telered_Gateway extends WC_Payment_Gateway {
 	 * @param mixed $value Value to sanitize (array|string|scalar).
 	 * @return mixed Sanitized value.
 	 */
-	private function cbowcp_recursive_sanitize( $value ) {
+	private function cobalt_bank_operations_recursive_sanitize( $value ) {
 		if ( is_array( $value ) ) {
 			foreach ( $value as $k => $v ) {
-				$value[ $k ] = $this->cbowcp_recursive_sanitize( $v );
+				$value[ $k ] = $this->cobalt_bank_operations_recursive_sanitize( $v );
 			}
 			return $value;
 		}

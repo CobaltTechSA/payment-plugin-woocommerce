@@ -2,19 +2,19 @@
 /**
  * Client for CBO Payment Gateway plugin.
  *
- * @package CBOWCP_Payment_Gateway
+ * @package COBALT_BANK_OPERATIONS_Payment_Gateway
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-require_once 'class-cbowcp-constants.php';
-require_once 'class-cbowcp-exception.php';
+require_once 'class-cobalt-bank-operations-constants.php';
+require_once 'class-cobalt-bank-operations-exception.php';
 
 /**
  * Handles WooCommerce client for the payment gateway.
  */
-class CBOWCP_Client {
+class COBALT_BANK_OPERATIONS_Client {
 
 	const API_V2_ROUTES = array(
 		'sale'        => '/api/v2/transactions/sale',
@@ -57,11 +57,11 @@ class CBOWCP_Client {
 	 * @param string      $base_url      Base URL for API connection.
 	 * @param string|null $client_id     Client identifier from the merchant.
 	 * @param string|null $client_secret Client secret from the merchant.
-	 * @throws CBOWCP_Exception When API credentials are not configured.
+	 * @throws COBALT_BANK_OPERATIONS_Exception When API credentials are not configured.
 	 */
 	public function __construct( string $base_url, ?string $client_id, ?string $client_secret ) {
 		if ( empty( $base_url ) || empty( $client_id ) || empty( $client_secret ) ) {
-			throw new CBOWCP_Exception( 'Credenciales API no configuradas.' );
+			throw new COBALT_BANK_OPERATIONS_Exception( 'Credenciales API no configuradas.' );
 		}
 
 		$this->base_url      = $base_url;
@@ -76,18 +76,18 @@ class CBOWCP_Client {
 	 * @param array  $data     Request payload.
 	 * @param bool   $login    Whether to include auth header (default true).
 	 * @return array Decoded response as associative array.
-	 * @throws CBOWCP_Exception When the HTTP request fails or API returns an error.
+	 * @throws COBALT_BANK_OPERATIONS_Exception When the HTTP request fails or API returns an error.
 	 */
 	private function post( string $endpoint, array $data = array(), $login = true ): array {
 		if ( $login ) {
 			if ( ! $this->login() ) {
-				throw new CBOWCP_Exception( 'Could not authenticate.' );
+				throw new COBALT_BANK_OPERATIONS_Exception( 'Could not authenticate.' );
 			}
 		}
 
 		$headers = array(
 			'Accept: application/json',
-			'User-Agent: Cobalt-WC-Plugin ' . CBOWCP_Constants::PLUGIN_VERSION,
+			'User-Agent: Cobalt-WC-Plugin ' . COBALT_BANK_OPERATIONS_Constants::PLUGIN_VERSION,
 		);
 
 		// When requesting an OAuth token, the content type must be.
@@ -136,18 +136,18 @@ class CBOWCP_Client {
 	 * @param string $endpoint to use.
 	 * @param bool   $login if is authenticate.
 	 * @return array
-	 * @throws CBOWCP_Exception If an authentication error occurs.
+	 * @throws COBALT_BANK_OPERATIONS_Exception If an authentication error occurs.
 	 */
 	private function get( string $endpoint, bool $login = true ): array {
 		if ( $login ) {
 			if ( ! $this->login() ) {
-				throw new CBOWCP_Exception( 'Could not authenticate.' );
+				throw new COBALT_BANK_OPERATIONS_Exception( 'Could not authenticate.' );
 			}
 		}
 
 		$headers = array(
 			'Accept: application/json',
-			'User-Agent: Cobalt-WC-Plugin ' . CBOWCP_Constants::PLUGIN_VERSION,
+			'User-Agent: Cobalt-WC-Plugin ' . COBALT_BANK_OPERATIONS_Constants::PLUGIN_VERSION,
 		);
 
 		if ( $this->authorization ) {
@@ -192,7 +192,7 @@ class CBOWCP_Client {
 	 * @return bool
 	 */
 	public function is_access_token_expired(): bool {
-		$expires_at = intval( get_option( 'cbowcp_expires_at', 0 ) );
+		$expires_at = intval( get_option( 'cobalt_bank_operations_expires_at', 0 ) );
 		$now        = time();
 
 		return $expires_at <= $now;
@@ -202,13 +202,13 @@ class CBOWCP_Client {
 	 * Client login function.
 	 *
 	 * @return bool
-	 * @throws CBOWCP_Exception If an authentication error occurs.
+	 * @throws COBALT_BANK_OPERATIONS_Exception If an authentication error occurs.
 	 */
 	public function login() {
 		$this->authorization = null;
 		$access_token        = $this->get_access_token();
 		if ( ! $access_token ) {
-			throw new CBOWCP_Exception( 'Could not authenticate via OAuth2' );
+			throw new COBALT_BANK_OPERATIONS_Exception( 'Could not authenticate via OAuth2' );
 		}
 
 		$this->authorization = 'Authorization: Bearer ' . $access_token;
@@ -219,10 +219,10 @@ class CBOWCP_Client {
 	 * Get client access token.
 	 *
 	 * @return false|mixed|null
-	 * @throws CBOWCP_Exception If an authentication error occurs.
+	 * @throws COBALT_BANK_OPERATIONS_Exception If an authentication error occurs.
 	 */
 	public function get_access_token() {
-		$access_token = get_option( 'cbowcp_access_token' );
+		$access_token = get_option( 'cobalt_bank_operations_access_token' );
 		if ( $this->is_access_token_expired() ) {
 			$response = $this->post(
 				'/oauth/token',
@@ -242,12 +242,12 @@ class CBOWCP_Client {
 				$expires_in -= ( 60 * 5 ); // For prevention, subtract 5 minutes.
 				$expires_at  = time() + $expires_in;
 
-				update_option( 'cbowcp_access_token', $access_token );
-				update_option( 'cbowcp_expires_at', $expires_at );
-				CBOWCP_Log::debug( "Authentication completed: expires_in=$expires_in, access_token=$access_token" );
+				update_option( 'cobalt_bank_operations_access_token', $access_token );
+				update_option( 'cobalt_bank_operations_expires_at', $expires_at );
+				COBALT_BANK_OPERATIONS_Log::debug( "Authentication completed: expires_in=$expires_in, access_token=$access_token" );
 			} else {
 				// Failed.
-				CBOWCP_Log::error( 'Error getting access token: ' . wp_json_encode( $response ) );
+				COBALT_BANK_OPERATIONS_Log::error( 'Error getting access token: ' . wp_json_encode( $response ) );
 				return null;
 			}
 		}
@@ -261,18 +261,18 @@ class CBOWCP_Client {
 	 * @param string $transaction_id to find.
 	 * @param int    $amount on cents.
 	 * @return array
-	 * @throws CBOWCP_Exception If an authentication error occurs.
+	 * @throws COBALT_BANK_OPERATIONS_Exception If an authentication error occurs.
 	 */
 	public function refund( string $transaction_id, int $amount = 0 ): array {
 		$parse_id = (int) $transaction_id;
 		$id       = $parse_id - 130000000;
 		if ( $id <= 0 ) {
-			throw new CBOWCP_Exception( esc_html__( 'Invalid transaction ID', 'class-cbowcp-payment-gateway' ) );
+			throw new COBALT_BANK_OPERATIONS_Exception( esc_html__( 'Invalid transaction ID', 'class-cobalt-bank-operations-payment-gateway' ) );
 		}
 
 		$route = $this->get_route( 'refund' );
 		if ( empty( $route ) ) {
-			throw new CBOWCP_Exception( esc_html__( 'Refund route not defined', 'class-cbowcp-payment-gateway' ) );
+			throw new COBALT_BANK_OPERATIONS_Exception( esc_html__( 'Refund route not defined', 'class-cobalt-bank-operations-payment-gateway' ) );
 		}
 
 		$endpoint = sprintf(
@@ -283,18 +283,18 @@ class CBOWCP_Client {
 		);
 
 		$response = $this->get( $endpoint );
-		\CBOWCP_Log::debug( 'Respuesta de reembolso: ' . esc_html( wp_json_encode( $response ) ) );
+		\COBALT_BANK_OPERATIONS_Log::debug( 'Respuesta de reembolso: ' . esc_html( wp_json_encode( $response ) ) );
 
 		if ( 200 !== $response['code'] ) {
-			\CBOWCP_Log::error( 'Error al solicitar reembolso: ' . esc_html( wp_json_encode( $response ) ) );
-			throw new CBOWCP_Exception( esc_html__( 'Error requesting refund', 'class-cbowcp-payment-gateway' ), esc_html( wp_json_encode( $response ) ) );
+			\COBALT_BANK_OPERATIONS_Log::error( 'Error al solicitar reembolso: ' . esc_html( wp_json_encode( $response ) ) );
+			throw new COBALT_BANK_OPERATIONS_Exception( esc_html__( 'Error requesting refund', 'class-cobalt-bank-operations-payment-gateway' ), esc_html( wp_json_encode( $response ) ) );
 		}
 
 		$body = $response['body'];
 
 		if ( empty( $body['status'] ) || 'ok' !== $body['status'] ) {
-			$msg = ! empty( $body['message'] ) ? $body['message'] : __( 'Refund failed', 'class-cbowcp-payment-gateway' );
-			throw new CBOWCP_Exception( esc_html( $msg ), esc_html( wp_json_encode( $response ) ) );
+			$msg = ! empty( $body['message'] ) ? $body['message'] : __( 'Refund failed', 'class-cobalt-bank-operations-payment-gateway' );
+			throw new COBALT_BANK_OPERATIONS_Exception( esc_html( $msg ), esc_html( wp_json_encode( $response ) ) );
 		}
 
 		return $body['data'];
@@ -305,7 +305,7 @@ class CBOWCP_Client {
 	 *
 	 * @param string $id parameter.
 	 * @return array
-	 * @throws CBOWCP_Exception If an authentication error occurs.
+	 * @throws COBALT_BANK_OPERATIONS_Exception If an authentication error occurs.
 	 */
 	public function transaction( string $id ): array {
 		$response = $this->get( $this->get_route( 'transaction' ) . $id );
@@ -314,7 +314,7 @@ class CBOWCP_Client {
 			return $response['body']['data'];
 		} else {
             // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
-			throw new CBOWCP_Exception( 'Error processing payment', wp_json_encode( $response ) );
+			throw new COBALT_BANK_OPERATIONS_Exception( 'Error processing payment', wp_json_encode( $response ) );
 		}
 	}
 
@@ -325,20 +325,20 @@ class CBOWCP_Client {
 	 * @param WC_Order $order parameter.
 	 * @param string   $payment_type parameter.
 	 * @return mixed
-	 * @throws CBOWCP_Exception If an authentication error occurs.
+	 * @throws COBALT_BANK_OPERATIONS_Exception If an authentication error occurs.
 	 */
 	public function checkout( WC_Order $order, $payment_type ) {
 
-		\CBOWCP_Log::debug( 'Order ID: ' . $order->get_id() );
+		\COBALT_BANK_OPERATIONS_Log::debug( 'Order ID: ' . $order->get_id() );
 
 		$tax               = $order->get_total_tax() * 100;
 		$total             = $order->get_total() * 100;
 		$total_without_tax = $total - $tax;
 		$body              = array(
 			'metadatas'     => array(
-				'entry'        => get_bloginfo( 'name' ) . ' - Plugin Woocommerce v' . CBOWCP_Constants::PLUGIN_VERSION,
+				'entry'        => get_bloginfo( 'name' ) . ' - Plugin Woocommerce v' . COBALT_BANK_OPERATIONS_Constants::PLUGIN_VERSION,
 				'platform'     => 'Woocommerce',
-				'version'      => CBOWCP_Constants::PLUGIN_VERSION,
+				'version'      => COBALT_BANK_OPERATIONS_Constants::PLUGIN_VERSION,
 				'order_id'     => $order->get_id(),
 				'payment_type' => $payment_type,
 			),
@@ -346,21 +346,21 @@ class CBOWCP_Client {
 			'tax'           => $tax,
 			'amount'        => $total_without_tax,
 			'currency_code' => $order->get_currency(),
-			'webhook'       => get_bloginfo( 'url' ) . '/wc-api/' . CBOWCP_Constants::TELERED_GATEWAY_ID,
+			'webhook'       => get_bloginfo( 'url' ) . '/wc-api/' . COBALT_BANK_OPERATIONS_Constants::TELERED_GATEWAY_ID,
 			'source'        => get_bloginfo( 'url' ),
 			'return_url'    => wc_get_cart_url(),
-			'url_ok'        => get_bloginfo( 'url' ) . '/wc-api/' . CBOWCP_Constants::TELERED_GATEWAY_ID . '_status?oid=' . $order->get_id(),
-			'url_ko'        => get_bloginfo( 'url' ) . '/wc-api/' . CBOWCP_Constants::TELERED_GATEWAY_ID . '_status?oid=' . $order->get_id(),
+			'url_ok'        => get_bloginfo( 'url' ) . '/wc-api/' . COBALT_BANK_OPERATIONS_Constants::TELERED_GATEWAY_ID . '_status?oid=' . $order->get_id(),
+			'url_ko'        => get_bloginfo( 'url' ) . '/wc-api/' . COBALT_BANK_OPERATIONS_Constants::TELERED_GATEWAY_ID . '_status?oid=' . $order->get_id(),
 
 		);
 
 		$response = $this->post( $this->get_route( 'checkout' ), $body );
-		\CBOWCP_Log::debug( 'Response: ' . wp_json_encode( $response ) );
+		\COBALT_BANK_OPERATIONS_Log::debug( 'Response: ' . wp_json_encode( $response ) );
 		if ( 200 === $response['code'] ) {
 			return $response['body']['data'];
 		} else {
             // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
-			throw new CBOWCP_Exception( 'Error processing payment', wp_json_encode( $response ) );
+			throw new COBALT_BANK_OPERATIONS_Exception( 'Error processing payment', wp_json_encode( $response ) );
 		}
 	}
 
@@ -377,20 +377,20 @@ class CBOWCP_Client {
 	 *
 	 * @return array $response        Response data from the transaction.
 	 *
-	 * @throws CBOWCP_Exception If the transaction fails or is invalid.
+	 * @throws COBALT_BANK_OPERATIONS_Exception If the transaction fails or is invalid.
 	 */
 	public function sale( WC_Order $order, $card_number, $expiry_date, $cvv, $card_holder, $three_ds_params = array(), $metadatas = array() ) {
 
-		\CBOWCP_Log::debug( 'Order ID: ' . $order->get_id() );
+		\COBALT_BANK_OPERATIONS_Log::debug( 'Order ID: ' . $order->get_id() );
 
 		$tax               = $order->get_total_tax() * 100;
 		$total             = $order->get_total() * 100;
 		$total_without_tax = $total - $tax;
 
 		$final_metadatas = array(
-			'entry'             => get_bloginfo( 'name' ) . ' - Plugin Woocommerce v' . CBOWCP_Constants::PLUGIN_VERSION,
+			'entry'             => get_bloginfo( 'name' ) . ' - Plugin Woocommerce v' . COBALT_BANK_OPERATIONS_Constants::PLUGIN_VERSION,
 			'platform'          => 'Woocommerce',
-			'version'           => CBOWCP_Constants::PLUGIN_VERSION,
+			'version'           => COBALT_BANK_OPERATIONS_Constants::PLUGIN_VERSION,
 			'order_id'          => $order->get_id(),
 			'payment_reference' => $order->get_id(),
 			'source'            => get_bloginfo( 'url' ),
@@ -400,7 +400,7 @@ class CBOWCP_Client {
 
 		$callback = home_url(
 			'/wc-api/'
-			. CBOWCP_Constants::STANDARD_GATEWAY_ID
+			. COBALT_BANK_OPERATIONS_Constants::STANDARD_GATEWAY_ID
 			. '_status?oid='
 			. $order->get_id()
 		);
@@ -418,16 +418,16 @@ class CBOWCP_Client {
 			'3ds_params'    => $three_ds_params,
 			'url_ok'        => $callback,
 			'url_ko'        => $callback,
-			'webhook'       => get_bloginfo( 'url' ) . '/wc-api/' . CBOWCP_Constants::STANDARD_GATEWAY_ID,
+			'webhook'       => get_bloginfo( 'url' ) . '/wc-api/' . COBALT_BANK_OPERATIONS_Constants::STANDARD_GATEWAY_ID,
 		);
 
 		$response = $this->post( $this->get_route( 'sale' ), $body );
-		\CBOWCP_Log::debug( 'Response: ' . wp_json_encode( $response ) );
+		\COBALT_BANK_OPERATIONS_Log::debug( 'Response: ' . wp_json_encode( $response ) );
 		if ( 200 === $response['code'] ) {
 			return $response['body']['data'];
 		} else {
             // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
-			throw new CBOWCP_Exception( 'Error processing payment', wp_json_encode( $response ) );
+			throw new COBALT_BANK_OPERATIONS_Exception( 'Error processing payment', wp_json_encode( $response ) );
 		}
 	}
 
@@ -435,7 +435,7 @@ class CBOWCP_Client {
 	 * Commerce function.
 	 *
 	 * @return mixed
-	 * @throws CBOWCP_Exception If an authentication error occurs.
+	 * @throws COBALT_BANK_OPERATIONS_Exception If an authentication error occurs.
 	 */
 	public function commerce() {
 		$response = $this->get( '/checkout' );
@@ -443,7 +443,7 @@ class CBOWCP_Client {
 		if ( 200 === $response['code'] ) {
 			return $response['body']['data'];
 		} else {
-			throw new CBOWCP_Exception( esc_html__( 'Error getting commerce', 'class-cbowcp-payment-gateway' ), esc_html( wp_json_encode( $response ) ) );
+			throw new COBALT_BANK_OPERATIONS_Exception( esc_html__( 'Error getting commerce', 'class-cobalt-bank-operations-payment-gateway' ), esc_html( wp_json_encode( $response ) ) );
 		}
 	}
 }

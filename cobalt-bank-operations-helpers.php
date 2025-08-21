@@ -2,7 +2,7 @@
 /**
  * Helpers for CBO Payment Gateway plugin.
  *
- * @package CBOWCP_Payment_Gateway
+ * @package COBALT_BANK_OPERATIONS_Payment_Gateway
  */
 
 /**
@@ -11,7 +11,7 @@
  * @param int $number is card number user.
  * @return bool
  */
-function cbowcp_is_valid_luhn( $number ) {
+function cobalt_bank_operations_is_valid_luhn( $number ) {
 	if ( empty( $number ) ) {
 		return false;
 	}
@@ -40,7 +40,7 @@ function cbowcp_is_valid_luhn( $number ) {
  * @param string $expiry_date is expire card date from user.
  * @return bool
  */
-function cbowcp_is_valid_expiry_date( $expiry_date ) {
+function cobalt_bank_operations_is_valid_expiry_date( $expiry_date ) {
 	if ( empty( $expiry_date ) ) {
 		return false;
 	}
@@ -58,7 +58,7 @@ function cbowcp_is_valid_expiry_date( $expiry_date ) {
  * @param string $card_holder is the name of holder card.
  * @return bool
  */
-function cbowcp_is_valid_card_holder( $card_holder ) {
+function cobalt_bank_operations_is_valid_card_holder( $card_holder ) {
 	if ( empty( $card_holder ) ) {
 		return false;
 	}
@@ -76,7 +76,7 @@ function cbowcp_is_valid_card_holder( $card_holder ) {
  * @param int $cvv is valid with three or four numbers.
  * @return bool
  */
-function cbowcp_is_valid_cvv( $cvv ) {
+function cobalt_bank_operations_is_valid_cvv( $cvv ) {
 	if ( empty( $cvv ) ) {
 		return false;
 	}
@@ -94,7 +94,7 @@ function cbowcp_is_valid_cvv( $cvv ) {
  * @param string $state for parse with only three.
  * @return string "state
  */
-function cbowcp_parse_state( $state ) {
+function cobalt_bank_operations_parse_state( $state ) {
 	$state = str_replace( '-', '', $state );
 	if ( strlen( $state ) > 3 ) {
 		$state = substr( $state, 0, 3 );

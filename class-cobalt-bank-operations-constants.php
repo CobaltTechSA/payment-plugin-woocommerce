@@ -2,16 +2,16 @@
 /**
  * Constants helper for CBO Payment Gateway plugin.
  *
- * @package CBOWCP_Payment_Gateway
+ * @package COBALT_BANK_OPERATIONS_Payment_Gateway
  */
 
 /**
  * Handles WooCommerce constants for the payment gateway.
  */
-class CBOWCP_Constants {
+class COBALT_BANK_OPERATIONS_Constants {
 
-	const STANDARD_GATEWAY_ID = 'cbowcp_standard_gateway';
-	const TELERED_GATEWAY_ID  = 'cbowcp_telered_gateway';
+	const STANDARD_GATEWAY_ID = 'cobalt_bank_operations_standard_gateway';
+	const TELERED_GATEWAY_ID  = 'cobalt_bank_operations_telered_gateway';
 
 	const PLUGIN_VERSION = '2.4.1';
 	const PLUGIN_NAME    = 'CBO Payment Gateway';
