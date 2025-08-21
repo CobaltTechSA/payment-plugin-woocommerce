@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-08-21T15:12:18+00:00\n"
+"POT-Creation-Date: 2025-08-21T22:01:54+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: class-cobalt-bank-operations-payment-gateway\n"
@@ -178,7 +178,6 @@ msgid "This controls the description which the user sees during checkout."
 msgstr ""
 
 #: class-cobalt-bank-operations-standard-gateway.php:146
-#: class-cobalt-bank-operations-telered-gateway.php:133
 msgid "Pay with your VISA or Mastercard card"
 msgstr ""
 
@@ -296,6 +295,12 @@ msgstr ""
 msgid "Telered"
 msgstr ""
 
+#: class-cobalt-bank-operations-telered-gateway.php:133
+#: assets/js/blocks/cobalt-bank-operations-telered.js:24
+#: build/cobalt-bank-operations-telered.js:1
+msgid "Pay with Clave"
+msgstr ""
+
 #: class-cobalt-bank-operations-telered-gateway.php:309
 msgid "Pago completado"
 msgstr ""
@@ -341,12 +346,6 @@ msgstr ""
 msgid "CBO Telered Gateway"
 msgstr ""
 
-#: assets/js/blocks/cobalt-bank-operations-telered.js:24
-#: build/cobalt-bank-operations-telered.js:1
-#: class-cobalt-bank-operations-telered-gateway.php:81
-msgid "Pay with Clave"
-msgstr ""
-
 #: assets/js/blocks/components/CardFields.js:64
 #: build/cobalt-bank-operations-standard.js:1
 msgid "Full name"
@@ -371,22 +370,22 @@ msgstr ""
 msgid "Habilite las ventanas emergentes en su navegador y vuelva a intentarlo."
 msgstr ""
 
-#: assets/js/cobalt-bank-operations-3ds-popup.js:108
+#: assets/js/cobalt-bank-operations-3ds-popup.js:123
 msgid "Error"
 msgstr ""
 
-#: assets/js/cobalt-bank-operations-3ds-popup.js:109
+#: assets/js/cobalt-bank-operations-3ds-popup.js:124
 msgid "No se pudo abrir la ventana emergente. Active las ventanas emergentes en su navegador y vuelva a intentarlo."
 msgstr ""
 
-#: assets/js/cobalt-bank-operations-3ds-popup.js:117
+#: assets/js/cobalt-bank-operations-3ds-popup.js:132
 msgid "Entendido"
 msgstr ""
 
-#: assets/js/cobalt-bank-operations-3ds-popup.js:135
+#: assets/js/cobalt-bank-operations-3ds-popup.js:150
 msgid "Error de autenticación"
 msgstr ""
 
-#: assets/js/cobalt-bank-operations-3ds-popup.js:136
+#: assets/js/cobalt-bank-operations-3ds-popup.js:151
 msgid "Inténtelo nuevamente y mantenga la ventana emergente activa."
 msgstr ""
