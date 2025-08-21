@@ -1,10 +1,10 @@
 <?php
 /**
  * Plugin Name: CBO Payment Gateway
- * Plugin URI: https://cobalt.tech/plugins/wc
+ * Plugin URI: https://neopayment.com
  * Description: Payments with VISA, MasterCard and Clave
  * Author: Cobalt Tech
- * Author URI: https://cobalt.tech
+ * Author URI: https://neopayment.com
  * Version: 2.4.1
  * License:     GPL-2.0
  * Text Domain: class-cbopaga-payment-gateway
