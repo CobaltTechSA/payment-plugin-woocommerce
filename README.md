@@ -1,7 +1,7 @@
 
 # CBO Payment Gateway
 
-**Author:** [Cobalt Tech](https://cobalt.tech)  
+**Author:** [Neopayment](https:/neopayment.com)  
 **Tags:** woocommerce 
 Requires at least: 5.3
 Tested up to: 6.8

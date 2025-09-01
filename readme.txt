@@ -4,7 +4,7 @@ Tags: woocommerce, payment gateway, cobalt tech, panama
 Requires at least: 4.4
 Tested up to: 6.8
 Requires PHP: 7.2.0
-Stable tag: 2.4.1
+Stable tag: 2.4.2
 License: GPLv2
 License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html#SEC1
 

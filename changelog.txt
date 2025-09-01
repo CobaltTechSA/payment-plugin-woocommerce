@@ -1,3 +1,7 @@
+2025.08.07 - version 2.4.2
+* Code convention fixes
+* Refactorized plugin classes names
+
 2025.08.07 - version 2.4.1
 * Security fixes
 

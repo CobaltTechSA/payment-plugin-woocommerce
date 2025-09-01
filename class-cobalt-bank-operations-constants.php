@@ -13,7 +13,7 @@ class COBALT_BANK_OPERATIONS_Constants {
 	const STANDARD_GATEWAY_ID = 'cobalt_bank_operations_standard_gateway';
 	const TELERED_GATEWAY_ID  = 'cobalt_bank_operations_telered_gateway';
 
-	const PLUGIN_VERSION = '2.4.1';
+	const PLUGIN_VERSION = '2.4.2';
 	const PLUGIN_NAME    = 'CBO Payment Gateway';
 
 	// Minimum PHP version required by this plugin.
