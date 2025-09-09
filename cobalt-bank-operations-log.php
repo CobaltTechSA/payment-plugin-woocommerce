@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Handles WooCommerce logs for the payment gateway.
  */
-class COBALT_BANK_OPERATIONS_Log {
+class Cobalt_Bank_Operations_Log {
 
 	/**
 	 * Logger instance.
@@ -43,7 +43,7 @@ class COBALT_BANK_OPERATIONS_Log {
 	 */
 	public static function log( $level, $message ) {
 		$logger  = self::get_instance();
-		$context = array( 'source' => 'class-cobalt-bank-operations-payment-gateway' );
+		$context = array( 'source' => 'cobalt-bank-operations-payment-gateway' );
 		$logger->{$level}( $message, $context );
 	}
 

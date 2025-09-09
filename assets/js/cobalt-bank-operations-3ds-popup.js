@@ -10,7 +10,7 @@ jQuery(($) => {
   function testPopupEnabled() {
     const w = window.open('', '_blank', 'width=100,height=100');
     if (!w) {
-      alert(__('Habilite las ventanas emergentes en su navegador y vuelva a intentarlo.', 'class-cobalt-bank-operations-payment-gateway'));
+      alert(__('Habilite las ventanas emergentes en su navegador y vuelva a intentarlo.', 'cobalt-bank-operations-payment-gateway'));
       return false;
     }
     w.close();
@@ -120,8 +120,8 @@ jQuery(($) => {
     if (!popup) {
       console.warn('[CBO-3DS] The browser blocked the popup.');
        showPopupWarning(
-        __( 'Error', 'class-cobalt-bank-operations-payment-gateway' ),
-        __( 'No se pudo abrir la ventana emergente. Active las ventanas emergentes en su navegador y vuelva a intentarlo.', 'class-cobalt-bank-operations-payment-gateway' )
+        __( 'Error', 'cobalt-bank-operations-payment-gateway' ),
+        __( 'No se pudo abrir la ventana emergente. Active las ventanas emergentes en su navegador y vuelva a intentarlo.', 'cobalt-bank-operations-payment-gateway' )
       );
     }
   }
@@ -129,7 +129,7 @@ jQuery(($) => {
   function showPopupWarning(title, text) {
     console.warn(`[CBO-3DS] ${title}: ${text}`);
     if (typeof swal === 'function') {
-        window.swal({ title, text, icon: 'warning', button: __( 'Entendido', 'class-cobalt-bank-operations-payment-gateway' ) }).then(() => {
+        window.swal({ title, text, icon: 'warning', button: __( 'Entendido', 'cobalt-bank-operations-payment-gateway' ) }).then(() => {
         location.reload();
       });
     } else {
@@ -147,8 +147,8 @@ jQuery(($) => {
       } else {
         console.warn('[CBO-3DS] Authentication failed.');
         showPopupWarning(
-          __( 'Error de autenticación', 'class-cobalt-bank-operations-payment-gateway' ),
-          __( 'Inténtelo nuevamente y mantenga la ventana emergente activa.', 'class-cobalt-bank-operations-payment-gateway' )
+          __( 'Error de autenticación', 'cobalt-bank-operations-payment-gateway' ),
+          __( 'Inténtelo nuevamente y mantenga la ventana emergente activa.', 'cobalt-bank-operations-payment-gateway' )
         );
       }
     });

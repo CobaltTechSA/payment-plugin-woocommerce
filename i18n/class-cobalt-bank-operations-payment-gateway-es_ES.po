@@ -13,28 +13,28 @@ msgstr ""
 "POT-Creation-Date: 2025-08-21T22:01:54+00:00\n"
 "PO-Revision-Date: 2025-08-21T22:01:54+00:00\n"
 "X-Generator: WP-CLI 2.12.0\n"
-"X-Domain: class-cobalt-bank-operations-payment-gateway\n"
+"X-Domain: cobalt-bank-operations-payment-gateway\n"
 "Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. Plugin Name of the plugin
-#: class-cobalt-bank-operations-payment-gateway.php
+#: cobalt-bank-operations-payment-gateway.php
 msgid "CBO Payment Gateway"
 msgstr ""
 
 #. Plugin URI of the plugin
 #. Author URI of the plugin
-#: class-cobalt-bank-operations-payment-gateway.php
+#: cobalt-bank-operations-payment-gateway.php
 msgid "https://neopayment.com"
 msgstr ""
 
 #. Description of the plugin
-#: class-cobalt-bank-operations-payment-gateway.php
+#: cobalt-bank-operations-payment-gateway.php
 msgid "Payments with VISA, MasterCard and Clave"
 msgstr ""
 
 #. Author of the plugin
-#: class-cobalt-bank-operations-payment-gateway.php
+#: cobalt-bank-operations-payment-gateway.php
 msgid "Cobalt Tech"
 msgstr ""
 
@@ -58,45 +58,45 @@ msgstr "Reembolso fallido"
 msgid "Error getting commerce"
 msgstr "Error al obtener comercio"
 
-#: class-cobalt-bank-operations-payment-gateway-cc.php:116
+#: cobalt-bank-operations-payment-gateway-cc.php:116
 msgid "Card code"
 msgstr "CVC"
 
-#: class-cobalt-bank-operations-payment-gateway-cc.php:117
+#: cobalt-bank-operations-payment-gateway-cc.php:117
 #: assets/js/blocks/components/CardFields.js:134
 #: build/cobalt-bank-operations-standard.js:1
 msgid "CVC"
 msgstr ""
 
-#: class-cobalt-bank-operations-payment-gateway-cc.php:121
-#: class-cobalt-bank-operations-payment-gateway-cc.php:122
+#: cobalt-bank-operations-payment-gateway-cc.php:121
+#: cobalt-bank-operations-payment-gateway-cc.php:122
 #: assets/js/blocks/components/CardFields.js:59
 #: build/cobalt-bank-operations-standard.js:1
 msgid "Card holder"
 msgstr "Títular de la tarjeta"
 
-#: class-cobalt-bank-operations-payment-gateway-cc.php:127
+#: cobalt-bank-operations-payment-gateway-cc.php:127
 #: assets/js/blocks/components/CardFields.js:80
 #: build/cobalt-bank-operations-standard.js:1
 msgid "Card number"
 msgstr "Número de tarjeta"
 
-#: class-cobalt-bank-operations-payment-gateway-cc.php:131
+#: cobalt-bank-operations-payment-gateway-cc.php:131
 msgid "Expiry (MM/YY)"
 msgstr "Fecha de vencimiento (MM/AA)"
 
-#: class-cobalt-bank-operations-payment-gateway-cc.php:132
+#: cobalt-bank-operations-payment-gateway-cc.php:132
 msgid "MM / YY"
 msgstr "MM/AA"
 
-#: class-cobalt-bank-operations-payment-gateway.php:143
+#: cobalt-bank-operations-payment-gateway.php:143
 #: assets/js/blocks/cobalt-bank-operations-standard.js:15
 #: build/cobalt-bank-operations-standard.js:1
 msgid "Card (Visa/Mastercard)"
 msgstr "Tarjeta (Visa/Mastercard)"
 
 #. translators: %1$s - plugin name, %2$s - minimum WordPress version required, %3$s - update WordPress link open, %4$s - update WordPress link close
-#: class-cobalt-bank-operations-payment-gateway.php:233
+#: cobalt-bank-operations-payment-gateway.php:233
 #, php-format
 msgid ""
 "%1$s requiere WordPress %2$s or higher. Porfavor %3$sactualiza WordPress "
@@ -104,7 +104,7 @@ msgid ""
 msgstr ""
 
 #. translators: %1$s - Plugin Name, %2$s - activate WooCommerce link open, %3$s - activate WooCommerce link close.
-#: class-cobalt-bank-operations-payment-gateway.php:259
+#: cobalt-bank-operations-payment-gateway.php:259
 #, php-format
 msgid ""
 "%1$s requiere que WooCommerce esté activado. Por favor %2$sactiva "
@@ -112,7 +112,7 @@ msgid ""
 msgstr ""
 
 #. translators: %1$s - Plugin Name, %2$s - install WooCommerce link open, %3$s - install WooCommerce link close.
-#: class-cobalt-bank-operations-payment-gateway.php:275
+#: cobalt-bank-operations-payment-gateway.php:275
 #, php-format
 msgid ""
 "%1$s requiere que WooCommerce esté instalado y activado. por favor, "
@@ -120,7 +120,7 @@ msgid ""
 msgstr ""
 
 #. translators: %1$s - Plugin Name, %2$s - minimum WooCommerce version, %3$s - update WooCommerce link open, %4$s - update WooCommerce link close, %5$s - download minimum WooCommerce link open, %6$s - download minimum WooCommerce link close.
-#: class-cobalt-bank-operations-payment-gateway.php:294
+#: cobalt-bank-operations-payment-gateway.php:294
 #, php-format
 msgid ""
 "%1$s requiere WooCommerce %2$s o superior. Por favor, %3$sactualiza "
@@ -129,7 +129,7 @@ msgid ""
 msgstr ""
 
 #. translators: %1$s - Plugin Name, %2$s - minimum WooCommerce version, %3$s - update WooCommerce link open, %4$s - update WooCommerce link close, %5$s - download minimum WooCommerce link open, %6$s - download minimum WooCommerce link close.
-#: class-cobalt-bank-operations-payment-gateway.php:310
+#: cobalt-bank-operations-payment-gateway.php:310
 #, php-format
 msgid "%1$s solo está disponible para tiendas localizadas en Panamá."
 msgstr ""

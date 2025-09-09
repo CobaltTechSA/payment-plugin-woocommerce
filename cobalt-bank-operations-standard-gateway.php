@@ -8,14 +8,14 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-require_once 'class-cobalt-bank-operations-constants.php';
+require_once 'cobalt-bank-operations-constants.php';
 require_once 'cobalt-bank-operations-helpers.php';
-require_once 'class-cobalt-bank-operations-payment-gateway-cc.php';
+require_once 'cobalt-bank-operations-payment-gateway-cc.php';
 
 /**
  * Handles WooCommerce Standard integration for the payment gateway.
  */
-class COBALT_BANK_OPERATIONS_Standard_Gateway extends WC_Payment_Gateway {
+class Cobalt_Bank_Operations_Standard_Gateway extends WC_Payment_Gateway {
 
 	/**
 	 * Instance for the CBO Standard gateway.
@@ -29,11 +29,11 @@ class COBALT_BANK_OPERATIONS_Standard_Gateway extends WC_Payment_Gateway {
 	 */
 	public function __construct() {
 
-		$this->id                 = COBALT_BANK_OPERATIONS_Constants::STANDARD_GATEWAY_ID; // payment gateway plugin ID.
+		$this->id                 = Cobalt_Bank_Operations_Constants::STANDARD_GATEWAY_ID; // payment gateway plugin ID.
 		$this->icon               = ''; // URL of the icon that will be displayed on checkout page near your gateway name.
 		$this->has_fields         = true; // in case you need a custom credit card form.
 		$this->method_title       = 'CBO Standard Gateway';
-		$this->method_description = __( 'Acceptance of payments with Visa / Mastercard', 'class-cobalt-bank-operations-payment-gateway' ); // will be displayed on the options page.
+		$this->method_description = __( 'Acceptance of payments with Visa / Mastercard', 'cobalt-bank-operations-payment-gateway' ); // will be displayed on the options page.
 
 		// gateways can support subscriptions, refunds, saved payment methods, but in this tutorial we begin with simple payments.
 		$this->supports = array(
@@ -84,7 +84,7 @@ class COBALT_BANK_OPERATIONS_Standard_Gateway extends WC_Payment_Gateway {
 	public function process_admin_options() {
 		if ( ! isset( $_POST['cobalt_bank_operations_standard_nonce'] ) ||
 			! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['cobalt_bank_operations_standard_nonce'] ) ), 'cobalt_bank_operations_standard_save_settings' ) ) {
-			wp_die( esc_html__( 'Unauthorized action.', 'class-cobalt-bank-operations-payment-gateway' ), esc_html__( 'Security Error', 'class-cobalt-bank-operations-payment-gateway' ), 403 );
+			wp_die( esc_html__( 'Unauthorized action.', 'cobalt-bank-operations-payment-gateway' ), esc_html__( 'Security Error', 'cobalt-bank-operations-payment-gateway' ), 403 );
 		}
 		parent::process_admin_options();
 	}
@@ -100,13 +100,13 @@ class COBALT_BANK_OPERATIONS_Standard_Gateway extends WC_Payment_Gateway {
 				'<img class="%s" src="%s" alt="%s" />',
 				esc_attr( 'cobalt-bank-operations-gateway-icon' ),
 				esc_url( WC_HTTPS::force_https_url( $path . 'assets/images/visa.svg' ) ),
-				esc_attr__( 'Visa', 'class-cobalt-bank-operations-payment-gateway' )
+				esc_attr__( 'Visa', 'cobalt-bank-operations-payment-gateway' )
 			),
 			sprintf(
 				'<img class="%s" src="%s" alt="%s" />',
 				esc_attr( 'cobalt-bank-operations-gateway-icon' ),
 				esc_url( WC_HTTPS::force_https_url( $path . 'assets/images/mastercard.svg' ) ),
-				esc_attr__( 'Mastercard', 'class-cobalt-bank-operations-payment-gateway' )
+				esc_attr__( 'Mastercard', 'cobalt-bank-operations-payment-gateway' )
 			),
 		);
 
@@ -126,57 +126,57 @@ class COBALT_BANK_OPERATIONS_Standard_Gateway extends WC_Payment_Gateway {
 
 		$this->form_fields = array(
 			'enabled'                => array(
-				'title'       => __( 'Enable/Disable', 'class-cobalt-bank-operations-payment-gateway' ),
-				'label'       => __( 'Enable CBO Payment Gateway', 'class-cobalt-bank-operations-payment-gateway' ),
+				'title'       => __( 'Enable/Disable', 'cobalt-bank-operations-payment-gateway' ),
+				'label'       => __( 'Enable CBO Payment Gateway', 'cobalt-bank-operations-payment-gateway' ),
 				'type'        => 'checkbox',
 				'description' => '',
 				'default'     => 'no',
 			),
 			'title'                  => array(
-				'title'       => __( 'Title', 'class-cobalt-bank-operations-payment-gateway' ),
+				'title'       => __( 'Title', 'cobalt-bank-operations-payment-gateway' ),
 				'type'        => 'text',
-				'description' => __( 'This controls the title which the user sees during checkout.', 'class-cobalt-bank-operations-payment-gateway' ),
+				'description' => __( 'This controls the title which the user sees during checkout.', 'cobalt-bank-operations-payment-gateway' ),
 				'default'     => 'VISA, Mastercard',
 				'desc_tip'    => true,
 			),
 			'description'            => array(
-				'title'       => __( 'Description', 'class-cobalt-bank-operations-payment-gateway' ),
+				'title'       => __( 'Description', 'cobalt-bank-operations-payment-gateway' ),
 				'type'        => 'textarea',
-				'description' => __( 'This controls the description which the user sees during checkout.', 'class-cobalt-bank-operations-payment-gateway' ),
-				'default'     => __( 'Pay with your VISA or Mastercard card', 'class-cobalt-bank-operations-payment-gateway' ),
+				'description' => __( 'This controls the description which the user sees during checkout.', 'cobalt-bank-operations-payment-gateway' ),
+				'default'     => __( 'Pay with your VISA or Mastercard card', 'cobalt-bank-operations-payment-gateway' ),
 			),
 			'testmode'               => array(
-				'title'       => __( 'Test mode', 'class-cobalt-bank-operations-payment-gateway' ),
-				'label'       => __( 'Enable Test Mode', 'class-cobalt-bank-operations-payment-gateway' ),
+				'title'       => __( 'Test mode', 'cobalt-bank-operations-payment-gateway' ),
+				'label'       => __( 'Enable Test Mode', 'cobalt-bank-operations-payment-gateway' ),
 				'type'        => 'checkbox',
-				'description' => __( 'Place the payment gateway in test mode using test API keys.', 'class-cobalt-bank-operations-payment-gateway' ),
+				'description' => __( 'Place the payment gateway in test mode using test API keys.', 'cobalt-bank-operations-payment-gateway' ),
 				'default'     => 'yes',
 				'desc_tip'    => true,
 			),
 			'test_api_url'           => array(
-				'title' => __( 'Test API URL', 'class-cobalt-bank-operations-payment-gateway' ),
+				'title' => __( 'Test API URL', 'cobalt-bank-operations-payment-gateway' ),
 				'type'  => 'text',
 			),
 
 			'test_api_client_id'     => array(
-				'title' => __( 'Test API Client Id', 'class-cobalt-bank-operations-payment-gateway' ),
+				'title' => __( 'Test API Client Id', 'cobalt-bank-operations-payment-gateway' ),
 				'type'  => 'text',
 			),
 			'test_api_client_secret' => array(
-				'title' => __( 'Test API Client Secret', 'class-cobalt-bank-operations-payment-gateway' ),
+				'title' => __( 'Test API Client Secret', 'cobalt-bank-operations-payment-gateway' ),
 				'type'  => 'password',
 			),
 			'api_url'                => array(
-				'title' => __( 'Production API URL', 'class-cobalt-bank-operations-payment-gateway' ),
+				'title' => __( 'Production API URL', 'cobalt-bank-operations-payment-gateway' ),
 				'type'  => 'text',
 			),
 
 			'api_client_id'          => array(
-				'title' => __( 'Production API Client Id', 'class-cobalt-bank-operations-payment-gateway' ),
+				'title' => __( 'Production API Client Id', 'cobalt-bank-operations-payment-gateway' ),
 				'type'  => 'text',
 			),
 			'api_client_secret'      => array(
-				'title' => __( 'Production API Client Secret', 'class-cobalt-bank-operations-payment-gateway' ),
+				'title' => __( 'Production API Client Secret', 'cobalt-bank-operations-payment-gateway' ),
 				'type'  => 'password',
 			),
 		);
@@ -211,7 +211,7 @@ class COBALT_BANK_OPERATIONS_Standard_Gateway extends WC_Payment_Gateway {
 		}
 
 		$base = plugin_dir_url( __FILE__ ) . 'assets/js/';
-		$ver  = COBALT_BANK_OPERATIONS_Constants::PLUGIN_VERSION;
+		$ver  = Cobalt_Bank_Operations_Constants::PLUGIN_VERSION;
 
 		wp_register_script(
 			'cobalt-bank-operations-sweetalert',
@@ -262,7 +262,7 @@ class COBALT_BANK_OPERATIONS_Standard_Gateway extends WC_Payment_Gateway {
 	 * @return void
 	 */
 	public function credit_card_form( $args = array(), $fields = array() ) {
-		$cc_form           = new COBALT_BANK_OPERATIONS_Payment_Gateway_CC();
+		$cc_form           = new Cobalt_Bank_Operations_Payment_Gateway_CC();
 		$cc_form->id       = $this->id;
 		$cc_form->supports = $this->supports;
 		$cc_form->form();
@@ -277,7 +277,7 @@ class COBALT_BANK_OPERATIONS_Standard_Gateway extends WC_Payment_Gateway {
 		if ( $this->description ) {
 			// you can instructions for test mode, I mean test card numbers etc.
 			if ( $this->testmode ) {
-				$this->description .= ' ' . __( 'TEST MODE ENABLED', 'class-cobalt-bank-operations-payment-gateway' ) . '.';
+				$this->description .= ' ' . __( 'TEST MODE ENABLED', 'cobalt-bank-operations-payment-gateway' ) . '.';
 				$this->description  = trim( $this->description );
 			}
 			// display the description with <p> tags etc.
@@ -307,7 +307,7 @@ class COBALT_BANK_OPERATIONS_Standard_Gateway extends WC_Payment_Gateway {
 		// check if the nonce is set and valid.
 		if ( isset( $_POST[ $this->id . '_nonce' ] ) &&
 			! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST[ $this->id . '_nonce' ] ) ), $this->id . '_process_payment' ) ) {
-			wc_add_notice( __( 'Security check failed. Please try again.', 'class-cobalt-bank-operations-payment-gateway' ), 'error' );
+			wc_add_notice( __( 'Security check failed. Please try again.', 'cobalt-bank-operations-payment-gateway' ), 'error' );
 			return false;
 		}
 
@@ -341,23 +341,23 @@ class COBALT_BANK_OPERATIONS_Standard_Gateway extends WC_Payment_Gateway {
 
 		$card_number = str_replace( ' ', '', $card_number );
 		if ( ! cobalt_bank_operations_is_valid_luhn( $card_number ) ) {
-			wc_add_notice( __( 'Invalid card number', 'class-cobalt-bank-operations-payment-gateway' ), 'error' );
+			wc_add_notice( __( 'Invalid card number', 'cobalt-bank-operations-payment-gateway' ), 'error' );
 			$valid = false;
 		}
 
 		$card_expiry = str_replace( ' ', '', $card_expiry );
 		if ( ! cobalt_bank_operations_is_valid_expiry_date( $card_expiry ) ) {
-			wc_add_notice( __( 'Invalid expiry date', 'class-cobalt-bank-operations-payment-gateway' ), 'error' );
+			wc_add_notice( __( 'Invalid expiry date', 'cobalt-bank-operations-payment-gateway' ), 'error' );
 			$valid = false;
 		}
 
 		if ( ! cobalt_bank_operations_is_valid_card_holder( $card_holder ) ) {
-			wc_add_notice( __( 'Invalid card holder', 'class-cobalt-bank-operations-payment-gateway' ), 'error' );
+			wc_add_notice( __( 'Invalid card holder', 'cobalt-bank-operations-payment-gateway' ), 'error' );
 			$valid = false;
 		}
 
 		if ( ! cobalt_bank_operations_is_valid_cvv( $card_cvv ) ) {
-			wc_add_notice( __( 'Invalid card code (CVV)', 'class-cobalt-bank-operations-payment-gateway' ), 'error' );
+			wc_add_notice( __( 'Invalid card code (CVV)', 'cobalt-bank-operations-payment-gateway' ), 'error' );
 			$valid = false;
 		}
 
@@ -374,11 +374,11 @@ class COBALT_BANK_OPERATIONS_Standard_Gateway extends WC_Payment_Gateway {
 	 */
 	public function process_refund( $order_id, $amount = 0, $reason = '' ) {
 		if ( ! isset( $_REQUEST['security'] ) || ! check_ajax_referer( 'order-item', 'security', false ) ) {
-			COBALT_BANK_OPERATIONS_Log::debug( 'Refund rechazado: nonce inválido o ausente' );
-			return new WP_Error( 'invalid_nonce', __( 'Unauthorized action.', 'class-cobalt-bank-operations-payment-gateway' ) );
+			Cobalt_Bank_Operations_Log::debug( 'Refund rechazado: nonce inválido o ausente' );
+			return new WP_Error( 'invalid_nonce', __( 'Unauthorized action.', 'cobalt-bank-operations-payment-gateway' ) );
 		}
 
-		$cobalt_bank_operations_client = new COBALT_BANK_OPERATIONS_Client(
+		$cobalt_bank_operations_client = new Cobalt_Bank_Operations_Client(
 			$this->api_url,
 			$this->api_client_id,
 			$this->api_client_secret
@@ -387,7 +387,7 @@ class COBALT_BANK_OPERATIONS_Standard_Gateway extends WC_Payment_Gateway {
 		if ( ! $order_id || ! $amount ) {
 			return new WP_Error( 'invalid_order', 'Invalid order ID or amount' );
 		}
-		COBALT_BANK_OPERATIONS_Log::debug( "process_refund: order_id={$order_id}, amount={$amount}, reason={$reason}" );
+		Cobalt_Bank_Operations_Log::debug( "process_refund: order_id={$order_id}, amount={$amount}, reason={$reason}" );
 		$order = wc_get_order( $order_id );
 
 		if ( ! $order ) {
@@ -400,8 +400,8 @@ class COBALT_BANK_OPERATIONS_Standard_Gateway extends WC_Payment_Gateway {
 
 		try {
 			$data = $cobalt_bank_operations_client->refund( $txn, intval( $amount * 100 ) );
-		} catch ( COBALT_BANK_OPERATIONS_Exception $e ) {
-			COBALT_BANK_OPERATIONS_Log::debug( 'Error processing refund: ' . $e->getMessage() );
+		} catch ( Cobalt_Bank_Operations_Exception $e ) {
+			Cobalt_Bank_Operations_Log::debug( 'Error processing refund: ' . $e->getMessage() );
 			return new WP_Error( 'cobalt_bank_operations_refund_error', $e->getMessage() );
 		}
 
@@ -428,15 +428,15 @@ class COBALT_BANK_OPERATIONS_Standard_Gateway extends WC_Payment_Gateway {
 		// check if the nonce is set and valid.
 		if ( isset( $_POST[ $this->id . '_nonce' ] ) ) {
 			if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST[ $this->id . '_nonce' ] ) ), $this->id . '_process_payment' ) ) {
-				wc_add_notice( __( 'Security check failed. Please try again.', 'class-cobalt-bank-operations-payment-gateway' ), 'error' );
+				wc_add_notice( __( 'Security check failed. Please try again.', 'cobalt-bank-operations-payment-gateway' ), 'error' );
 				return;
 			}
 		}
 		// we need it to get any order details.
-		COBALT_BANK_OPERATIONS_Log::debug( 'process_payment: ' . $order_id );
+		Cobalt_Bank_Operations_Log::debug( 'process_payment: ' . $order_id );
 		$order = wc_get_order( $order_id );
 
-		$cobalt_bank_operations_client = new COBALT_BANK_OPERATIONS_Client( $this->api_url, $this->api_client_id, $this->api_client_secret );
+		$cobalt_bank_operations_client = new Cobalt_Bank_Operations_Client( $this->api_url, $this->api_client_id, $this->api_client_secret );
 		try {
 			// detect if the request is from a block-based checkout or classic checkout.
 			$raw_input = file_get_contents( 'php://input' );
@@ -460,7 +460,7 @@ class COBALT_BANK_OPERATIONS_Standard_Gateway extends WC_Payment_Gateway {
 
 			// if the request is from a block-based checkout, we need to handle it differently.
 			if ( $cobalt_bank_operations_is_block ) {
-				COBALT_BANK_OPERATIONS_Log::debug( 'Origin: Checkout Based Blocks' );
+				Cobalt_Bank_Operations_Log::debug( 'Origin: Checkout Based Blocks' );
 				$pdata    = $body['payment_data'];
 				$billing  = $body['billing_address'] ?? array();
 				$shipping = $body['shipping_address'] ?? array();
@@ -471,7 +471,7 @@ class COBALT_BANK_OPERATIONS_Standard_Gateway extends WC_Payment_Gateway {
 						$data[ $field['key'] ] = wc_clean( $field['value'] );
 					}
 				}
-				COBALT_BANK_OPERATIONS_Log::debug( ' data: ' . wp_json_encode( $data ) );
+				Cobalt_Bank_Operations_Log::debug( ' data: ' . wp_json_encode( $data ) );
 
 				// card details.
 				$card_number = $data['card_number'] ?? '';
@@ -509,7 +509,7 @@ class COBALT_BANK_OPERATIONS_Standard_Gateway extends WC_Payment_Gateway {
 				);
 
 			} else {
-				COBALT_BANK_OPERATIONS_Log::debug( 'Origin: Classic Checkout' );
+				Cobalt_Bank_Operations_Log::debug( 'Origin: Classic Checkout' );
 				$card_number = sanitize_text_field( wp_unslash( $_POST[ $this->id . '-card-number' ] ?? '' ) );
 				$card_expiry = sanitize_text_field( wp_unslash( $_POST[ $this->id . '-card-expiry' ] ?? '' ) );
 				$card_cvc    = sanitize_text_field( wp_unslash( $_POST[ $this->id . '-card-cvc' ] ?? '' ) );
@@ -520,10 +520,10 @@ class COBALT_BANK_OPERATIONS_Standard_Gateway extends WC_Payment_Gateway {
 
 				$three_ds_params = $this->get3DSParams();
 			}
-			COBALT_BANK_OPERATIONS_Log::debug( 'three_ds_params=' . wp_json_encode( $three_ds_params ) );
+			Cobalt_Bank_Operations_Log::debug( 'three_ds_params=' . wp_json_encode( $three_ds_params ) );
 
 			$transaction = $cobalt_bank_operations_client->sale( $order, $card_number, $card_expiry, $card_cvc, $card_holder, $three_ds_params );
-			COBALT_BANK_OPERATIONS_Log::debug( 'Checkout data: ' . wp_json_encode( $transaction ) );
+			Cobalt_Bank_Operations_Log::debug( 'Checkout data: ' . wp_json_encode( $transaction ) );
 
 			if ( 'authenticating' === ( $transaction['status'] ?? '' ) ) {
 				return array(
@@ -541,17 +541,17 @@ class COBALT_BANK_OPERATIONS_Standard_Gateway extends WC_Payment_Gateway {
 				);
 
 			} elseif ( 'refused' === ( $transaction['status'] ?? '' ) ) {
-				wc_add_notice( __( 'We were unable to complete the payment. Please contact with commerce.', 'class-cobalt-bank-operations-payment-gateway' ), 'error' );
+				wc_add_notice( __( 'We were unable to complete the payment. Please contact with commerce.', 'cobalt-bank-operations-payment-gateway' ), 'error' );
 			} else {
-				wc_add_notice( __( 'We were unable to complete the payment. Please check your card details or contact your bank.', 'class-cobalt-bank-operations-payment-gateway' ), 'error' );
+				wc_add_notice( __( 'We were unable to complete the payment. Please check your card details or contact your bank.', 'cobalt-bank-operations-payment-gateway' ), 'error' );
 
 			}
-		} catch ( \COBALT_BANK_OPERATIONS_Exception $e ) {
+		} catch ( \Cobalt_Bank_Operations_Exception $e ) {
 			if ( ! $e->isSuccessResponse() ) {
-				COBALT_BANK_OPERATIONS_Log::debug( $e->getMessage() . ' - ' . wp_json_encode( $e->getResponse() ) );
-				wc_add_notice( __( 'Cannot generate the payment. Please, contact with commerce.', 'class-cobalt-bank-operations-payment-gateway' ), 'error' );
+				Cobalt_Bank_Operations_Log::debug( $e->getMessage() . ' - ' . wp_json_encode( $e->getResponse() ) );
+				wc_add_notice( __( 'Cannot generate the payment. Please, contact with commerce.', 'cobalt-bank-operations-payment-gateway' ), 'error' );
 			} else {
-				wc_add_notice( __( 'Cannot process the payment. Please, contact with commerce.', 'class-cobalt-bank-operations-payment-gateway' ), 'error' );
+				wc_add_notice( __( 'Cannot process the payment. Please, contact with commerce.', 'cobalt-bank-operations-payment-gateway' ), 'error' );
 			}
 		}
 	}
@@ -663,14 +663,14 @@ class COBALT_BANK_OPERATIONS_Standard_Gateway extends WC_Payment_Gateway {
 		$order->add_meta_data( 'cobalt_bank_operations_bank_authorization', $transaction['authorization_number'] );
 
 		if ( in_array( $status, $success_status, true ) ) {
-			$order->update_status( 'completed', __( 'Payment completed', 'class-cobalt-bank-operations-payment-gateway' ) );
+			$order->update_status( 'completed', __( 'Payment completed', 'cobalt-bank-operations-payment-gateway' ) );
 			$order->payment_complete( $transaction['identifier'] );
 			if ( function_exists( 'WC' ) && WC()->cart ) {
 				WC()->cart->empty_cart();
 			}
 			return true;
 		} else {
-			$order->update_status( 'failed', __( 'Failed payment', 'class-cobalt-bank-operations-payment-gateway' ) );
+			$order->update_status( 'failed', __( 'Failed payment', 'cobalt-bank-operations-payment-gateway' ) );
 		}
 
 		return false;
@@ -690,7 +690,7 @@ class COBALT_BANK_OPERATIONS_Standard_Gateway extends WC_Payment_Gateway {
 
 		$success = (bool) ( $order && $order->is_paid() );
 
-		COBALT_BANK_OPERATIONS_Log::debug( "callback_url: order_id=$order_id, target=$target" );
+		Cobalt_Bank_Operations_Log::debug( "callback_url: order_id=$order_id, target=$target" );
 
 		wp_register_script( 'cobalt-bank-operations-3ds-handler', '', array(), '1.0', true );
 		wp_enqueue_script( 'cobalt-bank-operations-3ds-handler' );
@@ -723,14 +723,14 @@ class COBALT_BANK_OPERATIONS_Standard_Gateway extends WC_Payment_Gateway {
 		<html <?php language_attributes(); ?>>
 		<head>
 			<meta charset="<?php bloginfo( 'charset' ); ?>">
-			<title><?php esc_html_e( 'Processing 3DS…', 'class-cobalt-bank-operations-payment-gateway' ); ?></title>
+			<title><?php esc_html_e( 'Processing 3DS…', 'cobalt-bank-operations-payment-gateway' ); ?></title>
 			<?php wp_head(); ?>
 		</head>
 		<body>
 			<div class="cobalt-bank-operations-3ds-loading">
 				<div class="cobalt-bank-operations-3ds-spinner"></div>
 				<noscript>
-					<p><?php esc_html_e( 'Please enable JavaScript to complete your payment. You will be automatically redirected...', 'class-cobalt-bank-operations-payment-gateway' ); ?></p>
+					<p><?php esc_html_e( 'Please enable JavaScript to complete your payment. You will be automatically redirected...', 'cobalt-bank-operations-payment-gateway' ); ?></p>
 					<meta http-equiv="refresh" content="3;url=<?php echo esc_url( $target ); ?>">
 				</noscript>
 			</div>
@@ -749,7 +749,7 @@ class COBALT_BANK_OPERATIONS_Standard_Gateway extends WC_Payment_Gateway {
 		$data      = json_decode( $raw_input, true );
 
 		if ( ! is_array( $data ) ) {
-			COBALT_BANK_OPERATIONS_Log::debug( 'Webhook error: input no es array válido' );
+			Cobalt_Bank_Operations_Log::debug( 'Webhook error: input no es array válido' );
 			status_header( 400 );
 			exit;
 		}
@@ -760,14 +760,14 @@ class COBALT_BANK_OPERATIONS_Standard_Gateway extends WC_Payment_Gateway {
 			}
 		}
 
-		COBALT_BANK_OPERATIONS_Log::debug( 'Webhook recibido: ' . wp_json_encode( $data ) );
+		Cobalt_Bank_Operations_Log::debug( 'Webhook recibido: ' . wp_json_encode( $data ) );
 
 		try {
 			$valid_transaction = $this->validate_payment( $data );
 			status_header( 204 );
-		} catch ( \COBALT_BANK_OPERATIONS_Exception $e ) {
+		} catch ( \Cobalt_Bank_Operations_Exception $e ) {
 			$tid = isset( $data['tid'] ) ? $data['tid'] : 'N/A';
-			COBALT_BANK_OPERATIONS_Log::debug( "Error en webhook. TID: $tid - " . $e->getMessage() );
+			Cobalt_Bank_Operations_Log::debug( "Error en webhook. TID: $tid - " . $e->getMessage() );
 			status_header( 400 );
 		}
 		exit;
@@ -780,7 +780,7 @@ class COBALT_BANK_OPERATIONS_Standard_Gateway extends WC_Payment_Gateway {
 	 * @return string ISO 3166-1 alpha-3 code (e.g. 'USA'). Returns the input if not mapped.
 	 */
 	public function get_iso_alpha3_cc( $country ) {
-		return COBALT_BANK_OPERATIONS_Constants::COUNTRIES[ $country ] ?? $country;
+		return Cobalt_Bank_Operations_Constants::COUNTRIES[ $country ] ?? $country;
 	}
 
 	/**

@@ -8,10 +8,11 @@
 /**
  * Handles WooCommerce constants for the payment gateway.
  */
-class COBALT_BANK_OPERATIONS_Constants {
+class Cobalt_Bank_Operations_Constants {
 
-	const STANDARD_GATEWAY_ID = 'cobalt_bank_operations_standard_gateway';
-	const TELERED_GATEWAY_ID  = 'cobalt_bank_operations_telered_gateway';
+    const PLUGIN_DOMAIN = 'cobalt-bank-operations-payment-gateway';
+	const STANDARD_GATEWAY_ID = 'Cobalt_Bank_Operations_Standard_Gateway';
+	const TELERED_GATEWAY_ID  = 'Cobalt_Bank_Operations_Telered_Gateway';
 
 	const PLUGIN_VERSION = '2.4.2';
 	const PLUGIN_NAME    = 'CBO Payment Gateway';

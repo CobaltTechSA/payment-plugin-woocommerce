@@ -6,8 +6,8 @@
  * Author: Cobalt Tech
  * Author URI: https://neopayment.com
  * Version: 2.4.2
- * License:     GPL-2.0
- * Text Domain: class-cobalt-bank-operations-payment-gateway
+ * License: GPL-2.0
+ * Text Domain: cobalt-bank-operations-payment-gateway
  * Domain Path: /i18n
  *
  * @package COBALT_BANK_OPERATIONS_Payment_Gateway
@@ -17,9 +17,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require_once 'class-cobalt-bank-operations-log.php';
-require_once 'class-cobalt-bank-operations-constants.php';
-require_once 'class-cobalt-bank-operations-client.php';
+require_once 'cobalt-bank-operations-log.php';
+require_once 'cobalt-bank-operations-constants.php';
+require_once 'cobalt-bank-operations-client.php';
 
 
 // Constants.
@@ -29,12 +29,12 @@ define( 'COBALT_BANK_OPERATIONS_URL', plugin_dir_url( __FILE__ ) );
 /**
  * Handles WooCommerce plugin for the payment gateway.
  */
-class COBALT_BANK_OPERATIONS_Payment_Gateway {
+class Cobalt_Bank_Operations_Payment_Gateway {
 
 	/**
 	 * This class instance.
 	 *
-	 * @var \COBALT_BANK_OPERATIONS_Payment_Gateway single instance of this class.
+	 * @var \Cobalt_Bank_Operations_Payment_Gateway single instance of this class.
 	 */
 	private static $instance;
 
@@ -89,9 +89,9 @@ class COBALT_BANK_OPERATIONS_Payment_Gateway {
 			return;
 		}
 
-		require_once plugin_dir_path( __FILE__ ) . 'class-cobalt-bank-operations-standard-gateway.php';
-		require_once plugin_dir_path( __FILE__ ) . 'class-cobalt-bank-operations-telered-gateway.php';
-		require_once plugin_dir_path( __FILE__ ) . 'includes/class-cobalt-bank-operations-blocks-support.php';
+		require_once plugin_dir_path(__FILE__) . 'cobalt-bank-operations-standard-gateway.php';
+		require_once plugin_dir_path(__FILE__) . 'cobalt-bank-operations-telered-gateway.php';
+		require_once plugin_dir_path(__FILE__) . 'includes/cobalt-bank-operations-blocks-support.php';
 		\CBO\Blocks\COBALT_BANK_OPERATIONS_Blocks_Support::init();
 
 		// fire it up!
@@ -107,15 +107,15 @@ class COBALT_BANK_OPERATIONS_Payment_Gateway {
 		}
 
 		// Gateway Class.
-		require_once plugin_dir_path( __FILE__ ) . 'class-cobalt-bank-operations-standard-gateway.php';
-		require_once plugin_dir_path( __FILE__ ) . 'class-cobalt-bank-operations-telered-gateway.php';
+		require_once plugin_dir_path(__FILE__) . 'cobalt-bank-operations-standard-gateway.php';
+		require_once plugin_dir_path(__FILE__) . 'cobalt-bank-operations-telered-gateway.php';
 
 		// Add gateways to Woo.
 		add_filter(
 			'woocommerce_payment_gateways',
 			function ( $methods ) {
-				$methods[] = 'COBALT_BANK_OPERATIONS_Standard_Gateway';
-				$methods[] = 'COBALT_BANK_OPERATIONS_Telered_Gateway';
+				$methods[] = 'Cobalt_Bank_Operations_Standard_Gateway';
+				$methods[] = 'Cobalt_Bank_Operations_Telered_Gateway';
 				return $methods;
 			}
 		);
@@ -139,8 +139,8 @@ class COBALT_BANK_OPERATIONS_Payment_Gateway {
 			'woocommerce_blocks_supported_payment_methods',
 			function ( $methods ) {
 				$methods[] = array(
-					'name'     => 'cobalt_bank_operations_standard_gateway',
-					'label'    => __( 'Card (Visa/Mastercard)', 'class-cobalt-bank-operations-payment-gateway' ),
+					'name'     => 'Cobalt_Bank_Operations_Standard_Gateway',
+					'label'    => __( 'Card (Visa/Mastercard)', 'cobalt-bank-operations-payment-gateway' ),
 					'supports' => array( 'products', 'refunds' ),
 				);
 				return $methods;
@@ -150,7 +150,7 @@ class COBALT_BANK_OPERATIONS_Payment_Gateway {
 		add_filter(
 			'woocommerce_blocks_payment_method_id_to_gateway_mapping',
 			function ( $mapping ) {
-				$mapping['cobalt_bank_operations_standard_gateway'] = 'cobalt_bank_operations_standard_gateway';
+				$mapping['Cobalt_Bank_Operations_Standard_Gateway'] = 'Cobalt_Bank_Operations_Standard_Gateway';
 				return $mapping;
 			}
 		);
@@ -158,7 +158,7 @@ class COBALT_BANK_OPERATIONS_Payment_Gateway {
 		add_filter(
 			'woocommerce_store_api_payment_methods',
 			function ( $gateways ) {
-				$gateways[] = 'COBALT_BANK_OPERATIONS_Standard_Gateway';
+				$gateways[] = 'Cobalt_Bank_Operations_Standard_Gateway';
 				return $gateways;
 			}
 		);
@@ -166,7 +166,7 @@ class COBALT_BANK_OPERATIONS_Payment_Gateway {
 		add_filter(
 			'woocommerce_store_api_payment_method_ids',
 			function ( $ids ) {
-				$ids[] = 'cobalt_bank_operations_standard_gateway';
+				$ids[] = 'Cobalt_Bank_Operations_Standard_Gateway';
 				return $ids;
 			}
 		);
@@ -174,7 +174,7 @@ class COBALT_BANK_OPERATIONS_Payment_Gateway {
 		add_filter(
 			'woocommerce_store_api_payment_method_schema',
 			function ( $schema, $method_id ) {
-				if ( 'cobalt_bank_operations_standard_gateway' === $method_id ) {
+				if ( 'Cobalt_Bank_Operations_Standard_Gateway' === $method_id ) {
 					$schema['supports']['payment_method_options'] = true;
 				}
 				return $schema;
@@ -195,7 +195,7 @@ class COBALT_BANK_OPERATIONS_Payment_Gateway {
 
 			$this->deactivate_plugin();
 
-			wp_die( esc_html( COBALT_BANK_OPERATIONS_Constants::PLUGIN_NAME ) . ' no se puede activar. ' . esc_html( $this->get_environment_message() ) );
+			wp_die( esc_html( Cobalt_Bank_Operations_Constants::PLUGIN_NAME ) . ' no se puede activar. ' . esc_html( $this->get_environment_message() ) );
 		}
 	}
 
@@ -211,7 +211,7 @@ class COBALT_BANK_OPERATIONS_Payment_Gateway {
 
 			$this->deactivate_plugin();
 
-			$this->add_admin_notice( 'bad_environment', 'error', COBALT_BANK_OPERATIONS_Constants::PLUGIN_NAME . ' ha sido activado. ' . $this->get_environment_message() );
+			$this->add_admin_notice( 'bad_environment', 'error', Cobalt_Bank_Operations_Constants::PLUGIN_NAME . ' ha sido activado. ' . $this->get_environment_message() );
 		}
 	}
 
@@ -230,9 +230,9 @@ class COBALT_BANK_OPERATIONS_Payment_Gateway {
 					'error',
 					sprintf(
 					/* translators: %1$s - plugin name, %2$s - minimum WordPress version required, %3$s - update WordPress link open, %4$s - update WordPress link close */
-						esc_html__( '%1$s requiere WordPress %2$s or higher. Porfavor %3$sactualiza WordPress &raquo;%4$s', 'class-cobalt-bank-operations-payment-gateway' ),
-						'<strong>' . COBALT_BANK_OPERATIONS_Constants::PLUGIN_NAME . '</strong>',
-						COBALT_BANK_OPERATIONS_Constants::MINIMUM_WP_VERSION,
+						esc_html__( '%1$s requiere WordPress %2$s or higher. Porfavor %3$sactualiza WordPress &raquo;%4$s', 'cobalt-bank-operations-payment-gateway' ),
+						'<strong>' . Cobalt_Bank_Operations_Constants::PLUGIN_NAME . '</strong>',
+						Cobalt_Bank_Operations_Constants::MINIMUM_WP_VERSION,
 						'<a href="' . esc_url( admin_url( 'update-core.php' ) ) . '">',
 						'</a>'
 					)
@@ -256,8 +256,8 @@ class COBALT_BANK_OPERATIONS_Payment_Gateway {
 					$activation_url = wp_nonce_url( 'plugins.php?action=activate&amp;plugin=' . $plugin . '&amp;plugin_status=all&amp;paged=1&amp;s', 'activate-plugin_' . $plugin );
 					$message        = sprintf(
 					/* translators: %1$s - Plugin Name, %2$s - activate WooCommerce link open, %3$s - activate WooCommerce link close. */
-						esc_html__( '%1$s requiere que WooCommerce esté activado. Por favor %2$sactiva WooCommerce%3$s.', 'class-cobalt-bank-operations-payment-gateway' ),
-						'<strong>' . COBALT_BANK_OPERATIONS_Constants::PLUGIN_NAME . '</strong>',
+						esc_html__( '%1$s requiere que WooCommerce esté activado. Por favor %2$sactiva WooCommerce%3$s.', 'cobalt-bank-operations-payment-gateway' ),
+						'<strong>' . Cobalt_Bank_Operations_Constants::PLUGIN_NAME . '</strong>',
 						'<a href="' . esc_url( $activation_url ) . '">',
 						'</a>'
 					);
@@ -272,8 +272,8 @@ class COBALT_BANK_OPERATIONS_Payment_Gateway {
 				$install_url = wp_nonce_url( self_admin_url( 'update.php?action=install-plugin&plugin=woocommerce' ), 'install-plugin_woocommerce' );
 				$message     = sprintf(
 					/* translators: %1$s - Plugin Name, %2$s - install WooCommerce link open, %3$s - install WooCommerce link close. */
-					esc_html__( '%1$s requiere que WooCommerce esté instalado y activado. por favor, %2$sinstala WooCommerce%3$s.', 'class-cobalt-bank-operations-payment-gateway' ),
-					'<strong>' . COBALT_BANK_OPERATIONS_Constants::PLUGIN_NAME . '</strong>',
+					esc_html__( '%1$s requiere que WooCommerce esté instalado y activado. por favor, %2$sinstala WooCommerce%3$s.', 'cobalt-bank-operations-payment-gateway' ),
+					'<strong>' . Cobalt_Bank_Operations_Constants::PLUGIN_NAME . '</strong>',
 					'<a href="' . esc_url( $install_url ) . '">',
 					'</a>'
 				);
@@ -291,12 +291,12 @@ class COBALT_BANK_OPERATIONS_Payment_Gateway {
 					'error',
 					sprintf(
 					/* translators: %1$s - Plugin Name, %2$s - minimum WooCommerce version, %3$s - update WooCommerce link open, %4$s - update WooCommerce link close, %5$s - download minimum WooCommerce link open, %6$s - download minimum WooCommerce link close. */
-						esc_html__( '%1$s requiere WooCommerce %2$s o superior. Por favor, %3$sactualiza WooCommerce%4$s a la última versión, o %5$sdescarga la versión mínima requerida &raquo;%6$s', 'class-cobalt-bank-operations-payment-gateway' ),
-						'<strong>' . COBALT_BANK_OPERATIONS_Constants::PLUGIN_NAME . '</strong>',
-						COBALT_BANK_OPERATIONS_Constants::MINIMUM_WC_VERSION,
+						esc_html__( '%1$s requiere WooCommerce %2$s o superior. Por favor, %3$sactualiza WooCommerce%4$s a la última versión, o %5$sdescarga la versión mínima requerida &raquo;%6$s', 'cobalt-bank-operations-payment-gateway' ),
+						'<strong>' . Cobalt_Bank_Operations_Constants::PLUGIN_NAME . '</strong>',
+						Cobalt_Bank_Operations_Constants::MINIMUM_WC_VERSION,
 						'<a href="' . esc_url( $update_url ) . '">',
 						'</a>',
-						'<a href="' . esc_url( 'https://downloads.wordpress.org/plugin/woocommerce.' . COBALT_BANK_OPERATIONS_Constants::MINIMUM_WC_VERSION . '.zip' ) . '">',
+						'<a href="' . esc_url( 'https://downloads.wordpress.org/plugin/woocommerce.' . Cobalt_Bank_Operations_Constants::MINIMUM_WC_VERSION . '.zip' ) . '">',
 						'</a>'
 					)
 				);
@@ -307,8 +307,8 @@ class COBALT_BANK_OPERATIONS_Payment_Gateway {
 				'error',
 				sprintf(
 				/* translators: %1$s - Plugin Name, %2$s - minimum WooCommerce version, %3$s - update WooCommerce link open, %4$s - update WooCommerce link close, %5$s - download minimum WooCommerce link open, %6$s - download minimum WooCommerce link close. */
-					esc_html__( '%1$s solo está disponible para tiendas localizadas en Panamá.', 'class-cobalt-bank-operations-payment-gateway' ),
-					'<strong>' . COBALT_BANK_OPERATIONS_Constants::PLUGIN_NAME . '</strong>'
+					esc_html__( '%1$s solo está disponible para tiendas localizadas en Panamá.', 'cobalt-bank-operations-payment-gateway' ),
+					'<strong>' . Cobalt_Bank_Operations_Constants::PLUGIN_NAME . '</strong>'
 				)
 			);
 		}
@@ -332,11 +332,11 @@ class COBALT_BANK_OPERATIONS_Payment_Gateway {
 	 */
 	private function is_wp_compatible() {
 
-		if ( ! COBALT_BANK_OPERATIONS_Constants::MINIMUM_WP_VERSION ) {
+		if ( ! Cobalt_Bank_Operations_Constants::MINIMUM_WP_VERSION ) {
 			return true;
 		}
 
-		return version_compare( get_bloginfo( 'version' ), COBALT_BANK_OPERATIONS_Constants::MINIMUM_WP_VERSION, '>=' );
+		return version_compare( get_bloginfo( 'version' ), Cobalt_Bank_Operations_Constants::MINIMUM_WP_VERSION, '>=' );
 	}
 
 	/**
@@ -367,11 +367,11 @@ class COBALT_BANK_OPERATIONS_Payment_Gateway {
 	 */
 	private function is_wc_compatible() {
 
-		if ( ! COBALT_BANK_OPERATIONS_Constants::MINIMUM_WC_VERSION ) {
+		if ( ! Cobalt_Bank_Operations_Constants::MINIMUM_WC_VERSION ) {
 			return true;
 		}
 
-		return defined( 'WC_VERSION' ) && version_compare( WC_VERSION, COBALT_BANK_OPERATIONS_Constants::MINIMUM_WC_VERSION, '>=' );
+		return defined( 'WC_VERSION' ) && version_compare( WC_VERSION, Cobalt_Bank_Operations_Constants::MINIMUM_WC_VERSION, '>=' );
 	}
 
 	/**
@@ -460,7 +460,7 @@ class COBALT_BANK_OPERATIONS_Payment_Gateway {
 	 * @return bool
 	 */
 	private function is_environment_compatible() {
-		return version_compare( PHP_VERSION, COBALT_BANK_OPERATIONS_Constants::MINIMUM_PHP_VERSION, '>=' );
+		return version_compare( PHP_VERSION, Cobalt_Bank_Operations_Constants::MINIMUM_PHP_VERSION, '>=' );
 	}
 
 
@@ -471,7 +471,7 @@ class COBALT_BANK_OPERATIONS_Payment_Gateway {
 	 */
 	private function get_environment_message() {
 
-		return sprintf( 'La versión mínima requerida de PHP es %1$s. Se está ejecutando la versión %2$s.', COBALT_BANK_OPERATIONS_Constants::MINIMUM_PHP_VERSION, PHP_VERSION );
+		return sprintf( 'La versión mínima requerida de PHP es %1$s. Se está ejecutando la versión %2$s.', Cobalt_Bank_Operations_Constants::MINIMUM_PHP_VERSION, PHP_VERSION );
 	}
 
 
@@ -480,7 +480,7 @@ class COBALT_BANK_OPERATIONS_Payment_Gateway {
 	 *
 	 * Ensures only one instance can be loaded.
 	 *
-	 * @return \COBALT_BANK_OPERATIONS_Payment_Gateway
+	 * @return \Cobalt_Bank_Operations_Payment_Gateway
 	 */
 	public static function instance() {
 
@@ -493,4 +493,4 @@ class COBALT_BANK_OPERATIONS_Payment_Gateway {
 }
 
 // fire it up!
-COBALT_BANK_OPERATIONS_Payment_Gateway::instance();
+Cobalt_Bank_Operations_Payment_Gateway::instance();

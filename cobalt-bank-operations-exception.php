@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * CBO Exception helper for the payment gateway.
  */
-class COBALT_BANK_OPERATIONS_Exception extends Exception {
+class Cobalt_Bank_Operations_Exception extends Exception {
 
 	/**
 	 * Stores the response data associated with the exception.

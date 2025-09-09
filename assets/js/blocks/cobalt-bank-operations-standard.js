@@ -12,7 +12,7 @@ import {
 
 const Label = ({ label }) => (
   <div className="cobalt-bank-operations-payment-label">
-    <span>{ __( 'Card (Visa/Mastercard)', 'class-cobalt-bank-operations-payment-gateway' ) }</span>
+    <span>{ __( 'Card (Visa/Mastercard)', 'cobalt-bank-operations-payment-gateway' ) }</span>
     <div className="cobalt-bank-operations-payment-label__icons">
       <img
         src={ visaUrl }
@@ -64,25 +64,25 @@ function PaymentMethod({
       if (!validateLuhn(card_number)) {
         return {
           type: emitResponse.responseTypes.ERROR,
-          message: __('Invalid card number', 'class-cobalt-bank-operations-payment-gateway'),
+          message: __('Invalid card number', 'cobalt-bank-operations-payment-gateway'),
         };
       }
       if (!validateExpiry(card_expiry)) {
         return {
           type: emitResponse.responseTypes.ERROR,
-          message: __('Invalid date', 'class-cobalt-bank-operations-payment-gateway'),
+          message: __('Invalid date', 'cobalt-bank-operations-payment-gateway'),
         };
       }
       if (!validateCvc(card_cvc)) {
         return {
           type: emitResponse.responseTypes.ERROR,
-          message: __('Invalid CVC', 'class-cobalt-bank-operations-payment-gateway'),
+          message: __('Invalid CVC', 'cobalt-bank-operations-payment-gateway'),
         };
       }
       if (!card_holder) {
         return {
           type: emitResponse.responseTypes.ERROR,
-          message: __('Holder name is required', 'class-cobalt-bank-operations-payment-gateway'),
+          message: __('Holder name is required', 'cobalt-bank-operations-payment-gateway'),
         };
       }
       return {
@@ -106,7 +106,7 @@ function PaymentMethod({
 registerPaymentMethod({
   name: 'cobalt_bank_operations_standard_gateway',
   label: <Label />,
-  ariaLabel: __('CBO Standard Gateway', 'class-cobalt-bank-operations-payment-gateway'),
+  ariaLabel: __('CBO Standard Gateway', 'cobalt-bank-operations-payment-gateway'),
   canMakePayment: () => true,
   content: <PaymentMethod />,
   edit: <PaymentMethod />,
