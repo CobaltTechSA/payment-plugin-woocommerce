@@ -56,12 +56,12 @@ const CardFields = ({ onChange }) => {
       {/* Holde Name */}
       <div className="cobalt-bank-operations-card-fields__group">
         <label>
-          {__('Card holder', 'class-cobalt-bank-operations-payment-gateway')}<span class="required">*</span>
+          {__('Card holder', 'cobalt-bank-operations-payment-gateway')}<span class="required">*</span>
         </label>
         <input
           id="card_holder"
           type="text"
-          placeholder={__('Full name', 'class-cobalt-bank-operations-payment-gateway')}
+          placeholder={__('Full name', 'cobalt-bank-operations-payment-gateway')}
           maxLength="50"
           value={card_holder}
           onChange={e => setcard_holder(e.target.value)}
@@ -70,14 +70,14 @@ const CardFields = ({ onChange }) => {
         />
         {errors.holder && (
           <small className="cobalt-bank-operations-card-fields__error">
-            {__('You must enter the holder name', 'class-cobalt-bank-operations-payment-gateway')}
+            {__('You must enter the holder name', 'cobalt-bank-operations-payment-gateway')}
           </small>
         )}
       </div>
       {/* Card Number */}
       <div className="cobalt-bank-operations-card-fields__group">
         <label>
-          {__('Card number', 'class-cobalt-bank-operations-payment-gateway')}<span class="required">*</span>
+          {__('Card number', 'cobalt-bank-operations-payment-gateway')}<span class="required">*</span>
         </label>
         <input
           id="card_number"
@@ -95,7 +95,7 @@ const CardFields = ({ onChange }) => {
         />
         {errors.number && touched.number && (
           <small className="cobalt-bank-operations-card-fields__error">
-            {__('Invalid card number', 'class-cobalt-bank-operations-payment-gateway')}
+            {__('Invalid card number', 'cobalt-bank-operations-payment-gateway')}
           </small>
         )}
       </div>
@@ -104,12 +104,12 @@ const CardFields = ({ onChange }) => {
       <div className="cobalt-bank-operations-card-fields__row">
         <div className="cobalt-bank-operations-card-fields__group">
           <label>
-            {__('Expiration date', 'class-cobalt-bank-operations-payment-gateway')}<span class="required">*</span>
+            {__('Expiration date', 'cobalt-bank-operations-payment-gateway')}<span class="required">*</span>
           </label>
           <input
             id="card_expiry"
             type="text"
-            placeholder={__('MM/YY', 'class-cobalt-bank-operations-payment-gateway')}
+            placeholder={__('MM/YY', 'cobalt-bank-operations-payment-gateway')}
             value={card_expiry}
             onBlur={() => setTouched(t => ({ ...t, expiry: true }))}
             onChange={e => {
@@ -124,14 +124,14 @@ const CardFields = ({ onChange }) => {
           />
           {errors.expiry && touched.expiry && (
             <small className="cobalt-bank-operations-card-fields__error">
-              {__('Invalid date', 'class-cobalt-bank-operations-payment-gateway')}
+              {__('Invalid date', 'cobalt-bank-operations-payment-gateway')}
             </small>
           )}
         </div>
 
         <div className="cobalt-bank-operations-card-fields__group">
           <label>
-            {__('CVC', 'class-cobalt-bank-operations-payment-gateway')}<span class="required">*</span>
+            {__('CVC', 'cobalt-bank-operations-payment-gateway')}<span class="required">*</span>
           </label>
           <input
             id="card_cvc"
@@ -145,7 +145,7 @@ const CardFields = ({ onChange }) => {
           />
           {errors.cvc && touched.cvc && (
             <small className="cobalt-bank-operations-card-fields__error">
-              {__('Invalid CVC', 'class-cobalt-bank-operations-payment-gateway')}
+              {__('Invalid CVC', 'cobalt-bank-operations-payment-gateway')}
             </small>
           )}
         </div>

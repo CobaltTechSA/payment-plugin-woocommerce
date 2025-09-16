@@ -78,7 +78,7 @@ final class COBALT_BANK_OPERATIONS_Blocks_Support {
 
 		wp_set_script_translations(
 			'cobalt-bank-operations-standard-blocks-js',
-			'class-cobalt-bank-operations-payment-gateway',
+			'cobalt-bank-operations-payment-gateway',
 			COBALT_BANK_OPERATIONS_PATH . 'i18n'
 		);
 
@@ -120,7 +120,7 @@ final class COBALT_BANK_OPERATIONS_Blocks_Support {
 
 		wp_set_script_translations(
 			'cobalt-bank-operations-telered-blocks-js',
-			'class-cobalt-bank-operations-payment-gateway',
+			'cobalt-bank-operations-payment-gateway',
 			COBALT_BANK_OPERATIONS_PATH . 'i18n'
 		);
 	}

@@ -113,23 +113,23 @@ class COBALT_BANK_OPERATIONS_Payment_Gateway_CC extends WC_Payment_Gateway_CC {
 		);
 
 		$cvc_field = '<p class="form-row form-row-last">
-            <label for="' . esc_attr( $this->id ) . '-card-cvc">' . esc_html__( 'Card code', 'class-cobalt-bank-operations-payment-gateway' ) . '&nbsp;<span class="required">*</span></label>
-            <input id="' . esc_attr( $this->id ) . '-card-cvc" class="input-text wc-credit-card-form-card-cvc" inputmode="password" autocomplete="off" autocorrect="no" autocapitalize="no" spellcheck="no" type="password" maxlength="4" placeholder="' . esc_attr__( 'CVC', 'class-cobalt-bank-operations-payment-gateway' ) . '" ' . $this->cobalt_bank_operations_field_name( 'card-cvc' ) . ' style="width:100px" />
+            <label for="' . esc_attr( $this->id ) . '-card-cvc">' . esc_html__( 'Card code', 'cobalt-bank-operations-payment-gateway' ) . '&nbsp;<span class="required">*</span></label>
+            <input id="' . esc_attr( $this->id ) . '-card-cvc" class="input-text wc-credit-card-form-card-cvc" inputmode="password" autocomplete="off" autocorrect="no" autocapitalize="no" spellcheck="no" type="password" maxlength="4" placeholder="' . esc_attr__( 'CVC', 'cobalt-bank-operations-payment-gateway' ) . '" ' . $this->cobalt_bank_operations_field_name( 'card-cvc' ) . ' style="width:100px" />
         </p>';
 
 		$card_holder_field = '<p class="form-row form-row-wide">
-            <label for="' . esc_attr( $this->id ) . '-card-holder">' . esc_html__( 'Card holder', 'class-cobalt-bank-operations-payment-gateway' ) . '&nbsp;<span class="required">*</span></label>
-            <input id="' . esc_attr( $this->id ) . '-card-holder" class="input-text wc-credit-card-form-card-holder" inputmode="text" autocomplete="cc-card-holder" autocorrect="no" autocapitalize="no" spellcheck="no" type="text" placeholder="' . esc_attr__( 'Card holder', 'class-cobalt-bank-operations-payment-gateway' ) . '" ' . $this->cobalt_bank_operations_field_name( 'card-holder' ) . ' />
+            <label for="' . esc_attr( $this->id ) . '-card-holder">' . esc_html__( 'Card holder', 'cobalt-bank-operations-payment-gateway' ) . '&nbsp;<span class="required">*</span></label>
+            <input id="' . esc_attr( $this->id ) . '-card-holder" class="input-text wc-credit-card-form-card-holder" inputmode="text" autocomplete="cc-card-holder" autocorrect="no" autocapitalize="no" spellcheck="no" type="text" placeholder="' . esc_attr__( 'Card holder', 'cobalt-bank-operations-payment-gateway' ) . '" ' . $this->cobalt_bank_operations_field_name( 'card-holder' ) . ' />
         </p>';
 
 		$default_fields = array(
 			'card-number-field' => '<p class="form-row form-row-wide">
-                <label for="' . esc_attr( $this->id ) . '-card-number">' . esc_html__( 'Card number', 'class-cobalt-bank-operations-payment-gateway' ) . '&nbsp;<span class="required">*</span></label>
+                <label for="' . esc_attr( $this->id ) . '-card-number">' . esc_html__( 'Card number', 'cobalt-bank-operations-payment-gateway' ) . '&nbsp;<span class="required">*</span></label>
                 <input id="' . esc_attr( $this->id ) . '-card-number" class="input-text wc-credit-card-form-card-number" inputmode="numeric" autocomplete="cc-number" autocorrect="no" autocapitalize="no" spellcheck="no" type="tel" placeholder="&bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull;" ' . $this->cobalt_bank_operations_field_name( 'card-number' ) . ' />
             </p>',
 			'card-expiry-field' => '<p class="form-row form-row-first">
-                <label for="' . esc_attr( $this->id ) . '-card-expiry">' . esc_html__( 'Expiry (MM/YY)', 'class-cobalt-bank-operations-payment-gateway' ) . '&nbsp;<span class="required">*</span></label>
-                <input id="' . esc_attr( $this->id ) . '-card-expiry" class="input-text wc-credit-card-form-card-expiry" inputmode="numeric" autocomplete="cc-exp" autocorrect="no" autocapitalize="no" spellcheck="no" type="tel" placeholder="' . esc_attr__( 'MM / YY', 'class-cobalt-bank-operations-payment-gateway' ) . '" ' . $this->cobalt_bank_operations_field_name( 'card-expiry' ) . ' />
+                <label for="' . esc_attr( $this->id ) . '-card-expiry">' . esc_html__( 'Expiry (MM/YY)', 'cobalt-bank-operations-payment-gateway' ) . '&nbsp;<span class="required">*</span></label>
+                <input id="' . esc_attr( $this->id ) . '-card-expiry" class="input-text wc-credit-card-form-card-expiry" inputmode="numeric" autocomplete="cc-exp" autocorrect="no" autocapitalize="no" spellcheck="no" type="tel" placeholder="' . esc_attr__( 'MM / YY', 'cobalt-bank-operations-payment-gateway' ) . '" ' . $this->cobalt_bank_operations_field_name( 'card-expiry' ) . ' />
             </p>',
 		);
 

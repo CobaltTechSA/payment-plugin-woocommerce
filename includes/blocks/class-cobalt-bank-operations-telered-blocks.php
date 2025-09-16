@@ -48,8 +48,8 @@ final class COBALT_BANK_OPERATIONS_Telered_Blocks extends AbstractPaymentMethodT
 	 */
 	public function get_payment_method_data() {
 		return array(
-			'title'       => __( 'Clave Card', 'class-cobalt-bank-operations-payment-gateway' ),
-			'description' => __( 'Pay securely with your card', 'class-cobalt-bank-operations-payment-gateway' ),
+			'title'       => __( 'Clave Card', 'cobalt-bank-operations-payment-gateway' ),
+			'description' => __( 'Pay securely with your card', 'cobalt-bank-operations-payment-gateway' ),
 			'supports'    => array( 'products' ),
 		);
 	}

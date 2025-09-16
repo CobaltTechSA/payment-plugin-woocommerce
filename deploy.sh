@@ -1,7 +1,7 @@
 # !/bin/bash
 
 
-NAME=class-cobalt-bank-operations-payment-gateway
+NAME=cobalt-bank-operations-payment-gateway
 VERSION=$(git describe --tags $(git rev-list --tags --max-count=1))
 DEPLOY_DIR=$(pwd)/deploy/$NAME
 ZIP_FILE=$(pwd)/deploy/cobalt-plugin-woocommerce-$VERSION.zip
