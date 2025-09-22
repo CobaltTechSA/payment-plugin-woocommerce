@@ -5,8 +5,8 @@
  * Description: Payments with VISA, MasterCard and Clave
  * Author: Cobalt Tech
  * Author URI: https://neopayment.com
- * Version: 2.4.2
- * License:     GPL-2.0
+ * Version: 2.5.0
+ * License: GPL-2.0
  * Text Domain: cobalt-bank-operations-payment-gateway
  * Domain Path: /i18n
  *
