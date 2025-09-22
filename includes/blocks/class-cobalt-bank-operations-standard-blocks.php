@@ -67,12 +67,12 @@ final class COBALT_BANK_OPERATIONS_Standard_Blocks extends AbstractPaymentMethod
 			array(
 				'id'  => 'visa',
 				'src' => COBALT_BANK_OPERATIONS_URL . 'assets/images/visa.svg',
-				'alt' => __( 'Visa', 'class-cobalt-bank-operations-payment-gateway' ),
+				'alt' => __( 'Visa', 'cobalt-bank-operations-payment-gateway' ),
 			),
 			array(
 				'id'  => 'mastercard',
 				'src' => COBALT_BANK_OPERATIONS_URL . 'assets/images/mastercard.svg',
-				'alt' => __( 'Mastercard', 'class-cobalt-bank-operations-payment-gateway' ),
+				'alt' => __( 'Mastercard', 'cobalt-bank-operations-payment-gateway' ),
 			),
 		);
 	}

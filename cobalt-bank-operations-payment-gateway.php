@@ -7,7 +7,7 @@
  * Author URI: https://neopayment.com
  * Version: 2.4.2
  * License:     GPL-2.0
- * Text Domain: class-cobalt-bank-operations-payment-gateway
+ * Text Domain: cobalt-bank-operations-payment-gateway
  * Domain Path: /i18n
  *
  * @package COBALT_BANK_OPERATIONS_Payment_Gateway
@@ -140,7 +140,7 @@ class COBALT_BANK_OPERATIONS_Payment_Gateway {
 			function ( $methods ) {
 				$methods[] = array(
 					'name'     => 'cobalt_bank_operations_standard_gateway',
-					'label'    => __( 'Card (Visa/Mastercard)', 'class-cobalt-bank-operations-payment-gateway' ),
+					'label'    => __( 'Card (Visa/Mastercard)', 'cobalt-bank-operations-payment-gateway' ),
 					'supports' => array( 'products', 'refunds' ),
 				);
 				return $methods;
@@ -230,7 +230,7 @@ class COBALT_BANK_OPERATIONS_Payment_Gateway {
 					'error',
 					sprintf(
 					/* translators: %1$s - plugin name, %2$s - minimum WordPress version required, %3$s - update WordPress link open, %4$s - update WordPress link close */
-						esc_html__( '%1$s requiere WordPress %2$s or higher. Porfavor %3$sactualiza WordPress &raquo;%4$s', 'class-cobalt-bank-operations-payment-gateway' ),
+						esc_html__( '%1$s requiere WordPress %2$s or higher. Porfavor %3$sactualiza WordPress &raquo;%4$s', 'cobalt-bank-operations-payment-gateway' ),
 						'<strong>' . COBALT_BANK_OPERATIONS_Constants::PLUGIN_NAME . '</strong>',
 						COBALT_BANK_OPERATIONS_Constants::MINIMUM_WP_VERSION,
 						'<a href="' . esc_url( admin_url( 'update-core.php' ) ) . '">',
@@ -256,7 +256,7 @@ class COBALT_BANK_OPERATIONS_Payment_Gateway {
 					$activation_url = wp_nonce_url( 'plugins.php?action=activate&amp;plugin=' . $plugin . '&amp;plugin_status=all&amp;paged=1&amp;s', 'activate-plugin_' . $plugin );
 					$message        = sprintf(
 					/* translators: %1$s - Plugin Name, %2$s - activate WooCommerce link open, %3$s - activate WooCommerce link close. */
-						esc_html__( '%1$s requiere que WooCommerce esté activado. Por favor %2$sactiva WooCommerce%3$s.', 'class-cobalt-bank-operations-payment-gateway' ),
+						esc_html__( '%1$s requiere que WooCommerce esté activado. Por favor %2$sactiva WooCommerce%3$s.', 'cobalt-bank-operations-payment-gateway' ),
 						'<strong>' . COBALT_BANK_OPERATIONS_Constants::PLUGIN_NAME . '</strong>',
 						'<a href="' . esc_url( $activation_url ) . '">',
 						'</a>'
@@ -272,7 +272,7 @@ class COBALT_BANK_OPERATIONS_Payment_Gateway {
 				$install_url = wp_nonce_url( self_admin_url( 'update.php?action=install-plugin&plugin=woocommerce' ), 'install-plugin_woocommerce' );
 				$message     = sprintf(
 					/* translators: %1$s - Plugin Name, %2$s - install WooCommerce link open, %3$s - install WooCommerce link close. */
-					esc_html__( '%1$s requiere que WooCommerce esté instalado y activado. por favor, %2$sinstala WooCommerce%3$s.', 'class-cobalt-bank-operations-payment-gateway' ),
+					esc_html__( '%1$s requiere que WooCommerce esté instalado y activado. por favor, %2$sinstala WooCommerce%3$s.', 'cobalt-bank-operations-payment-gateway' ),
 					'<strong>' . COBALT_BANK_OPERATIONS_Constants::PLUGIN_NAME . '</strong>',
 					'<a href="' . esc_url( $install_url ) . '">',
 					'</a>'
@@ -291,7 +291,7 @@ class COBALT_BANK_OPERATIONS_Payment_Gateway {
 					'error',
 					sprintf(
 					/* translators: %1$s - Plugin Name, %2$s - minimum WooCommerce version, %3$s - update WooCommerce link open, %4$s - update WooCommerce link close, %5$s - download minimum WooCommerce link open, %6$s - download minimum WooCommerce link close. */
-						esc_html__( '%1$s requiere WooCommerce %2$s o superior. Por favor, %3$sactualiza WooCommerce%4$s a la última versión, o %5$sdescarga la versión mínima requerida &raquo;%6$s', 'class-cobalt-bank-operations-payment-gateway' ),
+						esc_html__( '%1$s requiere WooCommerce %2$s o superior. Por favor, %3$sactualiza WooCommerce%4$s a la última versión, o %5$sdescarga la versión mínima requerida &raquo;%6$s', 'cobalt-bank-operations-payment-gateway' ),
 						'<strong>' . COBALT_BANK_OPERATIONS_Constants::PLUGIN_NAME . '</strong>',
 						COBALT_BANK_OPERATIONS_Constants::MINIMUM_WC_VERSION,
 						'<a href="' . esc_url( $update_url ) . '">',
@@ -307,7 +307,7 @@ class COBALT_BANK_OPERATIONS_Payment_Gateway {
 				'error',
 				sprintf(
 				/* translators: %1$s - Plugin Name, %2$s - minimum WooCommerce version, %3$s - update WooCommerce link open, %4$s - update WooCommerce link close, %5$s - download minimum WooCommerce link open, %6$s - download minimum WooCommerce link close. */
-					esc_html__( '%1$s solo está disponible para tiendas localizadas en Panamá.', 'class-cobalt-bank-operations-payment-gateway' ),
+					esc_html__( '%1$s solo está disponible para tiendas localizadas en Panamá.', 'cobalt-bank-operations-payment-gateway' ),
 					'<strong>' . COBALT_BANK_OPERATIONS_Constants::PLUGIN_NAME . '</strong>'
 				)
 			);

@@ -267,12 +267,12 @@ class COBALT_BANK_OPERATIONS_Client {
 		$parse_id = (int) $transaction_id;
 		$id       = $parse_id - 130000000;
 		if ( $id <= 0 ) {
-			throw new COBALT_BANK_OPERATIONS_Exception( esc_html__( 'Invalid transaction ID', 'class-cobalt-bank-operations-payment-gateway' ) );
+			throw new COBALT_BANK_OPERATIONS_Exception( esc_html__( 'Invalid transaction ID', 'cobalt-bank-operations-payment-gateway' ) );
 		}
 
 		$route = $this->get_route( 'refund' );
 		if ( empty( $route ) ) {
-			throw new COBALT_BANK_OPERATIONS_Exception( esc_html__( 'Refund route not defined', 'class-cobalt-bank-operations-payment-gateway' ) );
+			throw new COBALT_BANK_OPERATIONS_Exception( esc_html__( 'Refund route not defined', 'cobalt-bank-operations-payment-gateway' ) );
 		}
 
 		$endpoint = sprintf(
@@ -287,13 +287,13 @@ class COBALT_BANK_OPERATIONS_Client {
 
 		if ( 200 !== $response['code'] ) {
 			\COBALT_BANK_OPERATIONS_Log::error( 'Error al solicitar reembolso: ' . esc_html( wp_json_encode( $response ) ) );
-			throw new COBALT_BANK_OPERATIONS_Exception( esc_html__( 'Error requesting refund', 'class-cobalt-bank-operations-payment-gateway' ), esc_html( wp_json_encode( $response ) ) );
+			throw new COBALT_BANK_OPERATIONS_Exception( esc_html__( 'Error requesting refund', 'cobalt-bank-operations-payment-gateway' ), esc_html( wp_json_encode( $response ) ) );
 		}
 
 		$body = $response['body'];
 
 		if ( empty( $body['status'] ) || 'ok' !== $body['status'] ) {
-			$msg = ! empty( $body['message'] ) ? $body['message'] : __( 'Refund failed', 'class-cobalt-bank-operations-payment-gateway' );
+			$msg = ! empty( $body['message'] ) ? $body['message'] : __( 'Refund failed', 'cobalt-bank-operations-payment-gateway' );
 			throw new COBALT_BANK_OPERATIONS_Exception( esc_html( $msg ), esc_html( wp_json_encode( $response ) ) );
 		}
 
@@ -443,7 +443,7 @@ class COBALT_BANK_OPERATIONS_Client {
 		if ( 200 === $response['code'] ) {
 			return $response['body']['data'];
 		} else {
-			throw new COBALT_BANK_OPERATIONS_Exception( esc_html__( 'Error getting commerce', 'class-cobalt-bank-operations-payment-gateway' ), esc_html( wp_json_encode( $response ) ) );
+			throw new COBALT_BANK_OPERATIONS_Exception( esc_html__( 'Error getting commerce', 'cobalt-bank-operations-payment-gateway' ), esc_html( wp_json_encode( $response ) ) );
 		}
 	}
 }
