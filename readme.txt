@@ -4,7 +4,7 @@ Tags: woocommerce, payment gateway, cobalt tech, panama
 Requires at least: 4.4
 Tested up to: 6.8
 Requires PHP: 7.2.0
-Stable tag: 2.5.0
+Stable tag: 2.5.1
 License: GPLv2
 License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html#SEC1
 
@@ -46,6 +46,9 @@ Visa, Mastercard, and Clave cards.
 Yes. You must be an approved merchant with Cobalt Tech to use this plugin.
 
 == Changelog ==
+2025.09.22 - version 2.5.1
+* Resubmitted plugin
+
 2025.09.22 - version 2.5.0
 * Renamed plugin slug
 

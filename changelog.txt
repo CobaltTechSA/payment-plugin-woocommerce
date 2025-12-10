@@ -1,3 +1,6 @@
+2025.09.22 - version 2.5.1
+* Resubmitted plugin
+
 2025.09.22 - version 2.5.0
 * Renamed plugin slug
 
