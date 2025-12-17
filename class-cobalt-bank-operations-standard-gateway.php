@@ -424,14 +424,17 @@ class COBALT_BANK_OPERATIONS_Standard_Gateway extends WC_Payment_Gateway {
 	 * @return array Result data with 'result' and 'redirect' keys.
 	 */
 	public function process_payment( $order_id ) {
+		   COBALT_BANK_OPERATIONS_Log::debug( 'process_payment: ' . $order_id );
 
-		// check if the nonce is set and valid.
-		if ( isset( $_POST[ $this->id . '_nonce' ] ) ) {
-			if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST[ $this->id . '_nonce' ] ) ), $this->id . '_process_payment' ) ) {
-				wc_add_notice( __( 'Security check failed. Please try again.', 'cobalt-bank-operations-payment-gateway' ), 'error' );
-				return;
+			$order = wc_get_order( $order_id );
+
+			if ( ! $order ) {
+				return [
+					'result' => 'failure',
+				];
 			}
-		}
+
+
 		// we need it to get any order details.
 		COBALT_BANK_OPERATIONS_Log::debug( 'process_payment: ' . $order_id );
 		$order = wc_get_order( $order_id );
@@ -557,7 +560,13 @@ class COBALT_BANK_OPERATIONS_Standard_Gateway extends WC_Payment_Gateway {
 	}
 
 	/**
-	 * Get 3DS Params for payments
+	 * Get 3DS Params for payments.
+	 *
+	 * SECURITY NOTE:
+	 * This method is only executed during classic checkout flow.
+	 * Nonce verification is performed earlier in validate_fields().
+	 * This method MUST NOT validate nonces directly to avoid
+	 * breaking WooCommerce Blocks / Store API.
 	 *
 	 * @return array
 	 */
