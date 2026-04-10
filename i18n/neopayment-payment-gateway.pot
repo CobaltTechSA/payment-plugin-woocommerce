@@ -404,12 +404,12 @@ msgstr ""
 
 #: assets/js/blocks/neopayment-payment-gateway-standard.js:109
 #: build/neopayment-payment-gateway-standard.js:1
-msgid "NEOPAYMENT Standard Gateway"
+msgid "Neopayment Standard Gateway"
 msgstr ""
 
 #: assets/js/blocks/neopayment-payment-gateway-telered.js:17
 #: build/neopayment-payment-gateway-telered.js:1
-msgid "NEOPAYMENT Telered Gateway"
+msgid "Neopayment Telered Gateway"
 msgstr ""
 
 #: assets/js/neopayment-payment-gateway-3ds-popup.js:13

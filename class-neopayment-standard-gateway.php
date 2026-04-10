@@ -34,7 +34,7 @@ class NEOPAYMENT_PAYMENT_GATEWAY_Standard_Gateway_Legacy extends WC_Payment_Gate
 		$this->id                 = NEOPAYMENT_Constants::STANDARD_GATEWAY_ID; // payment gateway plugin ID.
 		$this->icon               = ''; // URL of the icon that will be displayed on checkout page near your gateway name.
 		$this->has_fields         = true; // in case you need a custom credit card form.
-		$this->method_title       = 'NEOPAYMENT Standard Gateway';
+		$this->method_title       = 'Neopayment Standard Gateway';
 		$this->method_description = __( 'Acceptance of payments with Visa / Mastercard', 'neopayment-payment-gateway' ); // will be displayed on the options page.
 
 		// gateways can support subscriptions, refunds, saved payment methods, but in this tutorial we begin with simple payments.

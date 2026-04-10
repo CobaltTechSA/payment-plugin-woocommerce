@@ -106,7 +106,7 @@ function PaymentMethod({
 registerPaymentMethod({
   name: 'neopayment_payment_gateway_standard_gateway',
   label: <Label />,
-  ariaLabel: __('NEOPAYMENT Standard Gateway', 'neopayment-payment-gateway'),
+  ariaLabel: __('Neopayment Standard Gateway', 'neopayment-payment-gateway'),
   canMakePayment: () => true,
   content: <PaymentMethod />,
   edit: <PaymentMethod />,

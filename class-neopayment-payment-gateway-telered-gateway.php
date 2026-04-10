@@ -30,7 +30,7 @@ class NEOPAYMENT_PAYMENT_GATEWAY_Telered_Gateway extends WC_Payment_Gateway {
 		$this->id                 = NEOPAYMENT_PAYMENT_GATEWAY_Constants::NEOPAYMENT_PAYMENT_GATEWAY_TELERED_GATEWAY_ID; // payment gateway plugin ID.
 		$this->icon               = ''; // URL of the icon that will be displayed on checkout page near your gateway name.
 		$this->has_fields         = false; // in case you need a custom credit card form.
-		$this->method_title       = 'NEOPAYMENT Clave Gateway';
+		$this->method_title       = 'Neopayment Clave Gateway';
 		$this->method_description = __( 'Acceptance of payments with Clave', 'neopayment-payment-gateway' ); // will be displayed on the options page.
 
 		// gateways can support subscriptions, refunds, saved payment methods but in this tutorial we begin with simple payments.

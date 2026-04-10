@@ -14,7 +14,7 @@ const Label         = ({ label }) => (
 
 const settings = {
 	name: 'neopayment_payment_gateway_telered_gateway',
-	ariaLabel: __( 'NEOPAYMENT Telered Gateway', 'neopayment-payment-gateway' ),
+	ariaLabel: __( 'Neopayment Telered Gateway', 'neopayment-payment-gateway' ),
 	label: <Label/>,
 	canMakePayment: () => true,
 	content: <ProcessPaymentHandler/> ,
