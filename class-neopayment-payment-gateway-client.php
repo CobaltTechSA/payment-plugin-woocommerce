@@ -1,21 +1,21 @@
 <?php
 
 /**
- * Client for NBO Payment Gateway plugin.
+ * Client for Neopayment Payment Gateway plugin.
  *
- * @package NBO_PAYMENT_GATEWAY
+ * @package NEOPAYMENT_PAYMENT_GATEWAY
  */
 
 if (! defined('ABSPATH')) {
 	exit;
 }
-require_once 'class-nbo-payment-gateway-constants.php';
-require_once 'class-nbo-payment-gateway-exception.php';
+require_once 'class-neopayment-payment-gateway-constants.php';
+require_once 'class-neopayment-payment-gateway-exception.php';
 
 /**
  * Handles WooCommerce client for the payment gateway.
  */
-class NBO_PAYMENT_GATEWAY_Client
+class NEOPAYMENT_PAYMENT_GATEWAY_Client
 {
 
 	const API_V2_ROUTES = array(
@@ -59,12 +59,12 @@ class NBO_PAYMENT_GATEWAY_Client
 	 * @param string      $base_url      Base URL for API connection.
 	 * @param string|null $client_id     Client identifier from the merchant.
 	 * @param string|null $client_secret Client secret from the merchant.
-	 * @throws NBO_PAYMENT_GATEWAY_Exception When API credentials are not configured.
+	 * @throws NEOPAYMENT_PAYMENT_GATEWAY_Exception When API credentials are not configured.
 	 */
 	public function __construct(string $base_url, ?string $client_id, ?string $client_secret)
 	{
 		if (empty($base_url) || empty($client_id) || empty($client_secret)) {
-			throw new NBO_PAYMENT_GATEWAY_Exception('Credenciales API no configuradas.');
+			throw new NEOPAYMENT_PAYMENT_GATEWAY_Exception('Credenciales API no configuradas.');
 		}
 
 		$this->base_url      = $base_url;
@@ -73,25 +73,25 @@ class NBO_PAYMENT_GATEWAY_Client
 	}
 
 	/**
-	 * Sends a POST request to the NBO API.
+	 * Sends a POST request to the NEOPAYMENT API.
 	 *
 	 * @param string $endpoint Endpoint path relative to base URL.
 	 * @param array  $data     Request payload.
 	 * @param bool   $login    Whether to include auth header (default true).
 	 * @return array Decoded response as associative array.
-	 * @throws NBO_PAYMENT_GATEWAY_Exception When the HTTP request fails or API returns an error.
+	 * @throws NEOPAYMENT_PAYMENT_GATEWAY_Exception When the HTTP request fails or API returns an error.
 	 */
 	private function post(string $endpoint, array $data = array(), $login = true): array
 	{
 		if ($login) {
 			if (! $this->login()) {
-				throw new NBO_PAYMENT_GATEWAY_Exception('Could not authenticate.');
+				throw new NEOPAYMENT_PAYMENT_GATEWAY_Exception('Could not authenticate.');
 			}
 		}
 
 		$headers = array(
 			'Accept: application/json',
-			'User-Agent: Neopayment-WC-Plugin ' . NBO_PAYMENT_GATEWAY_Constants::NBO_PAYMENT_GATEWAY_PLUGIN_VERSION,
+			'User-Agent: Neopayment-WC-Plugin ' . NEOPAYMENT_PAYMENT_GATEWAY_Constants::NEOPAYMENT_PAYMENT_GATEWAY_PLUGIN_VERSION,
 		);
 
 		// When requesting an OAuth token, the content type must be.
@@ -140,19 +140,19 @@ class NBO_PAYMENT_GATEWAY_Client
 	 * @param string $endpoint to use.
 	 * @param bool   $login if is authenticate.
 	 * @return array
-	 * @throws NBO_PAYMENT_GATEWAY_Exception If an authentication error occurs.
+	 * @throws NEOPAYMENT_PAYMENT_GATEWAY_Exception If an authentication error occurs.
 	 */
 	private function get(string $endpoint, bool $login = true): array
 	{
 		if ($login) {
 			if (! $this->login()) {
-				throw new NBO_PAYMENT_GATEWAY_Exception('Could not authenticate.');
+				throw new NEOPAYMENT_PAYMENT_GATEWAY_Exception('Could not authenticate.');
 			}
 		}
 
 		$headers = array(
 			'Accept: application/json',
-			'User-Agent: Neopayment-WC-Plugin ' . NBO_PAYMENT_GATEWAY_Constants::NBO_PAYMENT_GATEWAY_PLUGIN_VERSION,
+			'User-Agent: Neopayment-WC-Plugin ' . NEOPAYMENT_PAYMENT_GATEWAY_Constants::NEOPAYMENT_PAYMENT_GATEWAY_PLUGIN_VERSION,
 		);
 
 		if ($this->authorization) {
@@ -199,7 +199,7 @@ class NBO_PAYMENT_GATEWAY_Client
 	 */
 	public function is_access_token_expired(): bool
 	{
-		$expires_at = intval(get_option('nbo_payment_gateway_expires_at', 0));
+		$expires_at = intval(get_option('neopayment_payment_gateway_expires_at', 0));
 		$now        = time();
 
 		return $expires_at <= $now;
@@ -209,14 +209,14 @@ class NBO_PAYMENT_GATEWAY_Client
 	 * Client login function.
 	 *
 	 * @return bool
-	 * @throws NBO_PAYMENT_GATEWAY_Exception If an authentication error occurs.
+	 * @throws NEOPAYMENT_PAYMENT_GATEWAY_Exception If an authentication error occurs.
 	 */
 	public function login()
 	{
 		$this->authorization = null;
 		$access_token        = $this->get_access_token();
 		if (! $access_token) {
-			throw new NBO_PAYMENT_GATEWAY_Exception('Could not authenticate via OAuth2');
+			throw new NEOPAYMENT_PAYMENT_GATEWAY_Exception('Could not authenticate via OAuth2');
 		}
 
 		$this->authorization = 'Authorization: Bearer ' . $access_token;
@@ -227,11 +227,11 @@ class NBO_PAYMENT_GATEWAY_Client
 	 * Get client access token.
 	 *
 	 * @return false|mixed|null
-	 * @throws NBO_PAYMENT_GATEWAY_Exception If an authentication error occurs.
+	 * @throws NEOPAYMENT_PAYMENT_GATEWAY_Exception If an authentication error occurs.
 	 */
 	public function get_access_token()
 	{
-		$access_token = get_option('nbo_payment_gateway_access_token');
+		$access_token = get_option('neopayment_payment_gateway_access_token');
 		if ($this->is_access_token_expired()) {
 			$response = $this->post(
 				'/oauth/token',
@@ -251,12 +251,12 @@ class NBO_PAYMENT_GATEWAY_Client
 				$expires_in -= (60 * 5); // For prevention, subtract 5 minutes.
 				$expires_at  = time() + $expires_in;
 
-				update_option('nbo_payment_gateway_access_token', $access_token);
-				update_option('nbo_payment_gateway_expires_at', $expires_at);
-				NBO_PAYMENT_GATEWAY_Log::debug("Authentication completed: expires_in=$expires_in, access_token=$access_token");
+				update_option('neopayment_payment_gateway_access_token', $access_token);
+				update_option('neopayment_payment_gateway_expires_at', $expires_at);
+				NEOPAYMENT_PAYMENT_GATEWAY_Log::debug("Authentication completed: expires_in=$expires_in, access_token=$access_token");
 			} else {
 				// Failed.
-				NBO_PAYMENT_GATEWAY_Log::error('Error getting access token: ' . wp_json_encode($response));
+				NEOPAYMENT_PAYMENT_GATEWAY_Log::error('Error getting access token: ' . wp_json_encode($response));
 				return null;
 			}
 		}
@@ -270,19 +270,19 @@ class NBO_PAYMENT_GATEWAY_Client
 	 * @param string $transaction_id to find.
 	 * @param int    $amount on cents.
 	 * @return array
-	 * @throws NBO_PAYMENT_GATEWAY_Exception If an authentication error occurs.
+	 * @throws NEOPAYMENT_PAYMENT_GATEWAY_Exception If an authentication error occurs.
 	 */
 	public function refund(string $transaction_id, int $amount = 0): array
 	{
 		$parse_id = (int) $transaction_id;
 		$id       = $parse_id - 130000000;
 		if ($id <= 0) {
-			throw new NBO_PAYMENT_GATEWAY_Exception(esc_html__('Invalid transaction ID', 'nbo-payment-gateway'));
+			throw new NEOPAYMENT_PAYMENT_GATEWAY_Exception(esc_html__('Invalid transaction ID', 'neopayment-payment-gateway'));
 		}
 
 		$route = $this->get_route('refund');
 		if (empty($route)) {
-			throw new NBO_PAYMENT_GATEWAY_Exception(esc_html__('Refund route not defined', 'nbo-payment-gateway'));
+			throw new NEOPAYMENT_PAYMENT_GATEWAY_Exception(esc_html__('Refund route not defined', 'neopayment-payment-gateway'));
 		}
 
 		$endpoint = sprintf(
@@ -293,18 +293,18 @@ class NBO_PAYMENT_GATEWAY_Client
 		);
 
 		$response = $this->get($endpoint);
-		\NBO_PAYMENT_GATEWAY_Log::debug('Respuesta de reembolso: ' . esc_html(wp_json_encode($response)));
+		\NEOPAYMENT_PAYMENT_GATEWAY_Log::debug('Respuesta de reembolso: ' . esc_html(wp_json_encode($response)));
 
 		if (200 !== $response['code']) {
-			\NBO_PAYMENT_GATEWAY_Log::error('Error al solicitar reembolso: ' . esc_html(wp_json_encode($response)));
-			throw new NBO_PAYMENT_GATEWAY_Exception(esc_html__('Error requesting refund', 'nbo-payment-gateway'), esc_html(wp_json_encode($response)));
+			\NEOPAYMENT_PAYMENT_GATEWAY_Log::error('Error al solicitar reembolso: ' . esc_html(wp_json_encode($response)));
+			throw new NEOPAYMENT_PAYMENT_GATEWAY_Exception(esc_html__('Error requesting refund', 'neopayment-payment-gateway'), esc_html(wp_json_encode($response)));
 		}
 
 		$body = $response['body'];
 
 		if (empty($body['status']) || ! in_array($body['status'], array('ok', 'error'), true)) {
-			$msg = ! empty($body['message']) ? $body['message'] : __('Refund failed', 'nbo-payment-gateway');
-			throw new NBO_PAYMENT_GATEWAY_Exception(esc_html($msg), esc_html(wp_json_encode($response)));
+			$msg = ! empty($body['message']) ? $body['message'] : __('Refund failed', 'neopayment-payment-gateway');
+			throw new NEOPAYMENT_PAYMENT_GATEWAY_Exception(esc_html($msg), esc_html(wp_json_encode($response)));
 		}
 
 		return $body['data'];
@@ -315,7 +315,7 @@ class NBO_PAYMENT_GATEWAY_Client
 	 *
 	 * @param string $id parameter.
 	 * @return array
-	 * @throws NBO_PAYMENT_GATEWAY_Exception If an authentication error occurs.
+	 * @throws NEOPAYMENT_PAYMENT_GATEWAY_Exception If an authentication error occurs.
 	 */
 	public function transaction(string $id): array
 	{
@@ -325,7 +325,7 @@ class NBO_PAYMENT_GATEWAY_Client
 			return $response['body']['data'];
 		} else {
 			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
-			throw new NBO_PAYMENT_GATEWAY_Exception('Error processing payment', wp_json_encode($response));
+			throw new NEOPAYMENT_PAYMENT_GATEWAY_Exception('Error processing payment', wp_json_encode($response));
 		}
 	}
 
@@ -336,21 +336,21 @@ class NBO_PAYMENT_GATEWAY_Client
 	 * @param WC_Order $order parameter.
 	 * @param string   $payment_type parameter.
 	 * @return mixed
-	 * @throws NBO_PAYMENT_GATEWAY_Exception If an authentication error occurs.
+	 * @throws NEOPAYMENT_PAYMENT_GATEWAY_Exception If an authentication error occurs.
 	 */
 	public function checkout(WC_Order $order, $payment_type)
 	{
 
-		\NBO_PAYMENT_GATEWAY_Log::debug('Order ID: ' . $order->get_id());
+		\NEOPAYMENT_PAYMENT_GATEWAY_Log::debug('Order ID: ' . $order->get_id());
 
 		$tax               = $order->get_total_tax() * 100;
 		$total             = $order->get_total() * 100;
 		$total_without_tax = $total - $tax;
 		$body              = array(
 			'metadatas'     => array(
-				'entry'        => get_bloginfo('name') . ' - Plugin Woocommerce v' . NBO_PAYMENT_GATEWAY_Constants::NBO_PAYMENT_GATEWAY_PLUGIN_VERSION,
+				'entry'        => get_bloginfo('name') . ' - Plugin Woocommerce v' . NEOPAYMENT_PAYMENT_GATEWAY_Constants::NEOPAYMENT_PAYMENT_GATEWAY_PLUGIN_VERSION,
 				'platform'     => 'Woocommerce',
-				'version'      => NBO_PAYMENT_GATEWAY_Constants::NBO_PAYMENT_GATEWAY_PLUGIN_VERSION,
+				'version'      => NEOPAYMENT_PAYMENT_GATEWAY_Constants::NEOPAYMENT_PAYMENT_GATEWAY_PLUGIN_VERSION,
 				'order_id'     => $order->get_id(),
 				'payment_type' => $payment_type,
 			),
@@ -358,21 +358,21 @@ class NBO_PAYMENT_GATEWAY_Client
 			'tax'           => $tax,
 			'amount'        => $total_without_tax,
 			'currency_code' => $order->get_currency(),
-			'webhook'       => get_bloginfo('url') . '/wc-api/' . NBO_PAYMENT_GATEWAY_Constants::NBO_PAYMENT_GATEWAY_TELERED_GATEWAY_ID,
+			'webhook'       => get_bloginfo('url') . '/wc-api/' . NEOPAYMENT_PAYMENT_GATEWAY_Constants::NEOPAYMENT_PAYMENT_GATEWAY_TELERED_GATEWAY_ID,
 			'source'        => get_bloginfo('url'),
 			'return_url'    => wc_get_cart_url(),
-			'url_ok'        => get_bloginfo('url') . '/wc-api/' . NBO_PAYMENT_GATEWAY_Constants::NBO_PAYMENT_GATEWAY_TELERED_GATEWAY_ID . '_status?oid=' . $order->get_id(),
-			'url_ko'        => get_bloginfo('url') . '/wc-api/' . NBO_PAYMENT_GATEWAY_Constants::NBO_PAYMENT_GATEWAY_TELERED_GATEWAY_ID . '_status?oid=' . $order->get_id(),
+			'url_ok'        => get_bloginfo('url') . '/wc-api/' . NEOPAYMENT_PAYMENT_GATEWAY_Constants::NEOPAYMENT_PAYMENT_GATEWAY_TELERED_GATEWAY_ID . '_status?oid=' . $order->get_id(),
+			'url_ko'        => get_bloginfo('url') . '/wc-api/' . NEOPAYMENT_PAYMENT_GATEWAY_Constants::NEOPAYMENT_PAYMENT_GATEWAY_TELERED_GATEWAY_ID . '_status?oid=' . $order->get_id(),
 
 		);
 
 		$response = $this->post($this->get_route('checkout'), $body);
-		\NBO_PAYMENT_GATEWAY_Log::debug('Response: ' . wp_json_encode($response));
+		\NEOPAYMENT_PAYMENT_GATEWAY_Log::debug('Response: ' . wp_json_encode($response));
 		if (200 === $response['code']) {
 			return $response['body']['data'];
 		} else {
 			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
-			throw new NBO_PAYMENT_GATEWAY_Exception('Error processing payment', wp_json_encode($response));
+			throw new NEOPAYMENT_PAYMENT_GATEWAY_Exception('Error processing payment', wp_json_encode($response));
 		}
 	}
 
@@ -389,21 +389,21 @@ class NBO_PAYMENT_GATEWAY_Client
 	 *
 	 * @return array $response        Response data from the transaction.
 	 *
-	 * @throws NBO_PAYMENT_GATEWAY_Exception If the transaction fails or is invalid.
+	 * @throws NEOPAYMENT_PAYMENT_GATEWAY_Exception If the transaction fails or is invalid.
 	 */
 	public function sale(WC_Order $order, $card_number, $expiry_date, $cvv, $card_holder, $three_ds_params = array(), $metadatas = array())
 	{
 
-		\NBO_PAYMENT_GATEWAY_Log::debug('Order ID: ' . $order->get_id());
+		\NEOPAYMENT_PAYMENT_GATEWAY_Log::debug('Order ID: ' . $order->get_id());
 
 		$tax               = $order->get_total_tax() * 100;
 		$total             = $order->get_total() * 100;
 		$total_without_tax = $total - $tax;
 
 		$final_metadatas = array(
-			'entry'             => get_bloginfo('name') . ' - Plugin Woocommerce v' . NBO_PAYMENT_GATEWAY_Constants::NBO_PAYMENT_GATEWAY_PLUGIN_VERSION,
+			'entry'             => get_bloginfo('name') . ' - Plugin Woocommerce v' . NEOPAYMENT_PAYMENT_GATEWAY_Constants::NEOPAYMENT_PAYMENT_GATEWAY_PLUGIN_VERSION,
 			'platform'          => 'Woocommerce',
-			'version'           => NBO_PAYMENT_GATEWAY_Constants::NBO_PAYMENT_GATEWAY_PLUGIN_VERSION,
+			'version'           => NEOPAYMENT_PAYMENT_GATEWAY_Constants::NEOPAYMENT_PAYMENT_GATEWAY_PLUGIN_VERSION,
 			'order_id'          => $order->get_id(),
 			'payment_reference' => $order->get_id(),
 			'source'            => get_bloginfo('url'),
@@ -413,7 +413,7 @@ class NBO_PAYMENT_GATEWAY_Client
 
 		$callback = home_url(
 			'/wc-api/'
-				. NBO_PAYMENT_GATEWAY_Constants::NBO_PAYMENT_GATEWAY_STANDARD_GATEWAY_ID
+				. NEOPAYMENT_PAYMENT_GATEWAY_Constants::NEOPAYMENT_PAYMENT_GATEWAY_STANDARD_GATEWAY_ID
 				. '_status?oid='
 				. $order->get_id()
 		);
@@ -431,16 +431,16 @@ class NBO_PAYMENT_GATEWAY_Client
 			'3ds_params'    => $three_ds_params,
 			'url_ok'        => $callback,
 			'url_ko'        => $callback,
-			'webhook'       => get_bloginfo('url') . '/wc-api/' . NBO_PAYMENT_GATEWAY_Constants::NBO_PAYMENT_GATEWAY_STANDARD_GATEWAY_ID,
+			'webhook'       => get_bloginfo('url') . '/wc-api/' . NEOPAYMENT_PAYMENT_GATEWAY_Constants::NEOPAYMENT_PAYMENT_GATEWAY_STANDARD_GATEWAY_ID,
 		);
 
 		$response = $this->post($this->get_route('sale'), $body);
-		\NBO_PAYMENT_GATEWAY_Log::debug('Response: ' . wp_json_encode($response));
+		\NEOPAYMENT_PAYMENT_GATEWAY_Log::debug('Response: ' . wp_json_encode($response));
 		if (200 === $response['code']) {
 			return $response['body']['data'];
 		} else {
 			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
-			throw new NBO_PAYMENT_GATEWAY_Exception('Error processing payment', wp_json_encode($response));
+			throw new NEOPAYMENT_PAYMENT_GATEWAY_Exception('Error processing payment', wp_json_encode($response));
 		}
 	}
 
@@ -448,7 +448,7 @@ class NBO_PAYMENT_GATEWAY_Client
 	 * Commerce function.
 	 *
 	 * @return mixed
-	 * @throws NBO_PAYMENT_GATEWAY_Exception If an authentication error occurs.
+	 * @throws NEOPAYMENT_PAYMENT_GATEWAY_Exception If an authentication error occurs.
 	 */
 	public function commerce()
 	{
@@ -457,7 +457,7 @@ class NBO_PAYMENT_GATEWAY_Client
 		if (200 === $response['code']) {
 			return $response['body']['data'];
 		} else {
-			throw new NBO_PAYMENT_GATEWAY_Exception(esc_html__('Error getting commerce', 'nbo-payment-gateway'), esc_html(wp_json_encode($response)));
+			throw new NEOPAYMENT_PAYMENT_GATEWAY_Exception(esc_html__('Error getting commerce', 'neopayment-payment-gateway'), esc_html(wp_json_encode($response)));
 		}
 	}
 }

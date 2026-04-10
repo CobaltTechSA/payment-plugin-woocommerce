@@ -2,8 +2,8 @@
 # This file is distributed under the GPL-2.0.
 msgid ""
 msgstr ""
-"Project-Id-Version: NBO Payment Gateway 2.4.1\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/nbo-gateway"
+"Project-Id-Version: Neopayment Payment Gateway 2.4.1\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/neopayment-gateway"
 "operations-payment-gateway\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -13,90 +13,90 @@ msgstr ""
 "POT-Creation-Date: 2025-08-21T22:01:54+00:00\n"
 "PO-Revision-Date: 2025-08-21T22:01:54+00:00\n"
 "X-Generator: WP-CLI 2.12.0\n"
-"X-Domain: nbo-payment-gateway\n"
+"X-Domain: neopayment-payment-gateway\n"
 "Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. Plugin Name of the plugin
-#: nbo-payment-gateway.php
-msgid "NBO Payment Gateway"
+#: neopayment-payment-gateway.php
+msgid "Neopayment Payment Gateway"
 msgstr ""
 
 #. Plugin URI of the plugin
 #. Author URI of the plugin
-#: nbo-payment-gateway.php
+#: neopayment-payment-gateway.php
 msgid "https://neopayment.com"
 msgstr ""
 
 #. Description of the plugin
-#: nbo-payment-gateway.php
+#: neopayment-payment-gateway.php
 msgid "Payments with VISA, MasterCard and Clave"
 msgstr ""
 
 #. Author of the plugin
-#: nbo-payment-gateway.php
+#: neopayment-payment-gateway.php
 msgid "Neopayment"
 msgstr ""
 
-#: class-nbo-payment-gateway-client.php:270
+#: class-neopayment-payment-gateway-client.php:270
 msgid "Invalid transaction ID"
 msgstr "ID de transacción no válida"
 
-#: class-nbo-payment-gateway-client.php:275
+#: class-neopayment-payment-gateway-client.php:275
 msgid "Refund route not defined"
 msgstr "Ruta de reembolso no definida"
 
-#: class-nbo-payment-gateway-client.php:290
+#: class-neopayment-payment-gateway-client.php:290
 msgid "Error requesting refund"
 msgstr "Error al solicitar reembolso"
 
-#: class-nbo-payment-gateway-client.php:296
+#: class-neopayment-payment-gateway-client.php:296
 msgid "Refund failed"
 msgstr "Reembolso fallido"
 
-#: class-nbo-payment-gateway-client.php:446
+#: class-neopayment-payment-gateway-client.php:446
 msgid "Error getting commerce"
 msgstr "Error al obtener comercio"
 
-#: nbo-payment-gateway-cc.php:116
+#: neopayment-payment-gateway-cc.php:116
 msgid "Card code"
 msgstr "CVC"
 
-#: nbo-payment-gateway-cc.php:117
+#: neopayment-payment-gateway-cc.php:117
 #: assets/js/blocks/components/CardFields.js:134
-#: build/nbo-payment-gateway-standard.js:1
+#: build/neopayment-payment-gateway-standard.js:1
 msgid "CVC"
 msgstr ""
 
-#: nbo-payment-gateway-cc.php:121
-#: nbo-payment-gateway-cc.php:122
+#: neopayment-payment-gateway-cc.php:121
+#: neopayment-payment-gateway-cc.php:122
 #: assets/js/blocks/components/CardFields.js:59
-#: build/nbo-payment-gateway-standard.js:1
+#: build/neopayment-payment-gateway-standard.js:1
 msgid "Card holder"
 msgstr "Títular de la tarjeta"
 
-#: nbo-payment-gateway-cc.php:127
+#: neopayment-payment-gateway-cc.php:127
 #: assets/js/blocks/components/CardFields.js:80
-#: build/nbo-payment-gateway-standard.js:1
+#: build/neopayment-payment-gateway-standard.js:1
 msgid "Card number"
 msgstr "Número de tarjeta"
 
-#: nbo-payment-gateway-cc.php:131
+#: neopayment-payment-gateway-cc.php:131
 msgid "Expiry (MM/YY)"
 msgstr "Fecha de vencimiento (MM/AA)"
 
-#: nbo-payment-gateway-cc.php:132
+#: neopayment-payment-gateway-cc.php:132
 msgid "MM / YY"
 msgstr "MM/AA"
 
-#: nbo-payment-gateway.php:143
-#: assets/js/blocks/nbo-payment-gateway-standard.js:15
-#: build/nbo-payment-gateway-standard.js:1
+#: neopayment-payment-gateway.php:143
+#: assets/js/blocks/neopayment-payment-gateway-standard.js:15
+#: build/neopayment-payment-gateway-standard.js:1
 msgid "Card (Visa/Mastercard)"
 msgstr "Tarjeta (Visa/Mastercard)"
 
 #. translators: %1$s - plugin name, %2$s - minimum WordPress version required, %3$s - update WordPress link open, %4$s - update WordPress link close
-#: nbo-payment-gateway.php:233
+#: neopayment-payment-gateway.php:233
 #, php-format
 msgid ""
 "%1$s requiere WordPress %2$s or higher. Porfavor %3$sactualiza WordPress "
@@ -104,7 +104,7 @@ msgid ""
 msgstr ""
 
 #. translators: %1$s - Plugin Name, %2$s - activate WooCommerce link open, %3$s - activate WooCommerce link close.
-#: nbo-payment-gateway.php:259
+#: neopayment-payment-gateway.php:259
 #, php-format
 msgid ""
 "%1$s requiere que WooCommerce esté activado. Por favor %2$sactiva "
@@ -112,7 +112,7 @@ msgid ""
 msgstr ""
 
 #. translators: %1$s - Plugin Name, %2$s - install WooCommerce link open, %3$s - install WooCommerce link close.
-#: nbo-payment-gateway.php:275
+#: neopayment-payment-gateway.php:275
 #, php-format
 msgid ""
 "%1$s requiere que WooCommerce esté instalado y activado. por favor, "
@@ -120,7 +120,7 @@ msgid ""
 msgstr ""
 
 #. translators: %1$s - Plugin Name, %2$s - minimum WooCommerce version, %3$s - update WooCommerce link open, %4$s - update WooCommerce link close, %5$s - download minimum WooCommerce link open, %6$s - download minimum WooCommerce link close.
-#: nbo-payment-gateway.php:294
+#: neopayment-payment-gateway.php:294
 #, php-format
 msgid ""
 "%1$s requiere WooCommerce %2$s o superior. Por favor, %3$sactualiza "
@@ -129,279 +129,279 @@ msgid ""
 msgstr ""
 
 #. translators: %1$s - Plugin Name, %2$s - minimum WooCommerce version, %3$s - update WooCommerce link open, %4$s - update WooCommerce link close, %5$s - download minimum WooCommerce link open, %6$s - download minimum WooCommerce link close.
-#: nbo-payment-gateway.php:310
+#: neopayment-payment-gateway.php:310
 #, php-format
 msgid "%1$s solo está disponible para tiendas localizadas en Panamá."
 msgstr ""
 
-#: class-nbo-payment-gateway-standard-gateway.php:36
+#: class-neopayment-payment-gateway-standard-gateway.php:36
 msgid "Acceptance of payments with Visa / Mastercard"
 msgstr "Aceptación de pagos con Visa / Mastercard"
 
-#: class-nbo-payment-gateway-standard-gateway.php:87
-#: class-nbo-payment-gateway-standard-gateway.php:378
-#: class-nbo-payment-gateway-telered-gateway.php:81
+#: class-neopayment-payment-gateway-standard-gateway.php:87
+#: class-neopayment-payment-gateway-standard-gateway.php:378
+#: class-neopayment-payment-gateway-telered-gateway.php:81
 msgid "Unauthorized action."
 msgstr "Acción no autorizada."
 
-#: class-nbo-payment-gateway-standard-gateway.php:87
-#: class-nbo-payment-gateway-telered-gateway.php:81
+#: class-neopayment-payment-gateway-standard-gateway.php:87
+#: class-neopayment-payment-gateway-telered-gateway.php:81
 msgid "Security Error"
 msgstr "Error de seguridad"
 
-#: class-nbo-payment-gateway-standard-gateway.php:103
-#: includes/blocks/class-nbo-payment-gateway-standard-blocks.php:70
+#: class-neopayment-payment-gateway-standard-gateway.php:103
+#: includes/blocks/class-neopayment-payment-gateway-standard-blocks.php:70
 msgid "Visa"
 msgstr ""
 
-#: class-nbo-payment-gateway-standard-gateway.php:109
-#: includes/blocks/class-nbo-payment-gateway-standard-blocks.php:75
+#: class-neopayment-payment-gateway-standard-gateway.php:109
+#: includes/blocks/class-neopayment-payment-gateway-standard-blocks.php:75
 msgid "Mastercard"
 msgstr ""
 
-#: class-nbo-payment-gateway-standard-gateway.php:129
-#: class-nbo-payment-gateway-telered-gateway.php:116
+#: class-neopayment-payment-gateway-standard-gateway.php:129
+#: class-neopayment-payment-gateway-telered-gateway.php:116
 msgid "Enable/Disable"
 msgstr "Habilitar/Deshabilitar"
 
-#: class-nbo-payment-gateway-standard-gateway.php:130
-#: class-nbo-payment-gateway-telered-gateway.php:117
-msgid "Enable NBO Payment Gateway"
-msgstr "Habilitar NBO Payment Gateway"
+#: class-neopayment-payment-gateway-standard-gateway.php:130
+#: class-neopayment-payment-gateway-telered-gateway.php:117
+msgid "Enable Neopayment Payment Gateway"
+msgstr "Habilitar Neopayment Payment Gateway"
 
-#: class-nbo-payment-gateway-standard-gateway.php:136
-#: class-nbo-payment-gateway-telered-gateway.php:123
+#: class-neopayment-payment-gateway-standard-gateway.php:136
+#: class-neopayment-payment-gateway-telered-gateway.php:123
 msgid "Title"
 msgstr "Título"
 
-#: class-nbo-payment-gateway-standard-gateway.php:138
-#: class-nbo-payment-gateway-telered-gateway.php:125
+#: class-neopayment-payment-gateway-standard-gateway.php:138
+#: class-neopayment-payment-gateway-telered-gateway.php:125
 msgid "This controls the title which the user sees during checkout."
 msgstr "Esto controla el título que el usuario ve durante el pago."
 
-#: class-nbo-payment-gateway-standard-gateway.php:143
-#: class-nbo-payment-gateway-telered-gateway.php:130
+#: class-neopayment-payment-gateway-standard-gateway.php:143
+#: class-neopayment-payment-gateway-telered-gateway.php:130
 msgid "Description"
 msgstr "Descripción"
 
-#: class-nbo-payment-gateway-standard-gateway.php:145
-#: class-nbo-payment-gateway-telered-gateway.php:132
+#: class-neopayment-payment-gateway-standard-gateway.php:145
+#: class-neopayment-payment-gateway-telered-gateway.php:132
 msgid "This controls the description which the user sees during checkout."
 msgstr "Esto controla la descripción que el usuario ve durante el pago."
 
-#: class-nbo-payment-gateway-standard-gateway.php:146
+#: class-neopayment-payment-gateway-standard-gateway.php:146
 msgid "Pay with your VISA or Mastercard card"
 msgstr "Paga con tu tarjeta VISA o Mastercard"
 
-#: class-nbo-payment-gateway-standard-gateway.php:149
-#: class-nbo-payment-gateway-telered-gateway.php:136
+#: class-neopayment-payment-gateway-standard-gateway.php:149
+#: class-neopayment-payment-gateway-telered-gateway.php:136
 msgid "Test mode"
 msgstr "Modo de pruebas"
 
-#: class-nbo-payment-gateway-standard-gateway.php:150
-#: class-nbo-payment-gateway-telered-gateway.php:137
+#: class-neopayment-payment-gateway-standard-gateway.php:150
+#: class-neopayment-payment-gateway-telered-gateway.php:137
 msgid "Enable Test Mode"
 msgstr "Habilitar modo de pruebas"
 
-#: class-nbo-payment-gateway-standard-gateway.php:152
-#: class-nbo-payment-gateway-telered-gateway.php:139
+#: class-neopayment-payment-gateway-standard-gateway.php:152
+#: class-neopayment-payment-gateway-telered-gateway.php:139
 msgid "Place the payment gateway in test mode using test API keys."
 msgstr "Coloque la pasarela de pago en modo de prueba utilizando claves API de prueba."
 
-#: class-nbo-payment-gateway-standard-gateway.php:157
-#: class-nbo-payment-gateway-telered-gateway.php:144
+#: class-neopayment-payment-gateway-standard-gateway.php:157
+#: class-neopayment-payment-gateway-telered-gateway.php:144
 msgid "Test API URL"
 msgstr "URL de la API de prueba"
 
-#: class-nbo-payment-gateway-standard-gateway.php:162
-#: class-nbo-payment-gateway-telered-gateway.php:148
+#: class-neopayment-payment-gateway-standard-gateway.php:162
+#: class-neopayment-payment-gateway-telered-gateway.php:148
 msgid "Test API Client Id"
 msgstr "API ClientId de prueba"
 
-#: class-nbo-payment-gateway-standard-gateway.php:166
-#: class-nbo-payment-gateway-telered-gateway.php:152
+#: class-neopayment-payment-gateway-standard-gateway.php:166
+#: class-neopayment-payment-gateway-telered-gateway.php:152
 msgid "Test API Client Secret"
 msgstr "API ClientSecret de prueba"
 
-#: class-nbo-payment-gateway-standard-gateway.php:170
-#: class-nbo-payment-gateway-telered-gateway.php:156
+#: class-neopayment-payment-gateway-standard-gateway.php:170
+#: class-neopayment-payment-gateway-telered-gateway.php:156
 msgid "Production API URL"
 msgstr "URL de la API de producción"
 
-#: class-nbo-payment-gateway-standard-gateway.php:175
-#: class-nbo-payment-gateway-telered-gateway.php:160
+#: class-neopayment-payment-gateway-standard-gateway.php:175
+#: class-neopayment-payment-gateway-telered-gateway.php:160
 msgid "Production API Client Id"
 msgstr "API ClientId de producción"
 
-#: class-nbo-payment-gateway-standard-gateway.php:179
-#: class-nbo-payment-gateway-telered-gateway.php:164
+#: class-neopayment-payment-gateway-standard-gateway.php:179
+#: class-neopayment-payment-gateway-telered-gateway.php:164
 msgid "Production API Client Secret"
 msgstr "API ClientSecret de producción"
 
-#: class-nbo-payment-gateway-standard-gateway.php:280
-#: class-nbo-payment-gateway-telered-gateway.php:197
+#: class-neopayment-payment-gateway-standard-gateway.php:280
+#: class-neopayment-payment-gateway-telered-gateway.php:197
 msgid "TEST MODE ENABLED"
 msgstr "MODO DE PRUEBAS HABILITADO"
 
-#: class-nbo-payment-gateway-standard-gateway.php:310
-#: class-nbo-payment-gateway-standard-gateway.php:431
+#: class-neopayment-payment-gateway-standard-gateway.php:310
+#: class-neopayment-payment-gateway-standard-gateway.php:431
 msgid "Security check failed. Please try again."
 msgstr "Error en la comprobación de seguridad. Inténtalo de nuevo."
 
-#: class-nbo-payment-gateway-standard-gateway.php:344
-#: assets/js/blocks/nbo-payment-gateway-standard.js:67
+#: class-neopayment-payment-gateway-standard-gateway.php:344
+#: assets/js/blocks/neopayment-payment-gateway-standard.js:67
 #: assets/js/blocks/components/CardFields.js:98
-#: build/nbo-payment-gateway-standard.js:1
+#: build/neopayment-payment-gateway-standard.js:1
 msgid "Invalid card number"
 msgstr "Número de tarjeta no válido"
 
-#: class-nbo-payment-gateway-standard-gateway.php:350
+#: class-neopayment-payment-gateway-standard-gateway.php:350
 msgid "Invalid expiry date"
 msgstr "Fecha no válida"
 
-#: class-nbo-payment-gateway-standard-gateway.php:355
+#: class-neopayment-payment-gateway-standard-gateway.php:355
 msgid "Invalid card holder"
 msgstr "Nombre de tarjeta no válido"
 
-#: class-nbo-payment-gateway-standard-gateway.php:360
+#: class-neopayment-payment-gateway-standard-gateway.php:360
 msgid "Invalid card code (CVV)"
 msgstr "CVV no válido"
 
-#: class-nbo-payment-gateway-standard-gateway.php:544
+#: class-neopayment-payment-gateway-standard-gateway.php:544
 msgid "We were unable to complete the payment. Please contact with commerce."
 msgstr "No pudimos completar el pago. Por favor, contacte con el departamento de comercio."
 
-#: class-nbo-payment-gateway-standard-gateway.php:546
+#: class-neopayment-payment-gateway-standard-gateway.php:546
 msgid ""
 "We were unable to complete the payment. Please check your card details or "
 "contact your bank."
 msgstr "No pudimos completar el pago. Por favor, revise los datos de su tarjeta o contacte con su banco."
 
 
-#: class-nbo-payment-gateway-standard-gateway.php:552
-#: class-nbo-payment-gateway-standard-gateway.php:554
+#: class-neopayment-payment-gateway-standard-gateway.php:552
+#: class-neopayment-payment-gateway-standard-gateway.php:554
 msgid "Cannot generate the payment. Please, contact with commerce."
 msgstr "No se puede generar el pago. Por favor, contacte con el comercio."
 
-#: class-nbo-payment-gateway-standard-gateway.php:666
+#: class-neopayment-payment-gateway-standard-gateway.php:666
 msgid "Payment completed"
 msgstr "Pago completado"
 
-#: class-nbo-payment-gateway-standard-gateway.php:673
+#: class-neopayment-payment-gateway-standard-gateway.php:673
 msgid "Failed payment"
 msgstr "Pago fallido"
 
-#: class-nbo-payment-gateway-standard-gateway.php:726
+#: class-neopayment-payment-gateway-standard-gateway.php:726
 msgid "Processing 3DS…"
 msgstr "Procesando 3DS..."
 
-#: class-nbo-payment-gateway-standard-gateway.php:733
+#: class-neopayment-payment-gateway-standard-gateway.php:733
 msgid ""
 "Please enable JavaScript to complete your payment. You will be automatically "
 "redirected..."
 msgstr "Habilite JavaScript para completar su pago. Será redirigido automáticamente..."
 
-#: class-nbo-payment-gateway-telered-gateway.php:34
+#: class-neopayment-payment-gateway-telered-gateway.php:34
 msgid "Acceptance of payments with Clave"
 msgstr "Aceptación de pagos con Clave"
 
-#: class-nbo-payment-gateway-telered-gateway.php:96
+#: class-neopayment-payment-gateway-telered-gateway.php:96
 msgid "Telered"
 msgstr ""
 
-#: class-nbo-payment-gateway-telered-gateway.php:133
-#: assets/js/blocks/nbo-payment-gateway-telered.js:24
-#: build/nbo-payment-gateway-telered.js:1
+#: class-neopayment-payment-gateway-telered-gateway.php:133
+#: assets/js/blocks/neopayment-payment-gateway-telered.js:24
+#: build/neopayment-payment-gateway-telered.js:1
 msgid "Pay with Clave"
 msgstr "Pagar con Clave"
 
-#: class-nbo-payment-gateway-telered-gateway.php:309
+#: class-neopayment-payment-gateway-telered-gateway.php:309
 msgid "Pago completado"
 msgstr ""
 
-#: class-nbo-payment-gateway-telered-gateway.php:315
+#: class-neopayment-payment-gateway-telered-gateway.php:315
 msgid "Pago fallido"
 msgstr ""
 
-#: includes/blocks/class-nbo-payment-gateway-telered-blocks.php:51
-#: assets/js/blocks/nbo-payment-gateway-telered.js:8
-#: build/nbo-payment-gateway-telered.js:1
+#: includes/blocks/class-neopayment-payment-gateway-telered-blocks.php:51
+#: assets/js/blocks/neopayment-payment-gateway-telered.js:8
+#: build/neopayment-payment-gateway-telered.js:1
 msgid "Clave Card"
 msgstr "Tarjeta Clave"
 
-#: includes/blocks/class-nbo-payment-gateway-telered-blocks.php:52
+#: includes/blocks/class-neopayment-payment-gateway-telered-blocks.php:52
 msgid "Pay securely with your card"
 msgstr "Paga de forma segura con tu tarjeta."
 
-#: assets/js/blocks/nbo-payment-gateway-standard.js:73
+#: assets/js/blocks/neopayment-payment-gateway-standard.js:73
 #: assets/js/blocks/components/CardFields.js:127
-#: build/nbo-payment-gateway-standard.js:1
+#: build/neopayment-payment-gateway-standard.js:1
 msgid "Invalid date"
 msgstr "Fecha no válida"
 
-#: assets/js/blocks/nbo-payment-gateway-standard.js:79
+#: assets/js/blocks/neopayment-payment-gateway-standard.js:79
 #: assets/js/blocks/components/CardFields.js:148
-#: build/nbo-payment-gateway-standard.js:1
+#: build/neopayment-payment-gateway-standard.js:1
 msgid "Invalid CVC"
 msgstr "CVC no válido"
 
-#: assets/js/blocks/nbo-payment-gateway-standard.js:85
-#: build/nbo-payment-gateway-standard.js:1
+#: assets/js/blocks/neopayment-payment-gateway-standard.js:85
+#: build/neopayment-payment-gateway-standard.js:1
 msgid "Holder name is required"
 msgstr "El nombre del titular es obligatorio."
 
-#: assets/js/blocks/nbo-payment-gateway-standard.js:109
-#: build/nbo-payment-gateway-standard.js:1
-msgid "NBO Standard Gateway"
+#: assets/js/blocks/neopayment-payment-gateway-standard.js:109
+#: build/neopayment-payment-gateway-standard.js:1
+msgid "NEOPAYMENT Standard Gateway"
 msgstr ""
 
-#: assets/js/blocks/nbo-payment-gateway-telered.js:17
-#: build/nbo-payment-gateway-telered.js:1
-msgid "NBO Telered Gateway"
+#: assets/js/blocks/neopayment-payment-gateway-telered.js:17
+#: build/neopayment-payment-gateway-telered.js:1
+msgid "NEOPAYMENT Telered Gateway"
 msgstr ""
 
 #: assets/js/blocks/components/CardFields.js:64
-#: build/nbo-payment-gateway-standard.js:1
+#: build/neopayment-payment-gateway-standard.js:1
 msgid "Full name"
 msgstr "Nombre completo"
 
 #: assets/js/blocks/components/CardFields.js:73
-#: build/nbo-payment-gateway-standard.js:1
+#: build/neopayment-payment-gateway-standard.js:1
 msgid "You must enter the holder name"
 msgstr "Debe ingresar el nombre del titular"
 
 #: assets/js/blocks/components/CardFields.js:107
-#: build/nbo-payment-gateway-standard.js:1
+#: build/neopayment-payment-gateway-standard.js:1
 msgid "Expiration date"
 msgstr "Fecha de expiración"
 
 #: assets/js/blocks/components/CardFields.js:112
-#: build/nbo-payment-gateway-standard.js:1
+#: build/neopayment-payment-gateway-standard.js:1
 msgid "MM/YY"
 msgstr "MM/AA"
 
-#: assets/js/nbo-payment-gateway-3ds-popup.js:13
+#: assets/js/neopayment-payment-gateway-3ds-popup.js:13
 msgid "Habilite las ventanas emergentes en su navegador y vuelva a intentarlo."
 msgstr ""
 
-#: assets/js/nbo-payment-gateway-3ds-popup.js:123
+#: assets/js/neopayment-payment-gateway-3ds-popup.js:123
 msgid "Error"
 msgstr ""
 
-#: assets/js/nbo-payment-gateway-3ds-popup.js:124
+#: assets/js/neopayment-payment-gateway-3ds-popup.js:124
 msgid ""
 "No se pudo abrir la ventana emergente. Active las ventanas emergentes en su "
 "navegador y vuelva a intentarlo."
 msgstr ""
 
-#: assets/js/nbo-payment-gateway-3ds-popup.js:132
+#: assets/js/neopayment-payment-gateway-3ds-popup.js:132
 msgid "Entendido"
 msgstr ""
 
-#: assets/js/nbo-payment-gateway-3ds-popup.js:150
+#: assets/js/neopayment-payment-gateway-3ds-popup.js:150
 msgid "Error de autenticación"
 msgstr ""
 
-#: assets/js/nbo-payment-gateway-3ds-popup.js:151
+#: assets/js/neopayment-payment-gateway-3ds-popup.js:151
 msgid "Inténtelo nuevamente y mantenga la ventana emergente activa."
 msgstr ""

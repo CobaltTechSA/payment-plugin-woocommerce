@@ -20,7 +20,7 @@ let jq = null;
             let payForm = $('form[name="checkout"]');
 
             for (let p in navParams) {
-                let el = `<input class="nbo-payment-gateway-standard-gateway-browser" type="hidden" name="${p}" value="${navParams[p]}" />`;
+                let el = `<input class="neopayment-payment-gateway-standard-gateway-browser" type="hidden" name="${p}" value="${navParams[p]}" />`;
                 console.log(el);
                 payForm.append(el);
             }
@@ -28,14 +28,14 @@ let jq = null;
 
         function removeBrowserData() {
             console.log('Removing browser data');
-            $('.nbo-payment-gateway-standard-gateway-browser').remove();
+            $('.neopayment-payment-gateway-standard-gateway-browser').remove();
         }
 
         $(document).ready( function() {
             setTimeout(_ => {
                 let onPaymentMethodChange = function (paymentMethod) {
                     console.log(paymentMethod);
-                    if (paymentMethod === 'nbo_payment_gateway_standard_gateway') {
+                    if (paymentMethod === 'neopayment_payment_gateway_standard_gateway') {
                         addBrowserData();
                     } else {
                         removeBrowserData();

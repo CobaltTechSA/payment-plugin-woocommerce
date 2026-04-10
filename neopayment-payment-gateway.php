@@ -1,40 +1,40 @@
 <?php
 /**
- * Plugin Name: NBO Payment Gateway
+ * Plugin Name: Neopayment Payment Gateway
  * Plugin URI: https://neopayment.com/soluciones/
  * Description: Payments with VISA, MasterCard and Clave
  * Author: Neopayment
  * Author URI: https://neopayment.com
  * Version: 2.5.2
  * License: GPL-2.0
- * Text Domain: nbo-payment-gateway
+ * Text Domain: neopayment-payment-gateway
  * Domain Path: /i18n
  *
- * @package NBO_PAYMENT_GATEWAY
+ * @package NEOPAYMENT_PAYMENT_GATEWAY
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require_once 'class-nbo-payment-gateway-log.php';
-require_once 'class-nbo-payment-gateway-constants.php';
-require_once 'class-nbo-payment-gateway-client.php';
+require_once 'class-neopayment-payment-gateway-log.php';
+require_once 'class-neopayment-payment-gateway-constants.php';
+require_once 'class-neopayment-payment-gateway-client.php';
 
 
 // Constants.
-define( 'NBO_PAYMENT_GATEWAY_PATH', plugin_dir_path( __FILE__ ) );
-define( 'NBO_PAYMENT_GATEWAY_URL', plugin_dir_url( __FILE__ ) );
+define( 'NEOPAYMENT_PAYMENT_GATEWAY_PATH', plugin_dir_path( __FILE__ ) );
+define( 'NEOPAYMENT_PAYMENT_GATEWAY_URL', plugin_dir_url( __FILE__ ) );
 
 /**
  * Handles WooCommerce plugin for the payment gateway.
  */
-class NBO_PAYMENT_GATEWAY {
+class NEOPAYMENT_PAYMENT_GATEWAY {
 
 	/**
 	 * This class instance.
 	 *
-	 * @var \NBO_PAYMENT_GATEWAY single instance of this class.
+	 * @var \NEOPAYMENT_PAYMENT_GATEWAY single instance of this class.
 	 */
 	private static $instance;
 
@@ -50,16 +50,16 @@ class NBO_PAYMENT_GATEWAY {
 	 */
 	protected function __construct() {
 
-		register_activation_hook( __FILE__, array( $this, 'nbo_payment_gateway_activation_check' ) );
+		register_activation_hook( __FILE__, array( $this, 'neopayment_payment_gateway_activation_check' ) );
 
-		add_action( 'admin_init', array( $this, 'nbo_payment_gateway_check_environment' ) );
+		add_action( 'admin_init', array( $this, 'neopayment_payment_gateway_check_environment' ) );
 
-		add_action( 'admin_notices', array( $this, 'nbo_payment_gateway_add_plugin_notices' ) ); // admin_init is too early for the get_current_screen() function.
-		add_action( 'admin_notices', array( $this, 'nbo_payment_gateway_admin_notices' ), 15 );
+		add_action( 'admin_notices', array( $this, 'neopayment_payment_gateway_add_plugin_notices' ) ); // admin_init is too early for the get_current_screen() function.
+		add_action( 'admin_notices', array( $this, 'neopayment_payment_gateway_admin_notices' ), 15 );
 
 		// If the environment check fails, initialize the plugin.
-		if ( $this->nbo_payment_gateway_is_environment_compatible() ) {
-			add_action( 'plugins_loaded', array( $this, 'nbo_payment_gateway_init_plugin' ) );
+		if ( $this->neopayment_payment_gateway_is_environment_compatible() ) {
+			add_action( 'plugins_loaded', array( $this, 'neopayment_payment_gateway_init_plugin' ) );
 		}
 	}
 
@@ -83,39 +83,39 @@ class NBO_PAYMENT_GATEWAY {
 	/**
 	 * Initializes the plugin.
 	 */
-	public function nbo_payment_gateway_init_plugin() {
+	public function neopayment_payment_gateway_init_plugin() {
 
 		if ( ! $this->plugins_compatible() ) {
 			return;
 		}
 
-		require_once plugin_dir_path( __FILE__ ) . 'class-nbo-payment-gateway-standard-gateway.php';
-		require_once plugin_dir_path( __FILE__ ) . 'class-nbo-payment-gateway-telered-gateway.php';
-		require_once plugin_dir_path( __FILE__ ) . 'includes/class-nbo-payment-gateway-blocks-support.php';
-		\NboPaymentGateway\Blocks\NBO_PAYMENT_GATEWAY_Blocks_Support::init();
+		require_once plugin_dir_path( __FILE__ ) . 'class-neopayment-payment-gateway-standard-gateway.php';
+		require_once plugin_dir_path( __FILE__ ) . 'class-neopayment-payment-gateway-telered-gateway.php';
+		require_once plugin_dir_path( __FILE__ ) . 'includes/class-neopayment-payment-gateway-blocks-support.php';
+		\NboPaymentGateway\Blocks\NEOPAYMENT_PAYMENT_GATEWAY_Blocks_Support::init();
 
 		// fire it up!
-		add_action( 'plugins_loaded', array( $this, 'nbo_payment_gateway_registry' ), 11 );
+		add_action( 'plugins_loaded', array( $this, 'neopayment_payment_gateway_registry' ), 11 );
 	}
 
 	/**
 	 * Register payment methods, declare block compatibility, and support Store API filters.
 	 */
-	public function nbo_payment_gateway_registry() {
+	public function neopayment_payment_gateway_registry() {
 		if ( ! class_exists( 'WC_Payment_Gateway' ) ) {
 			return; // WooCommerce is not ready.
 		}
 
 		// Gateway Class.
-		require_once plugin_dir_path( __FILE__ ) . 'class-nbo-payment-gateway-standard-gateway.php';
-		require_once plugin_dir_path( __FILE__ ) . 'class-nbo-payment-gateway-telered-gateway.php';
+		require_once plugin_dir_path( __FILE__ ) . 'class-neopayment-payment-gateway-standard-gateway.php';
+		require_once plugin_dir_path( __FILE__ ) . 'class-neopayment-payment-gateway-telered-gateway.php';
 
 		// Add gateways to Woo.
 		add_filter(
 			'woocommerce_payment_gateways',
 			function ( $methods ) {
-				$methods[] = 'NBO_PAYMENT_GATEWAY_Standard_Gateway';
-				$methods[] = 'NBO_PAYMENT_GATEWAY_Telered_Gateway';
+				$methods[] = 'NEOPAYMENT_PAYMENT_GATEWAY_Standard_Gateway';
+				$methods[] = 'NEOPAYMENT_PAYMENT_GATEWAY_Telered_Gateway';
 				return $methods;
 			}
 		);
@@ -139,8 +139,8 @@ class NBO_PAYMENT_GATEWAY {
 			'woocommerce_blocks_supported_payment_methods',
 			function ( $methods ) {
 				$methods[] = array(
-					'name'     => 'nbo_payment_gateway_standard_gateway',
-					'label'    => __( 'Card (Visa/Mastercard)', 'nbo-payment-gateway' ),
+					'name'     => 'neopayment_payment_gateway_standard_gateway',
+					'label'    => __( 'Card (Visa/Mastercard)', 'neopayment-payment-gateway' ),
 					'supports' => array( 'products', 'refunds' ),
 				);
 				return $methods;
@@ -150,7 +150,7 @@ class NBO_PAYMENT_GATEWAY {
 		add_filter(
 			'woocommerce_blocks_payment_method_id_to_gateway_mapping',
 			function ( $mapping ) {
-				$mapping['nbo_payment_gateway_standard_gateway'] = 'nbo_payment_gateway_standard_gateway';
+				$mapping['neopayment_payment_gateway_standard_gateway'] = 'neopayment_payment_gateway_standard_gateway';
 				return $mapping;
 			}
 		);
@@ -158,7 +158,7 @@ class NBO_PAYMENT_GATEWAY {
 		add_filter(
 			'woocommerce_store_api_payment_methods',
 			function ( $gateways ) {
-				$gateways[] = 'NBO_PAYMENT_GATEWAY_Standard_Gateway';
+				$gateways[] = 'NEOPAYMENT_PAYMENT_GATEWAY_Standard_Gateway';
 				return $gateways;
 			}
 		);
@@ -166,7 +166,7 @@ class NBO_PAYMENT_GATEWAY {
 		add_filter(
 			'woocommerce_store_api_payment_method_ids',
 			function ( $ids ) {
-				$ids[] = 'nbo_payment_gateway_standard_gateway';
+				$ids[] = 'neopayment_payment_gateway_standard_gateway';
 				return $ids;
 			}
 		);
@@ -174,7 +174,7 @@ class NBO_PAYMENT_GATEWAY {
 		add_filter(
 			'woocommerce_store_api_payment_method_schema',
 			function ( $schema, $method_id ) {
-				if ( 'nbo_payment_gateway_standard_gateway' === $method_id ) {
+				if ( 'neopayment_payment_gateway_standard_gateway' === $method_id ) {
 					$schema['supports']['payment_method_options'] = true;
 				}
 				return $schema;
@@ -189,13 +189,13 @@ class NBO_PAYMENT_GATEWAY {
 	 *
 	 * @internal
 	 */
-	public function nbo_payment_gateway_activation_check() {
+	public function neopayment_payment_gateway_activation_check() {
 
-		if ( ! $this->nbo_payment_gateway_is_environment_compatible() ) {
+		if ( ! $this->neopayment_payment_gateway_is_environment_compatible() ) {
 
-			$this->nbo_payment_gateway_deactivate_plugin();
+			$this->neopayment_payment_gateway_deactivate_plugin();
 
-			wp_die( esc_html( NBO_PAYMENT_GATEWAY_Constants::NBO_PAYMENT_GATEWAY_PLUGIN_NAME ) . ' no se puede activar. ' . esc_html( $this->nbo_payment_gateway_get_environment_message() ) );
+			wp_die( esc_html( NEOPAYMENT_PAYMENT_GATEWAY_Constants::NEOPAYMENT_PAYMENT_GATEWAY_PLUGIN_NAME ) . ' no se puede activar. ' . esc_html( $this->neopayment_payment_gateway_get_environment_message() ) );
 		}
 	}
 
@@ -205,13 +205,13 @@ class NBO_PAYMENT_GATEWAY {
 	 *
 	 * @internal
 	 */
-	public function nbo_payment_gateway_check_environment() {
+	public function neopayment_payment_gateway_check_environment() {
 
-		if ( ! $this->nbo_payment_gateway_is_environment_compatible() && is_plugin_active( plugin_basename( __FILE__ ) ) ) {
+		if ( ! $this->neopayment_payment_gateway_is_environment_compatible() && is_plugin_active( plugin_basename( __FILE__ ) ) ) {
 
-			$this->nbo_payment_gateway_deactivate_plugin();
+			$this->neopayment_payment_gateway_deactivate_plugin();
 
-			$this->nbo_payment_gateway_add_admin_notice( 'bad_environment', 'error', NBO_PAYMENT_GATEWAY_Constants::NBO_PAYMENT_GATEWAY_PLUGIN_NAME . ' ha sido activado. ' . $this->nbo_payment_gateway_get_environment_message() );
+			$this->neopayment_payment_gateway_add_admin_notice( 'bad_environment', 'error', NEOPAYMENT_PAYMENT_GATEWAY_Constants::NEOPAYMENT_PAYMENT_GATEWAY_PLUGIN_NAME . ' ha sido activado. ' . $this->neopayment_payment_gateway_get_environment_message() );
 		}
 	}
 
@@ -221,18 +221,18 @@ class NBO_PAYMENT_GATEWAY {
 	 *
 	 * @internal
 	 */
-	public function nbo_payment_gateway_add_plugin_notices() {
+	public function neopayment_payment_gateway_add_plugin_notices() {
 
-		if ( ! $this->nbo_payment_gateway_is_wp_compatible() ) {
+		if ( ! $this->neopayment_payment_gateway_is_wp_compatible() ) {
 			if ( current_user_can( 'update_core' ) ) {
-				$this->nbo_payment_gateway_add_admin_notice(
+				$this->neopayment_payment_gateway_add_admin_notice(
 					'update_wordpress',
 					'error',
 					sprintf(
 					/* translators: %1$s - plugin name, %2$s - minimum WordPress version required, %3$s - update WordPress link open, %4$s - update WordPress link close */
-						esc_html__( '%1$s requiere WordPress %2$s or higher. Porfavor %3$sactualiza WordPress &raquo;%4$s', 'nbo-payment-gateway' ),
-						'<strong>' . NBO_PAYMENT_GATEWAY_Constants::NBO_PAYMENT_GATEWAY_PLUGIN_NAME . '</strong>',
-						NBO_PAYMENT_GATEWAY_Constants::NBO_PAYMENT_GATEWAY_MINIMUM_WP_VERSION,
+						esc_html__( '%1$s requiere WordPress %2$s or higher. Porfavor %3$sactualiza WordPress &raquo;%4$s', 'neopayment-payment-gateway' ),
+						'<strong>' . NEOPAYMENT_PAYMENT_GATEWAY_Constants::NEOPAYMENT_PAYMENT_GATEWAY_PLUGIN_NAME . '</strong>',
+						NEOPAYMENT_PAYMENT_GATEWAY_Constants::NEOPAYMENT_PAYMENT_GATEWAY_MINIMUM_WP_VERSION,
 						'<a href="' . esc_url( admin_url( 'update-core.php' ) ) . '">',
 						'</a>'
 					)
@@ -248,20 +248,20 @@ class NBO_PAYMENT_GATEWAY {
 
 		$plugin = 'woocommerce/woocommerce.php';
 		// Check if WooCommerce is activated.
-		if ( ! $this->nbo_payment_gateway_is_wc_activated() ) {
+		if ( ! $this->neopayment_payment_gateway_is_wc_activated() ) {
 
-			if ( $this->nbo_payment_gateway_is_wc_installed() ) {
+			if ( $this->neopayment_payment_gateway_is_wc_installed() ) {
 				// WooCommerce is installed but not activated. Ask the user to activate WooCommerce.
 				if ( current_user_can( 'activate_plugins' ) ) {
 					$activation_url = wp_nonce_url( 'plugins.php?action=activate&amp;plugin=' . $plugin . '&amp;plugin_status=all&amp;paged=1&amp;s', 'activate-plugin_' . $plugin );
 					$message        = sprintf(
 					/* translators: %1$s - Plugin Name, %2$s - activate WooCommerce link open, %3$s - activate WooCommerce link close. */
-						esc_html__( '%1$s requiere que WooCommerce esté activado. Por favor %2$sactiva WooCommerce%3$s.', 'nbo-payment-gateway' ),
-						'<strong>' . NBO_PAYMENT_GATEWAY_Constants::NBO_PAYMENT_GATEWAY_PLUGIN_NAME . '</strong>',
+						esc_html__( '%1$s requiere que WooCommerce esté activado. Por favor %2$sactiva WooCommerce%3$s.', 'neopayment-payment-gateway' ),
+						'<strong>' . NEOPAYMENT_PAYMENT_GATEWAY_Constants::NEOPAYMENT_PAYMENT_GATEWAY_PLUGIN_NAME . '</strong>',
 						'<a href="' . esc_url( $activation_url ) . '">',
 						'</a>'
 					);
-					$this->nbo_payment_gateway_add_admin_notice(
+					$this->neopayment_payment_gateway_add_admin_notice(
 						'activate_woocommerce',
 						'error',
 						$message
@@ -272,43 +272,43 @@ class NBO_PAYMENT_GATEWAY {
 				$install_url = wp_nonce_url( self_admin_url( 'update.php?action=install-plugin&plugin=woocommerce' ), 'install-plugin_woocommerce' );
 				$message     = sprintf(
 					/* translators: %1$s - Plugin Name, %2$s - install WooCommerce link open, %3$s - install WooCommerce link close. */
-					esc_html__( '%1$s requiere que WooCommerce esté instalado y activado. por favor, %2$sinstala WooCommerce%3$s.', 'nbo-payment-gateway' ),
-					'<strong>' . NBO_PAYMENT_GATEWAY_Constants::NBO_PAYMENT_GATEWAY_PLUGIN_NAME . '</strong>',
+					esc_html__( '%1$s requiere que WooCommerce esté instalado y activado. por favor, %2$sinstala WooCommerce%3$s.', 'neopayment-payment-gateway' ),
+					'<strong>' . NEOPAYMENT_PAYMENT_GATEWAY_Constants::NEOPAYMENT_PAYMENT_GATEWAY_PLUGIN_NAME . '</strong>',
 					'<a href="' . esc_url( $install_url ) . '">',
 					'</a>'
 				);
-				$this->nbo_payment_gateway_add_admin_notice(
+				$this->neopayment_payment_gateway_add_admin_notice(
 					'install_woocommerce',
 					'error',
 					$message
 				);
 			}
-		} elseif ( ! $this->nbo_payment_gateway_is_wc_compatible() ) { // If WooCommerce is activated, check for the version.
+		} elseif ( ! $this->neopayment_payment_gateway_is_wc_compatible() ) { // If WooCommerce is activated, check for the version.
 			if ( current_user_can( 'update_plugins' ) ) {
 				$update_url = wp_nonce_url( self_admin_url( 'update.php?action=upgrade-plugin&plugin=' ) . $plugin, 'upgrade-plugin_' . $plugin );
-				$this->nbo_payment_gateway_add_admin_notice(
+				$this->neopayment_payment_gateway_add_admin_notice(
 					'update_woocommerce',
 					'error',
 					sprintf(
 					/* translators: %1$s - Plugin Name, %2$s - minimum WooCommerce version, %3$s - update WooCommerce link open, %4$s - update WooCommerce link close, %5$s - download minimum WooCommerce link open, %6$s - download minimum WooCommerce link close. */
-						esc_html__( '%1$s requiere WooCommerce %2$s o superior. Por favor, %3$sactualiza WooCommerce%4$s a la última versión, o %5$sdescarga la versión mínima requerida &raquo;%6$s', 'nbo-payment-gateway' ),
-						'<strong>' . NBO_PAYMENT_GATEWAY_Constants::NBO_PAYMENT_GATEWAY_PLUGIN_NAME . '</strong>',
-						NBO_PAYMENT_GATEWAY_Constants::NBO_PAYMENT_GATEWAY_MINIMUM_WC_VERSION,
+						esc_html__( '%1$s requiere WooCommerce %2$s o superior. Por favor, %3$sactualiza WooCommerce%4$s a la última versión, o %5$sdescarga la versión mínima requerida &raquo;%6$s', 'neopayment-payment-gateway' ),
+						'<strong>' . NEOPAYMENT_PAYMENT_GATEWAY_Constants::NEOPAYMENT_PAYMENT_GATEWAY_PLUGIN_NAME . '</strong>',
+						NEOPAYMENT_PAYMENT_GATEWAY_Constants::NEOPAYMENT_PAYMENT_GATEWAY_MINIMUM_WC_VERSION,
 						'<a href="' . esc_url( $update_url ) . '">',
 						'</a>',
-						'<a href="' . esc_url( 'https://downloads.wordpress.org/plugin/woocommerce.' . NBO_PAYMENT_GATEWAY_Constants::NBO_PAYMENT_GATEWAY_MINIMUM_WC_VERSION . '.zip' ) . '">',
+						'<a href="' . esc_url( 'https://downloads.wordpress.org/plugin/woocommerce.' . NEOPAYMENT_PAYMENT_GATEWAY_Constants::NEOPAYMENT_PAYMENT_GATEWAY_MINIMUM_WC_VERSION . '.zip' ) . '">',
 						'</a>'
 					)
 				);
 			}
-		} elseif ( ! $this->nbo_payment_gateway_is_shop_in_country( 'PA' ) ) {
-			$this->nbo_payment_gateway_add_admin_notice(
+		} elseif ( ! $this->neopayment_payment_gateway_is_shop_in_country( 'PA' ) ) {
+			$this->neopayment_payment_gateway_add_admin_notice(
 				'woocommerce_country',
 				'error',
 				sprintf(
 				/* translators: %1$s - Plugin Name, %2$s - minimum WooCommerce version, %3$s - update WooCommerce link open, %4$s - update WooCommerce link close, %5$s - download minimum WooCommerce link open, %6$s - download minimum WooCommerce link close. */
-					esc_html__( '%1$s solo está disponible para tiendas localizadas en Panamá.', 'nbo-payment-gateway' ),
-					'<strong>' . NBO_PAYMENT_GATEWAY_Constants::NBO_PAYMENT_GATEWAY_PLUGIN_NAME . '</strong>'
+					esc_html__( '%1$s solo está disponible para tiendas localizadas en Panamá.', 'neopayment-payment-gateway' ),
+					'<strong>' . NEOPAYMENT_PAYMENT_GATEWAY_Constants::NEOPAYMENT_PAYMENT_GATEWAY_PLUGIN_NAME . '</strong>'
 				)
 			);
 		}
@@ -321,7 +321,7 @@ class NBO_PAYMENT_GATEWAY {
 	 * @return bool
 	 */
 	private function plugins_compatible() {
-		return $this->nbo_payment_gateway_is_wp_compatible() && $this->nbo_payment_gateway_is_wc_compatible();
+		return $this->neopayment_payment_gateway_is_wp_compatible() && $this->neopayment_payment_gateway_is_wc_compatible();
 	}
 
 
@@ -330,13 +330,13 @@ class NBO_PAYMENT_GATEWAY {
 	 *
 	 * @return bool
 	 */
-	private function nbo_payment_gateway_is_wp_compatible() {
+	private function neopayment_payment_gateway_is_wp_compatible() {
 
-		if ( ! NBO_PAYMENT_GATEWAY_Constants::NBO_PAYMENT_GATEWAY_MINIMUM_WP_VERSION ) {
+		if ( ! NEOPAYMENT_PAYMENT_GATEWAY_Constants::NEOPAYMENT_PAYMENT_GATEWAY_MINIMUM_WP_VERSION ) {
 			return true;
 		}
 
-		return version_compare( get_bloginfo( 'version' ), NBO_PAYMENT_GATEWAY_Constants::NBO_PAYMENT_GATEWAY_MINIMUM_WP_VERSION, '>=' );
+		return version_compare( get_bloginfo( 'version' ), NEOPAYMENT_PAYMENT_GATEWAY_Constants::NEOPAYMENT_PAYMENT_GATEWAY_MINIMUM_WP_VERSION, '>=' );
 	}
 
 	/**
@@ -344,7 +344,7 @@ class NBO_PAYMENT_GATEWAY {
 	 *
 	 * @return bool
 	 */
-	private function nbo_payment_gateway_is_wc_activated() {
+	private function neopayment_payment_gateway_is_wc_activated() {
 		return class_exists( 'WooCommerce' ) ? true : false;
 	}
 
@@ -353,7 +353,7 @@ class NBO_PAYMENT_GATEWAY {
 	 *
 	 * @return bool
 	 */
-	private function nbo_payment_gateway_is_wc_installed() {
+	private function neopayment_payment_gateway_is_wc_installed() {
 		$plugin            = 'woocommerce/woocommerce.php';
 		$installed_plugins = get_plugins();
 
@@ -365,13 +365,13 @@ class NBO_PAYMENT_GATEWAY {
 	 *
 	 * @return bool
 	 */
-	private function nbo_payment_gateway_is_wc_compatible() {
+	private function neopayment_payment_gateway_is_wc_compatible() {
 
-		if ( ! NBO_PAYMENT_GATEWAY_Constants::NBO_PAYMENT_GATEWAY_MINIMUM_WC_VERSION ) {
+		if ( ! NEOPAYMENT_PAYMENT_GATEWAY_Constants::NEOPAYMENT_PAYMENT_GATEWAY_MINIMUM_WC_VERSION ) {
 			return true;
 		}
 
-		return defined( 'WC_VERSION' ) && version_compare( WC_VERSION, NBO_PAYMENT_GATEWAY_Constants::NBO_PAYMENT_GATEWAY_MINIMUM_WC_VERSION, '>=' );
+		return defined( 'WC_VERSION' ) && version_compare( WC_VERSION, NEOPAYMENT_PAYMENT_GATEWAY_Constants::NEOPAYMENT_PAYMENT_GATEWAY_MINIMUM_WC_VERSION, '>=' );
 	}
 
 	/**
@@ -380,7 +380,7 @@ class NBO_PAYMENT_GATEWAY {
 	 * @param string $country country.
 	 * @return string $shop_country.
 	 */
-	private function nbo_payment_gateway_is_shop_in_country( $country ) {
+	private function neopayment_payment_gateway_is_shop_in_country( $country ) {
 		$shop_country = wc_get_base_location()['country'];
 		return $shop_country === $country;
 	}
@@ -393,12 +393,12 @@ class NBO_PAYMENT_GATEWAY {
 	 *
 	 * @since 1.10.0
 	 */
-	protected function nbo_payment_gateway_deactivate_plugin() {
+	protected function neopayment_payment_gateway_deactivate_plugin() {
 
-		nbo_payment_gateway_deactivate_plugins( plugin_basename( __FILE__ ) );
+		neopayment_payment_gateway_deactivate_plugins( plugin_basename( __FILE__ ) );
 
 		if ( isset( $_GET['activate'], $_GET['_wpnonce'] ) &&
-			wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'nbo_payment_gateway_activate_action' ) ) {
+			wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'neopayment_payment_gateway_activate_action' ) ) {
 			$activate = sanitize_text_field( wp_unslash( $_GET['activate'] ) );
 		}
 	}
@@ -413,7 +413,7 @@ class NBO_PAYMENT_GATEWAY {
 	 * @param string $classes   The css class for the notice.
 	 * @param string $message The notice message.
 	 */
-	private function nbo_payment_gateway_add_admin_notice( $slug, $classes, $message ) {
+	private function neopayment_payment_gateway_add_admin_notice( $slug, $classes, $message ) {
 
 		$this->notices[ $slug ] = array(
 			'class'   => $classes,
@@ -423,11 +423,11 @@ class NBO_PAYMENT_GATEWAY {
 
 
 	/**
-	 * Displays any admin notices added with \NBO_PAYMENT_GATEWAY::nbo_payment_gateway_add_admin_notice()
+	 * Displays any admin notices added with \NEOPAYMENT_PAYMENT_GATEWAY::neopayment_payment_gateway_add_admin_notice()
 	 *
 	 * @internal
 	 */
-	public function nbo_payment_gateway_admin_notices() {
+	public function neopayment_payment_gateway_admin_notices() {
 
 		foreach ( (array) $this->notices as $notice_key => $notice ) {
 
@@ -459,8 +459,8 @@ class NBO_PAYMENT_GATEWAY {
 	 *
 	 * @return bool
 	 */
-	private function nbo_payment_gateway_is_environment_compatible() {
-		return version_compare( PHP_VERSION, NBO_PAYMENT_GATEWAY_Constants::NBO_PAYMENT_GATEWAY_MINIMUM_PHP_VERSION, '>=' );
+	private function neopayment_payment_gateway_is_environment_compatible() {
+		return version_compare( PHP_VERSION, NEOPAYMENT_PAYMENT_GATEWAY_Constants::NEOPAYMENT_PAYMENT_GATEWAY_MINIMUM_PHP_VERSION, '>=' );
 	}
 
 
@@ -469,18 +469,18 @@ class NBO_PAYMENT_GATEWAY {
 	 *
 	 * @return string
 	 */
-	private function nbo_payment_gateway_get_environment_message() {
+	private function neopayment_payment_gateway_get_environment_message() {
 
-		return sprintf( 'La versión mínima requerida de PHP es %1$s. Se está ejecutando la versión %2$s.', NBO_PAYMENT_GATEWAY_Constants::NBO_PAYMENT_GATEWAY_MINIMUM_PHP_VERSION, PHP_VERSION );
+		return sprintf( 'La versión mínima requerida de PHP es %1$s. Se está ejecutando la versión %2$s.', NEOPAYMENT_PAYMENT_GATEWAY_Constants::NEOPAYMENT_PAYMENT_GATEWAY_MINIMUM_PHP_VERSION, PHP_VERSION );
 	}
 
 
 	/**
-	 * Gets the main \NBO_PAYMENT_GATEWAY instance.
+	 * Gets the main \NEOPAYMENT_PAYMENT_GATEWAY instance.
 	 *
 	 * Ensures only one instance can be loaded.
 	 *
-	 * @return \NBO_PAYMENT_GATEWAY
+	 * @return \NEOPAYMENT_PAYMENT_GATEWAY
 	 */
 	public static function instance() {
 
@@ -493,4 +493,4 @@ class NBO_PAYMENT_GATEWAY {
 }
 
 // fire it up!
-NBO_PAYMENT_GATEWAY::instance();
+NEOPAYMENT_PAYMENT_GATEWAY::instance();

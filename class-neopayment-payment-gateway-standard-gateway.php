@@ -1,26 +1,26 @@
 <?php
 
 /**
- * Standard class for NBO Payment Gateway plugin.
+ * Standard class for Neopayment Payment Gateway plugin.
  *
- * @package NBO_PAYMENT_GATEWAY
+ * @package NEOPAYMENT_PAYMENT_GATEWAY
  */
 
 if (! defined('ABSPATH')) {
 	exit;
 }
-require_once 'class-nbo-payment-gateway-constants.php';
-require_once 'nbo-payment-gateway-helpers.php';
-require_once 'class-nbo-payment-gateway-cc.php';
+require_once 'class-neopayment-payment-gateway-constants.php';
+require_once 'neopayment-payment-gateway-helpers.php';
+require_once 'class-neopayment-payment-gateway-cc.php';
 
 /**
  * Handles WooCommerce Standard integration for the payment gateway.
  */
-class NBO_PAYMENT_GATEWAY_Standard_Gateway extends WC_Payment_Gateway
+class NEOPAYMENT_PAYMENT_GATEWAY_Standard_Gateway extends WC_Payment_Gateway
 {
 
 	/**
-	 * Instance for the NBO Standard gateway.
+	 * Instance for the NEOPAYMENT Standard gateway.
 	 *
 	 * @var string
 	 */
@@ -32,11 +32,11 @@ class NBO_PAYMENT_GATEWAY_Standard_Gateway extends WC_Payment_Gateway
 	public function __construct()
 	{
 
-		$this->id                 = NBO_PAYMENT_GATEWAY_Constants::NBO_PAYMENT_GATEWAY_STANDARD_GATEWAY_ID; // payment gateway plugin ID.
+		$this->id                 = NEOPAYMENT_PAYMENT_GATEWAY_Constants::NEOPAYMENT_PAYMENT_GATEWAY_STANDARD_GATEWAY_ID; // payment gateway plugin ID.
 		$this->icon               = ''; // URL of the icon that will be displayed on checkout page near your gateway name.
 		$this->has_fields         = true; // in case you need a custom credit card form.
-		$this->method_title       = 'NBO Standard Gateway';
-		$this->method_description = __('Acceptance of payments with Visa / Mastercard', 'nbo-payment-gateway'); // will be displayed on the options page.
+		$this->method_title       = 'NEOPAYMENT Standard Gateway';
+		$this->method_description = __('Acceptance of payments with Visa / Mastercard', 'neopayment-payment-gateway'); // will be displayed on the options page.
 
 		// gateways can support subscriptions, refunds, saved payment methods, but in this tutorial we begin with simple payments.
 		$this->supports = array(
@@ -64,19 +64,19 @@ class NBO_PAYMENT_GATEWAY_Standard_Gateway extends WC_Payment_Gateway
 		add_action('wp_enqueue_scripts', array($this, 'payment_scripts'));
 
 		// You can also register a webhook here.
-		add_action('woocommerce_api_' . $this->id, array($this, 'nbo_payment_gateway_webhook'));
+		add_action('woocommerce_api_' . $this->id, array($this, 'neopayment_payment_gateway_webhook'));
 
 		// URL OK y KO.
-		add_action('woocommerce_api_' . $this->id . '_status', array($this, 'nbo_payment_gateway_callback_url'));
+		add_action('woocommerce_api_' . $this->id . '_status', array($this, 'neopayment_payment_gateway_callback_url'));
 
 		// JS Scripts.
 		add_action('wp_enqueue_scripts', array($this, 'register_plugin_scripts'), 20);
 
 		// Add nonce field for security.
 		add_action(
-			'woocommerce_admin_field_nbo_payment_gateway_nonce',
+			'woocommerce_admin_field_neopayment_payment_gateway_nonce',
 			function () {
-				wp_nonce_field('nbo_payment_gateway_standard_save_settings', 'nbo_payment_gateway_standard_nonce');
+				wp_nonce_field('neopayment_payment_gateway_standard_save_settings', 'neopayment_payment_gateway_standard_nonce');
 			}
 		);
 	}
@@ -87,10 +87,10 @@ class NBO_PAYMENT_GATEWAY_Standard_Gateway extends WC_Payment_Gateway
 	public function process_admin_options()
 	{
 		if (
-			! isset($_POST['nbo_payment_gateway_standard_nonce']) ||
-			! wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nbo_payment_gateway_standard_nonce'])), 'nbo_payment_gateway_standard_save_settings')
+			! isset($_POST['neopayment_payment_gateway_standard_nonce']) ||
+			! wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['neopayment_payment_gateway_standard_nonce'])), 'neopayment_payment_gateway_standard_save_settings')
 		) {
-			wp_die(esc_html__('Unauthorized action.', 'nbo-payment-gateway'), esc_html__('Security Error', 'nbo-payment-gateway'), 403);
+			wp_die(esc_html__('Unauthorized action.', 'neopayment-payment-gateway'), esc_html__('Security Error', 'neopayment-payment-gateway'), 403);
 		}
 		parent::process_admin_options();
 	}
@@ -105,15 +105,15 @@ class NBO_PAYMENT_GATEWAY_Standard_Gateway extends WC_Payment_Gateway
 		$icons = array(
 			sprintf(
 				'<img class="%s" src="%s" alt="%s" />',
-				esc_attr('nbo-payment-gateway-icon'),
+				esc_attr('neopayment-payment-gateway-icon'),
 				esc_url(WC_HTTPS::force_https_url($path . 'assets/images/visa.svg')),
-				esc_attr__('Visa', 'nbo-payment-gateway')
+				esc_attr__('Visa', 'neopayment-payment-gateway')
 			),
 			sprintf(
 				'<img class="%s" src="%s" alt="%s" />',
-				esc_attr('nbo-payment-gateway-icon'),
+				esc_attr('neopayment-payment-gateway-icon'),
 				esc_url(WC_HTTPS::force_https_url($path . 'assets/images/mastercard.svg')),
-				esc_attr__('Mastercard', 'nbo-payment-gateway')
+				esc_attr__('Mastercard', 'neopayment-payment-gateway')
 			),
 		);
 
@@ -136,57 +136,57 @@ class NBO_PAYMENT_GATEWAY_Standard_Gateway extends WC_Payment_Gateway
 
 		$this->form_fields = array(
 			'enabled'                => array(
-				'title'       => __('Enable/Disable', 'nbo-payment-gateway'),
-				'label'       => __('Enable NBO Payment Gateway', 'nbo-payment-gateway'),
+				'title'       => __('Enable/Disable', 'neopayment-payment-gateway'),
+				'label'       => __('Enable Neopayment Payment Gateway', 'neopayment-payment-gateway'),
 				'type'        => 'checkbox',
 				'description' => '',
 				'default'     => 'no',
 			),
 			'title'                  => array(
-				'title'       => __('Title', 'nbo-payment-gateway'),
+				'title'       => __('Title', 'neopayment-payment-gateway'),
 				'type'        => 'text',
-				'description' => __('This controls the title which the user sees during checkout.', 'nbo-payment-gateway'),
+				'description' => __('This controls the title which the user sees during checkout.', 'neopayment-payment-gateway'),
 				'default'     => 'VISA, Mastercard',
 				'desc_tip'    => true,
 			),
 			'description'            => array(
-				'title'       => __('Description', 'nbo-payment-gateway'),
+				'title'       => __('Description', 'neopayment-payment-gateway'),
 				'type'        => 'textarea',
-				'description' => __('This controls the description which the user sees during checkout.', 'nbo-payment-gateway'),
-				'default'     => __('Pay with your VISA or Mastercard card', 'nbo-payment-gateway'),
+				'description' => __('This controls the description which the user sees during checkout.', 'neopayment-payment-gateway'),
+				'default'     => __('Pay with your VISA or Mastercard card', 'neopayment-payment-gateway'),
 			),
 			'testmode'               => array(
-				'title'       => __('Test mode', 'nbo-payment-gateway'),
-				'label'       => __('Enable Test Mode', 'nbo-payment-gateway'),
+				'title'       => __('Test mode', 'neopayment-payment-gateway'),
+				'label'       => __('Enable Test Mode', 'neopayment-payment-gateway'),
 				'type'        => 'checkbox',
-				'description' => __('Place the payment gateway in test mode using test API keys.', 'nbo-payment-gateway'),
+				'description' => __('Place the payment gateway in test mode using test API keys.', 'neopayment-payment-gateway'),
 				'default'     => 'yes',
 				'desc_tip'    => true,
 			),
 			'test_api_url'           => array(
-				'title' => __('Test API URL', 'nbo-payment-gateway'),
+				'title' => __('Test API URL', 'neopayment-payment-gateway'),
 				'type'  => 'text',
 			),
 
 			'test_api_client_id'     => array(
-				'title' => __('Test API Client Id', 'nbo-payment-gateway'),
+				'title' => __('Test API Client Id', 'neopayment-payment-gateway'),
 				'type'  => 'text',
 			),
 			'test_api_client_secret' => array(
-				'title' => __('Test API Client Secret', 'nbo-payment-gateway'),
+				'title' => __('Test API Client Secret', 'neopayment-payment-gateway'),
 				'type'  => 'password',
 			),
 			'api_url'                => array(
-				'title' => __('Production API URL', 'nbo-payment-gateway'),
+				'title' => __('Production API URL', 'neopayment-payment-gateway'),
 				'type'  => 'text',
 			),
 
 			'api_client_id'          => array(
-				'title' => __('Production API Client Id', 'nbo-payment-gateway'),
+				'title' => __('Production API Client Id', 'neopayment-payment-gateway'),
 				'type'  => 'text',
 			),
 			'api_client_secret'      => array(
-				'title' => __('Production API Client Secret', 'nbo-payment-gateway'),
+				'title' => __('Production API Client Secret', 'neopayment-payment-gateway'),
 				'type'  => 'password',
 			),
 		);
@@ -203,7 +203,7 @@ class NBO_PAYMENT_GATEWAY_Standard_Gateway extends WC_Payment_Gateway
 		<table class="form-table">
 			<?php
 			// Nonce field for security.
-			wp_nonce_field('nbo_payment_gateway_standard_save_settings', 'nbo_payment_gateway_standard_nonce');
+			wp_nonce_field('neopayment_payment_gateway_standard_save_settings', 'neopayment_payment_gateway_standard_nonce');
 
 			$this->generate_settings_html();
 			?>
@@ -223,22 +223,22 @@ class NBO_PAYMENT_GATEWAY_Standard_Gateway extends WC_Payment_Gateway
 		}
 
 		$base = plugin_dir_url(__FILE__) . 'assets/js/';
-		$ver  = NBO_PAYMENT_GATEWAY_Constants::NBO_PAYMENT_GATEWAY_PLUGIN_VERSION;
+		$ver  = NEOPAYMENT_PAYMENT_GATEWAY_Constants::NEOPAYMENT_PAYMENT_GATEWAY_PLUGIN_VERSION;
 
 		wp_register_script(
-			'nbo-sweetalert',
+			'neopayment-sweetalert',
 			plugins_url('assets/js/sweetAlert/sweetalert.min.js', __FILE__),
 			array(),
 			'2.1.2',
 			true
 		);
 
-		wp_enqueue_script('nbo-sweetalert');
+		wp_enqueue_script('neopayment-sweetalert');
 
 		// Script for the standard payment method.
 		wp_enqueue_script(
-			'nbo-payment-gateway-standard-payment',
-			$base . 'nbo-payment-gateway-script.js',
+			'neopayment-payment-gateway-standard-payment',
+			$base . 'neopayment-payment-gateway-script.js',
 			array('jquery'),
 			$ver,
 			true
@@ -246,9 +246,9 @@ class NBO_PAYMENT_GATEWAY_Standard_Gateway extends WC_Payment_Gateway
 
 		// Script for the 3DS popup + classic checkout.
 		wp_enqueue_script(
-			'nbo-payment-gateway-3ds-popup',
-			$base . 'nbo-payment-gateway-3ds-popup.js',
-			array('jquery', 'wc-checkout', 'nbo-sweetalert'),
+			'neopayment-payment-gateway-3ds-popup',
+			$base . 'neopayment-payment-gateway-3ds-popup.js',
+			array('jquery', 'wc-checkout', 'neopayment-sweetalert'),
 			$ver,
 			true
 		);
@@ -257,8 +257,8 @@ class NBO_PAYMENT_GATEWAY_Standard_Gateway extends WC_Payment_Gateway
 		$callback = esc_url_raw(home_url("/wc-api/{$this->id}_status"));
 
 		wp_localize_script(
-			'nbo-payment-gateway-3ds-popup',
-			'nbo_payment_gateway_3DS',
+			'neopayment-payment-gateway-3ds-popup',
+			'neopayment_payment_gateway_3DS',
 			array(
 				'url_ok' => $callback,
 				'url_ko' => $callback,
@@ -275,7 +275,7 @@ class NBO_PAYMENT_GATEWAY_Standard_Gateway extends WC_Payment_Gateway
 	 */
 	public function credit_card_form($args = array(), $fields = array())
 	{
-		$cc_form           = new NBO_PAYMENT_GATEWAY_CC();
+		$cc_form           = new NEOPAYMENT_PAYMENT_GATEWAY_CC();
 		$cc_form->id       = $this->id;
 		$cc_form->supports = $this->supports;
 		$cc_form->form();
@@ -291,7 +291,7 @@ class NBO_PAYMENT_GATEWAY_Standard_Gateway extends WC_Payment_Gateway
 		if ($this->description) {
 			// you can instructions for test mode, I mean test card numbers etc.
 			if ($this->testmode) {
-				$this->description .= ' ' . __('TEST MODE ENABLED', 'nbo-payment-gateway') . '.';
+				$this->description .= ' ' . __('TEST MODE ENABLED', 'neopayment-payment-gateway') . '.';
 				$this->description  = trim($this->description);
 			}
 			// display the description with <p> tags etc.
@@ -323,7 +323,7 @@ class NBO_PAYMENT_GATEWAY_Standard_Gateway extends WC_Payment_Gateway
 			isset($_POST[$this->id . '_nonce']) &&
 			! wp_verify_nonce(sanitize_text_field(wp_unslash($_POST[$this->id . '_nonce'])), $this->id . '_process_payment')
 		) {
-			wc_add_notice(__('Security check failed. Please try again.', 'nbo-payment-gateway'), 'error');
+			wc_add_notice(__('Security check failed. Please try again.', 'neopayment-payment-gateway'), 'error');
 			return false;
 		}
 
@@ -356,24 +356,24 @@ class NBO_PAYMENT_GATEWAY_Standard_Gateway extends WC_Payment_Gateway
 		$valid = true;
 
 		$card_number = str_replace(' ', '', $card_number);
-		if (! NBO_PAYMENT_GATEWAY_Helpers::is_valid_luhn($card_number)) {
-			wc_add_notice(__('Invalid card number', 'nbo-payment-gateway'), 'error');
+		if (! NEOPAYMENT_PAYMENT_GATEWAY_Helpers::is_valid_luhn($card_number)) {
+			wc_add_notice(__('Invalid card number', 'neopayment-payment-gateway'), 'error');
 			$valid = false;
 		}
 
 		$card_expiry = str_replace(' ', '', $card_expiry);
-		if (! NBO_PAYMENT_GATEWAY_Helpers::is_valid_expiry_date($card_expiry)) {
-			wc_add_notice(__('Invalid expiry date', 'nbo-payment-gateway'), 'error');
+		if (! NEOPAYMENT_PAYMENT_GATEWAY_Helpers::is_valid_expiry_date($card_expiry)) {
+			wc_add_notice(__('Invalid expiry date', 'neopayment-payment-gateway'), 'error');
 			$valid = false;
 		}
 
-		if (! NBO_PAYMENT_GATEWAY_Helpers::is_valid_card_holder($card_holder)) {
-			wc_add_notice(__('Invalid card holder', 'nbo-payment-gateway'), 'error');
+		if (! NEOPAYMENT_PAYMENT_GATEWAY_Helpers::is_valid_card_holder($card_holder)) {
+			wc_add_notice(__('Invalid card holder', 'neopayment-payment-gateway'), 'error');
 			$valid = false;
 		}
 
-		if (! NBO_PAYMENT_GATEWAY_Helpers::is_valid_cvv($card_cvv)) {
-			wc_add_notice(__('Invalid card code (CVV)', 'nbo-payment-gateway'), 'error');
+		if (! NEOPAYMENT_PAYMENT_GATEWAY_Helpers::is_valid_cvv($card_cvv)) {
+			wc_add_notice(__('Invalid card code (CVV)', 'neopayment-payment-gateway'), 'error');
 			$valid = false;
 		}
 
@@ -391,11 +391,11 @@ class NBO_PAYMENT_GATEWAY_Standard_Gateway extends WC_Payment_Gateway
 	public function process_refund($order_id, $amount = 0, $reason = '')
 	{
 		if (! isset($_REQUEST['security']) || ! check_ajax_referer('order-item', 'security', false)) {
-			NBO_PAYMENT_GATEWAY_Log::debug('Refund rechazado: nonce inválido o ausente');
-			return new WP_Error('invalid_nonce', __('Unauthorized action.', 'nbo-payment-gateway'));
+			NEOPAYMENT_PAYMENT_GATEWAY_Log::debug('Refund rechazado: nonce inválido o ausente');
+			return new WP_Error('invalid_nonce', __('Unauthorized action.', 'neopayment-payment-gateway'));
 		}
 
-		$nbo_payment_gateway_client = new NBO_PAYMENT_GATEWAY_Client(
+		$neopayment_payment_gateway_client = new NEOPAYMENT_PAYMENT_GATEWAY_Client(
 			$this->api_url,
 			$this->api_client_id,
 			$this->api_client_secret
@@ -404,22 +404,22 @@ class NBO_PAYMENT_GATEWAY_Standard_Gateway extends WC_Payment_Gateway
 		if (! $order_id || ! $amount) {
 			return new WP_Error('invalid_order', 'Invalid order ID or amount');
 		}
-		NBO_PAYMENT_GATEWAY_Log::debug("process_refund: order_id={$order_id}, amount={$amount}, reason={$reason}");
+		NEOPAYMENT_PAYMENT_GATEWAY_Log::debug("process_refund: order_id={$order_id}, amount={$amount}, reason={$reason}");
 		$order = wc_get_order($order_id);
 
 		if (! $order) {
 			return new WP_Error('invalid_order', 'Invalid order ID');
 		}
-		$txn = $order->get_meta('nbo_payment_gateway_transaction_id');
+		$txn = $order->get_meta('neopayment_payment_gateway_transaction_id');
 		if (! $txn) {
 			return new WP_Error('no_transaction_id', 'No transaction ID found for this order');
 		}
 
 		try {
-			$data = $nbo_payment_gateway_client->refund($txn, intval($amount * 100));
-		} catch (NBO_PAYMENT_GATEWAY_Exception $e) {
-			NBO_PAYMENT_GATEWAY_Log::debug('Error processing refund: ' . $e->getMessage());
-			return new WP_Error('nbo_payment_gateway_refund_error', $e->getMessage());
+			$data = $neopayment_payment_gateway_client->refund($txn, intval($amount * 100));
+		} catch (NEOPAYMENT_PAYMENT_GATEWAY_Exception $e) {
+			NEOPAYMENT_PAYMENT_GATEWAY_Log::debug('Error processing refund: ' . $e->getMessage());
+			return new WP_Error('neopayment_payment_gateway_refund_error', $e->getMessage());
 		}
 
 		$status = strtolower($data['status'] ?? 'unknown');
@@ -428,21 +428,21 @@ class NBO_PAYMENT_GATEWAY_Standard_Gateway extends WC_Payment_Gateway
 		if ( in_array( $status, $success_status, true ) ) {
 			$order->add_order_note(
 				sprintf(
-					'Reembolso de %s aprobado vía NBO (refund_id %s). Motivo: %s',
+					'Reembolso de %s aprobado vía NEOPAYMENT (refund_id %s). Motivo: %s',
 					wc_price($amount),
 					$data['identifier'] ?? $data['id'] ?? '',
 					$reason
 				)
 			);
 			if (! empty($data['identifier'])) {
-				$order->update_meta_data('nbo_payment_gateway_refund_id', $data['identifier']);
+				$order->update_meta_data('neopayment_payment_gateway_refund_id', $data['identifier']);
 				$order->save();
 			}
 			return true;
 		} else {
 			$order->add_order_note(
 				sprintf(
-					'Intento de reembolso fallido. Estado devuelto por NBO: %s (código %s)',
+					'Intento de reembolso fallido. Estado devuelto por NEOPAYMENT: %s (código %s)',
 					$status,
 					$data['response_code'] ?? 'N/A'
 				)
@@ -451,7 +451,7 @@ class NBO_PAYMENT_GATEWAY_Standard_Gateway extends WC_Payment_Gateway
 				'refund_denied',
 				sprintf(
 					/* translators: %s is the refund status returned by the API */
-					__('Reembolso denegado (estado: %s).', 'nbo-payment-gateway'),
+					__('Reembolso denegado (estado: %s).', 'neopayment-payment-gateway'),
 					$status
 				)
 			);
@@ -470,15 +470,15 @@ class NBO_PAYMENT_GATEWAY_Standard_Gateway extends WC_Payment_Gateway
 		// check if the nonce is set and valid.
 		if (isset($_POST[$this->id . '_nonce'])) {
 			if (! wp_verify_nonce(sanitize_text_field(wp_unslash($_POST[$this->id . '_nonce'])), $this->id . '_process_payment')) {
-				wc_add_notice(__('Security check failed. Please try again.', 'nbo-payment-gateway'), 'error');
+				wc_add_notice(__('Security check failed. Please try again.', 'neopayment-payment-gateway'), 'error');
 				return;
 			}
 		}
 		// we need it to get any order details.
-		NBO_PAYMENT_GATEWAY_Log::debug('process_payment: ' . $order_id);
+		NEOPAYMENT_PAYMENT_GATEWAY_Log::debug('process_payment: ' . $order_id);
 		$order = wc_get_order($order_id);
 
-		$nbo_payment_gateway_client = new NBO_PAYMENT_GATEWAY_Client($this->api_url, $this->api_client_id, $this->api_client_secret);
+		$neopayment_payment_gateway_client = new NEOPAYMENT_PAYMENT_GATEWAY_Client($this->api_url, $this->api_client_id, $this->api_client_secret);
 		try {
 			// detect if the request is from a block-based checkout or classic checkout.
 			$raw_input = file_get_contents('php://input');
@@ -498,11 +498,11 @@ class NBO_PAYMENT_GATEWAY_Standard_Gateway extends WC_Payment_Gateway
 					}
 				}
 			}
-			$nbo_payment_gateway_is_block = ! empty($body['payment_data']);
+			$neopayment_payment_gateway_is_block = ! empty($body['payment_data']);
 
 			// if the request is from a block-based checkout, we need to handle it differently.
-			if ($nbo_payment_gateway_is_block) {
-				NBO_PAYMENT_GATEWAY_Log::debug('Origin: Checkout Based Blocks');
+			if ($neopayment_payment_gateway_is_block) {
+				NEOPAYMENT_PAYMENT_GATEWAY_Log::debug('Origin: Checkout Based Blocks');
 				$pdata    = $body['payment_data'];
 				$billing  = $body['billing_address'] ?? array();
 				$shipping = $body['shipping_address'] ?? array();
@@ -513,7 +513,7 @@ class NBO_PAYMENT_GATEWAY_Standard_Gateway extends WC_Payment_Gateway
 						$data[$field['key']] = wc_clean($field['value']);
 					}
 				}
-				NBO_PAYMENT_GATEWAY_Log::debug(' data: ' . wp_json_encode($data));
+				NEOPAYMENT_PAYMENT_GATEWAY_Log::debug(' data: ' . wp_json_encode($data));
 
 				// card details.
 				$card_number = $data['card_number'] ?? '';
@@ -536,21 +536,21 @@ class NBO_PAYMENT_GATEWAY_Standard_Gateway extends WC_Payment_Gateway
 
 					'browserIP'                => isset($_SERVER['REMOTE_ADDR']) ? sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'])) : '',
 					'email'                    => $billing['email'] ?? $order->get_billing_email(),
-					'billAddrCountry'          => $this->nbo_payment_gateway_get_iso_alpha3_cc($billing['country'] ?? $order->get_billing_country()),
+					'billAddrCountry'          => $this->neopayment_payment_gateway_get_iso_alpha3_cc($billing['country'] ?? $order->get_billing_country()),
 					'billAddrCity'             => $billing['city'] ?? $order->get_billing_city(),
-					'billAddrState'            => NBO_PAYMENT_GATEWAY_Helpers::parse_state($billing['state'] ?? $order->get_billing_state()),
+					'billAddrState'            => NEOPAYMENT_PAYMENT_GATEWAY_Helpers::parse_state($billing['state'] ?? $order->get_billing_state()),
 					'billAddrLine1'            => $billing['address_1'] ?? $order->get_billing_address_1(),
 					'billAddrLine2'            => 'none',
 					'billAddrPostCode'         => $billing['postcode'] ?? $order->get_billing_postcode(),
-					'shipAddrCountry'          => $this->nbo_payment_gateway_get_iso_alpha3_cc($shipping['country'] ?? $order->get_shipping_country()),
+					'shipAddrCountry'          => $this->neopayment_payment_gateway_get_iso_alpha3_cc($shipping['country'] ?? $order->get_shipping_country()),
 					'shipAddrCity'             => $shipping['city'] ?? $order->get_shipping_city(),
-					'shipAddrState'            => NBO_PAYMENT_GATEWAY_Helpers::parse_state($shipping['state'] ?? $order->get_shipping_state()),
+					'shipAddrState'            => NEOPAYMENT_PAYMENT_GATEWAY_Helpers::parse_state($shipping['state'] ?? $order->get_shipping_state()),
 					'shipAddrLine1'            => $shipping['address_1'] ?? $order->get_shipping_address_1(),
 					'shipAddrLine2'            => 'none',
 					'shipAddrPostCode'         => $shipping['postcode'] ?? $order->get_shipping_postcode(),
 				);
 			} else {
-				NBO_PAYMENT_GATEWAY_Log::debug('Origin: Classic Checkout');
+				NEOPAYMENT_PAYMENT_GATEWAY_Log::debug('Origin: Classic Checkout');
 				$card_number = sanitize_text_field(wp_unslash($_POST[$this->id . '-card-number'] ?? ''));
 				$card_expiry = sanitize_text_field(wp_unslash($_POST[$this->id . '-card-expiry'] ?? ''));
 				$card_cvc    = sanitize_text_field(wp_unslash($_POST[$this->id . '-card-cvc'] ?? ''));
@@ -559,12 +559,12 @@ class NBO_PAYMENT_GATEWAY_Standard_Gateway extends WC_Payment_Gateway
 				$card_number = str_replace(' ', '', $card_number);
 				$card_expiry = str_replace(' ', '', $card_expiry);
 
-				$three_ds_params = $this->nbo_payment_gateway_get_3ds_params();
+				$three_ds_params = $this->neopayment_payment_gateway_get_3ds_params();
 			}
-			NBO_PAYMENT_GATEWAY_Log::debug('three_ds_params=' . wp_json_encode($three_ds_params));
+			NEOPAYMENT_PAYMENT_GATEWAY_Log::debug('three_ds_params=' . wp_json_encode($three_ds_params));
 
-			$transaction = $nbo_payment_gateway_client->sale($order, $card_number, $card_expiry, $card_cvc, $card_holder, $three_ds_params);
-			NBO_PAYMENT_GATEWAY_Log::debug('Checkout data: ' . wp_json_encode($transaction));
+			$transaction = $neopayment_payment_gateway_client->sale($order, $card_number, $card_expiry, $card_cvc, $card_holder, $three_ds_params);
+			NEOPAYMENT_PAYMENT_GATEWAY_Log::debug('Checkout data: ' . wp_json_encode($transaction));
 
 			if ('authenticating' === ($transaction['status'] ?? '')) {
 				return array(
@@ -572,7 +572,7 @@ class NBO_PAYMENT_GATEWAY_Standard_Gateway extends WC_Payment_Gateway
 					'requires_challenge' => true,
 					'challenge_url'      => $transaction['metadatas']['3ds_authentication_form'],
 					'redirect'           => '',
-					'nbo_payment_gateway_callback_url'       => $callback,
+					'neopayment_payment_gateway_callback_url'       => $callback,
 				);
 			} elseif ($this->validate_payment($transaction)) {
 				return array(
@@ -581,16 +581,16 @@ class NBO_PAYMENT_GATEWAY_Standard_Gateway extends WC_Payment_Gateway
 					'additional_data' => array(),
 				);
 			} elseif ('refused' === ($transaction['status'] ?? '')) {
-				wc_add_notice(__('We were unable to complete the payment. Please contact with commerce.', 'nbo-payment-gateway'), 'error');
+				wc_add_notice(__('We were unable to complete the payment. Please contact with commerce.', 'neopayment-payment-gateway'), 'error');
 			} else {
-				wc_add_notice(__('We were unable to complete the payment. Please check your card details or contact your bank.', 'nbo-payment-gateway'), 'error');
+				wc_add_notice(__('We were unable to complete the payment. Please check your card details or contact your bank.', 'neopayment-payment-gateway'), 'error');
 			}
-		} catch (\NBO_PAYMENT_GATEWAY_Exception $e) {
+		} catch (\NEOPAYMENT_PAYMENT_GATEWAY_Exception $e) {
 			if (! $e->isSuccessResponse()) {
-				NBO_PAYMENT_GATEWAY_Log::debug($e->getMessage() . ' - ' . wp_json_encode($e->getResponse()));
-				wc_add_notice(__('Cannot generate the payment. Please, contact with commerce.', 'nbo-payment-gateway'), 'error');
+				NEOPAYMENT_PAYMENT_GATEWAY_Log::debug($e->getMessage() . ' - ' . wp_json_encode($e->getResponse()));
+				wc_add_notice(__('Cannot generate the payment. Please, contact with commerce.', 'neopayment-payment-gateway'), 'error');
 			} else {
-				wc_add_notice(__('Cannot process the payment. Please, contact with commerce.', 'nbo-payment-gateway'), 'error');
+				wc_add_notice(__('Cannot process the payment. Please, contact with commerce.', 'neopayment-payment-gateway'), 'error');
 			}
 		}
 	}
@@ -600,7 +600,7 @@ class NBO_PAYMENT_GATEWAY_Standard_Gateway extends WC_Payment_Gateway
 	 *
 	 * @return array
 	 */
-	private function nbo_payment_gateway_get_3ds_params()
+	private function neopayment_payment_gateway_get_3ds_params()
 	{
 		if (isset($_POST['_wpnonce']) && wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['_wpnonce'])), 'woocommerce-process_checkout')) {
 			$three_ds_params['email'] = isset($_POST['billing_email']) ? sanitize_email(wp_unslash($_POST['billing_email'])) : '';
@@ -631,14 +631,14 @@ class NBO_PAYMENT_GATEWAY_Standard_Gateway extends WC_Payment_Gateway
 		$three_ds_params['email']         = isset($_POST['billing_email']) ? sanitize_email(wp_unslash($_POST['billing_email'])) : '';
 
 		$billing_country_raw                = isset($_POST['billing_country']) ? sanitize_text_field(wp_unslash($_POST['billing_country'])) : '';
-		$billing_iso3                       = ('' !== $billing_country_raw) ? $this->nbo_payment_gateway_get_iso_alpha3_cc($billing_country_raw) : '';
+		$billing_iso3                       = ('' !== $billing_country_raw) ? $this->neopayment_payment_gateway_get_iso_alpha3_cc($billing_country_raw) : '';
 		$three_ds_params['billAddrCountry'] = ('' !== $billing_iso3) ? $billing_iso3 : 'DIG';
 
 		$billing_city                    = isset($_POST['billing_city']) ? sanitize_text_field(wp_unslash($_POST['billing_city'])) : '';
 		$three_ds_params['billAddrCity'] = ('' !== $billing_city) ? $billing_city : 'digital';
 
 		$billing_state                    = isset($_POST['billing_state']) ? sanitize_text_field(wp_unslash($_POST['billing_state'])) : '';
-		$three_ds_params['billAddrState'] = ('' !== $billing_state) ? NBO_PAYMENT_GATEWAY_Helpers::parse_state($billing_state) : 'DIG';
+		$three_ds_params['billAddrState'] = ('' !== $billing_state) ? NEOPAYMENT_PAYMENT_GATEWAY_Helpers::parse_state($billing_state) : 'DIG';
 
 		$billing_line1                    = isset($_POST['billing_address_1']) ? sanitize_text_field(wp_unslash($_POST['billing_address_1'])) : '';
 		$three_ds_params['billAddrLine1'] = ('' !== $billing_line1) ? $billing_line1 : 'digital';
@@ -654,7 +654,7 @@ class NBO_PAYMENT_GATEWAY_Standard_Gateway extends WC_Payment_Gateway
 		$billing_post  = $three_ds_params['billAddrPostCode'];
 
 		$shipping_country_raw               = isset($_POST['shipping_country']) ? sanitize_text_field(wp_unslash($_POST['shipping_country'])) : '';
-		$shipping_iso3                      = ('' !== $shipping_country_raw) ? $this->nbo_payment_gateway_get_iso_alpha3_cc($shipping_country_raw) : '';
+		$shipping_iso3                      = ('' !== $shipping_country_raw) ? $this->neopayment_payment_gateway_get_iso_alpha3_cc($shipping_country_raw) : '';
 		$three_ds_params['shipAddrCountry'] = ('' !== $shipping_iso3) ? $shipping_iso3 : 'DIG';
 
 		$shipping_city = isset($_POST['shipping_city']) ? sanitize_text_field(wp_unslash($_POST['shipping_city'])) : '';
@@ -664,7 +664,7 @@ class NBO_PAYMENT_GATEWAY_Standard_Gateway extends WC_Payment_Gateway
 		$three_ds_params['shipAddrCity'] = $shipping_city;
 
 		$shipping_state                   = isset($_POST['shipping_state']) ? sanitize_text_field(wp_unslash($_POST['shipping_state'])) : '';
-		$three_ds_params['shipAddrState'] = ('' !== $shipping_state) ? NBO_PAYMENT_GATEWAY_Helpers::parse_state($shipping_state) : 'DIG';
+		$three_ds_params['shipAddrState'] = ('' !== $shipping_state) ? NEOPAYMENT_PAYMENT_GATEWAY_Helpers::parse_state($shipping_state) : 'DIG';
 
 		$shipping_line1 = isset($_POST['shipping_address_1']) ? sanitize_text_field(wp_unslash($_POST['shipping_address_1'])) : '';
 		if ('' === $shipping_line1) {
@@ -699,19 +699,19 @@ class NBO_PAYMENT_GATEWAY_Standard_Gateway extends WC_Payment_Gateway
 
 		$status         = $transaction['status'];
 		$success_status = array('authorized', 'notified');
-		$order->update_meta_data('nbo_payment_gateway_bank_code', $transaction['response_code']);
-		$order->update_meta_data('nbo_payment_gateway_transaction_id', $transaction['identifier']);
-		$order->update_meta_data('nbo_payment_gateway_bank_authorization', $transaction['authorization_number']);
+		$order->update_meta_data('neopayment_payment_gateway_bank_code', $transaction['response_code']);
+		$order->update_meta_data('neopayment_payment_gateway_transaction_id', $transaction['identifier']);
+		$order->update_meta_data('neopayment_payment_gateway_bank_authorization', $transaction['authorization_number']);
 
 		if (in_array($status, $success_status, true)) {
-			$order->update_status('completed', __('Payment completed', 'nbo-payment-gateway'));
+			$order->update_status('completed', __('Payment completed', 'neopayment-payment-gateway'));
 			$order->payment_complete($transaction['identifier']);
 			if (function_exists('WC') && WC()->cart) {
 				WC()->cart->empty_cart();
 			}
 			return true;
 		} else {
-			$order->update_status('failed', __('Failed payment', 'nbo-payment-gateway'));
+			$order->update_status('failed', __('Failed payment', 'neopayment-payment-gateway'));
 		}
 
 		return false;
@@ -720,7 +720,7 @@ class NBO_PAYMENT_GATEWAY_Standard_Gateway extends WC_Payment_Gateway
 	/**
 	 * Callback function for show payment status
 	 */
-	public function nbo_payment_gateway_callback_url()
+	public function neopayment_payment_gateway_callback_url()
 	{
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$order_id = isset($_GET['oid']) ? absint($_GET['oid']) : 0;
@@ -732,33 +732,33 @@ class NBO_PAYMENT_GATEWAY_Standard_Gateway extends WC_Payment_Gateway
 
 		$success = (bool) ($order && $order->is_paid());
 
-		NBO_PAYMENT_GATEWAY_Log::debug("nbo_payment_gateway_callback_url: order_id=$order_id, target=$target");
+		NEOPAYMENT_PAYMENT_GATEWAY_Log::debug("neopayment_payment_gateway_callback_url: order_id=$order_id, target=$target");
 
-		wp_register_script('nbo-3ds-handler', '', array(), '1.0', true);
-		wp_enqueue_script('nbo-3ds-handler');
+		wp_register_script('neopayment-3ds-handler', '', array(), '1.0', true);
+		wp_enqueue_script('neopayment-3ds-handler');
 
 		$script_data = sprintf(
-			'var nbo3dsData = { target: %s, success: %s };',
+			'var neopayment3dsData = { target: %s, success: %s };',
 			wp_json_encode($target),
 			$success ? 'true' : 'false'
 		);
-		wp_add_inline_script('nbo-3ds-handler', $script_data, 'before');
+		wp_add_inline_script('neopayment-3ds-handler', $script_data, 'before');
 
 		$main_script = '
 			document.addEventListener("DOMContentLoaded", function() {
 				if (window.opener && !window.opener.closed) {
 					window.opener.postMessage({
-						nbo3ds: nbo3dsData.success ? "success" : "fail",
-						redirect_to: nbo3dsData.target,
-						source: "nbo_payment_gateway_3ds_handler"
+						neopayment3ds: neopayment3dsData.success ? "success" : "fail",
+						redirect_to: neopayment3dsData.target,
+						source: "neopayment_payment_gateway_3ds_handler"
 					}, "' . esc_url(home_url('/')) . '");
 					setTimeout(function() { window.close(); }, 300);
 				} else {
-					window.location.href = nbo3dsData.target;
+					window.location.href = neopayment3dsData.target;
 				}
 			});
 		';
-		wp_add_inline_script('nbo-3ds-handler', $main_script);
+		wp_add_inline_script('neopayment-3ds-handler', $main_script);
 
 	?>
 		<!DOCTYPE html>
@@ -766,15 +766,15 @@ class NBO_PAYMENT_GATEWAY_Standard_Gateway extends WC_Payment_Gateway
 
 		<head>
 			<meta charset="<?php bloginfo('charset'); ?>">
-			<title><?php esc_html_e('Processing 3DS…', 'nbo-payment-gateway'); ?></title>
+			<title><?php esc_html_e('Processing 3DS…', 'neopayment-payment-gateway'); ?></title>
 			<?php wp_head(); ?>
 		</head>
 
 		<body>
-			<div class="nbo-3ds-loading">
-				<div class="nbo-3ds-spinner"></div>
+			<div class="neopayment-3ds-loading">
+				<div class="neopayment-3ds-spinner"></div>
 				<noscript>
-					<p><?php esc_html_e('Please enable JavaScript to complete your payment. You will be automatically redirected...', 'nbo-payment-gateway'); ?></p>
+					<p><?php esc_html_e('Please enable JavaScript to complete your payment. You will be automatically redirected...', 'neopayment-payment-gateway'); ?></p>
 					<meta http-equiv="refresh" content="3;url=<?php echo esc_url($target); ?>">
 				</noscript>
 			</div>
@@ -789,13 +789,13 @@ class NBO_PAYMENT_GATEWAY_Standard_Gateway extends WC_Payment_Gateway
 	/**
 	 * In case you need a webhook, like PayPal IPN etc.
 	 */
-	public function nbo_payment_gateway_webhook()
+	public function neopayment_payment_gateway_webhook()
 	{
 		$raw_input = file_get_contents('php://input');
 		$data      = json_decode($raw_input, true);
 
 		if (! is_array($data)) {
-			NBO_PAYMENT_GATEWAY_Log::debug('Webhook error: input no es array válido');
+			NEOPAYMENT_PAYMENT_GATEWAY_Log::debug('Webhook error: input no es array válido');
 			status_header(400);
 			exit;
 		}
@@ -806,14 +806,14 @@ class NBO_PAYMENT_GATEWAY_Standard_Gateway extends WC_Payment_Gateway
 			}
 		}
 
-		NBO_PAYMENT_GATEWAY_Log::debug('Webhook recibido: ' . wp_json_encode($data));
+		NEOPAYMENT_PAYMENT_GATEWAY_Log::debug('Webhook recibido: ' . wp_json_encode($data));
 
 		try {
 			$valid_transaction = $this->validate_payment($data);
 			status_header(204);
-		} catch (\NBO_PAYMENT_GATEWAY_Exception $e) {
+		} catch (\NEOPAYMENT_PAYMENT_GATEWAY_Exception $e) {
 			$tid = isset($data['tid']) ? $data['tid'] : 'N/A';
-			NBO_PAYMENT_GATEWAY_Log::debug("Error en webhook. TID: $tid - " . $e->getMessage());
+			NEOPAYMENT_PAYMENT_GATEWAY_Log::debug("Error en webhook. TID: $tid - " . $e->getMessage());
 			status_header(400);
 		}
 		exit;
@@ -825,9 +825,9 @@ class NBO_PAYMENT_GATEWAY_Standard_Gateway extends WC_Payment_Gateway
 	 * @param string $country ISO 3166-1 alpha-2 code (e.g. 'US').
 	 * @return string ISO 3166-1 alpha-3 code (e.g. 'USA'). Returns the input if not mapped.
 	 */
-	public function nbo_payment_gateway_get_iso_alpha3_cc($country)
+	public function neopayment_payment_gateway_get_iso_alpha3_cc($country)
 	{
-		return NBO_PAYMENT_GATEWAY_Constants::NBO_PAYMENT_GATEWAY_PAYMENT_COUNTRIES[$country] ?? $country;
+		return NEOPAYMENT_PAYMENT_GATEWAY_Constants::NEOPAYMENT_PAYMENT_GATEWAY_PAYMENT_COUNTRIES[$country] ?? $country;
 	}
 
 	/**

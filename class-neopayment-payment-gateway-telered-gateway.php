@@ -1,22 +1,22 @@
 <?php
 /**
- * Telered class for NBO Payment Gateway plugin.
+ * Telered class for Neopayment Payment Gateway plugin.
  *
- * @package NBO_PAYMENT_GATEWAY
+ * @package NEOPAYMENT_PAYMENT_GATEWAY
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-require_once 'class-nbo-payment-gateway-constants.php';
+require_once 'class-neopayment-payment-gateway-constants.php';
 
 /**
  * Handles WooCommerce Telered integration for the payment gateway.
  */
-class NBO_PAYMENT_GATEWAY_Telered_Gateway extends WC_Payment_Gateway {
+class NEOPAYMENT_PAYMENT_GATEWAY_Telered_Gateway extends WC_Payment_Gateway {
 
 	/**
-	 * Instance for the NBO Telered gateway.
+	 * Instance for the NEOPAYMENT Telered gateway.
 	 *
 	 * @var string
 	 */
@@ -27,11 +27,11 @@ class NBO_PAYMENT_GATEWAY_Telered_Gateway extends WC_Payment_Gateway {
 	 */
 	public function __construct() {
 
-		$this->id                 = NBO_PAYMENT_GATEWAY_Constants::NBO_PAYMENT_GATEWAY_TELERED_GATEWAY_ID; // payment gateway plugin ID.
+		$this->id                 = NEOPAYMENT_PAYMENT_GATEWAY_Constants::NEOPAYMENT_PAYMENT_GATEWAY_TELERED_GATEWAY_ID; // payment gateway plugin ID.
 		$this->icon               = ''; // URL of the icon that will be displayed on checkout page near your gateway name.
 		$this->has_fields         = false; // in case you need a custom credit card form.
-		$this->method_title       = 'NBO Clave Gateway';
-		$this->method_description = __( 'Acceptance of payments with Clave', 'nbo-payment-gateway' ); // will be displayed on the options page.
+		$this->method_title       = 'NEOPAYMENT Clave Gateway';
+		$this->method_description = __( 'Acceptance of payments with Clave', 'neopayment-payment-gateway' ); // will be displayed on the options page.
 
 		// gateways can support subscriptions, refunds, saved payment methods but in this tutorial we begin with simple payments.
 		$this->supports = array(
@@ -58,16 +58,16 @@ class NBO_PAYMENT_GATEWAY_Telered_Gateway extends WC_Payment_Gateway {
 		add_action( 'wp_enqueue_scripts', array( $this, 'payment_scripts' ) );
 
 		// You can also register a webhook here.
-		add_action( 'woocommerce_api_' . $this->id, array( $this, 'nbo_payment_gateway_webhook' ) );
+		add_action( 'woocommerce_api_' . $this->id, array( $this, 'neopayment_payment_gateway_webhook' ) );
 
 		// URL OK y KO.
-		add_action( 'woocommerce_api_' . $this->id . '_status', array( $this, 'nbo_payment_gateway_callback_url' ) );
+		add_action( 'woocommerce_api_' . $this->id . '_status', array( $this, 'neopayment_payment_gateway_callback_url' ) );
 
 		// Add nonce field for security.
 		add_action(
-			'woocommerce_admin_field_nbo_payment_gateway_nonce',
+			'woocommerce_admin_field_neopayment_payment_gateway_nonce',
 			function () {
-				wp_nonce_field( 'nbo_payment_gateway_telered_save_settings', 'nbo_payment_gateway_telered_nonce' );
+				wp_nonce_field( 'neopayment_payment_gateway_telered_save_settings', 'neopayment_payment_gateway_telered_nonce' );
 			}
 		);
 	}
@@ -76,9 +76,9 @@ class NBO_PAYMENT_GATEWAY_Telered_Gateway extends WC_Payment_Gateway {
 	 * Process Admin Validate.
 	 */
 	public function process_admin_options() {
-		if ( ! isset( $_POST['nbo_payment_gateway_telered_nonce'] ) ||
-			! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nbo_payment_gateway_telered_nonce'] ) ), 'nbo_payment_gateway_telered_save_settings' ) ) {
-			wp_die( esc_html__( 'Unauthorized action.', 'nbo-payment-gateway' ), esc_html__( 'Security Error', 'nbo-payment-gateway' ), 403 );
+		if ( ! isset( $_POST['neopayment_payment_gateway_telered_nonce'] ) ||
+			! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['neopayment_payment_gateway_telered_nonce'] ) ), 'neopayment_payment_gateway_telered_save_settings' ) ) {
+			wp_die( esc_html__( 'Unauthorized action.', 'neopayment-payment-gateway' ), esc_html__( 'Security Error', 'neopayment-payment-gateway' ), 403 );
 		}
 		parent::process_admin_options();
 	}
@@ -91,9 +91,9 @@ class NBO_PAYMENT_GATEWAY_Telered_Gateway extends WC_Payment_Gateway {
 		$icons = array(
 			sprintf(
 				'<img class="%s" src="%s" alt="%s" />',
-				esc_attr( 'nbo-payment-gateway-icon' ),
+				esc_attr( 'neopayment-payment-gateway-icon' ),
 				esc_url( WC_HTTPS::force_https_url( $path . 'assets/images/clave.svg' ) ),
-				esc_attr__( 'Telered', 'nbo-payment-gateway' )
+				esc_attr__( 'Telered', 'neopayment-payment-gateway' )
 			),
 		);
 
@@ -115,55 +115,55 @@ class NBO_PAYMENT_GATEWAY_Telered_Gateway extends WC_Payment_Gateway {
 
 		$this->form_fields = array(
 			'enabled'                => array(
-				'title'       => __( 'Enable/Disable', 'nbo-payment-gateway' ),
-				'label'       => __( 'Enable NBO Payment Gateway', 'nbo-payment-gateway' ),
+				'title'       => __( 'Enable/Disable', 'neopayment-payment-gateway' ),
+				'label'       => __( 'Enable Neopayment Payment Gateway', 'neopayment-payment-gateway' ),
 				'type'        => 'checkbox',
 				'description' => '',
 				'default'     => 'no',
 			),
 			'title'                  => array(
-				'title'       => __( 'Title', 'nbo-payment-gateway' ),
+				'title'       => __( 'Title', 'neopayment-payment-gateway' ),
 				'type'        => 'text',
-				'description' => __( 'This controls the title which the user sees during checkout.', 'nbo-payment-gateway' ),
+				'description' => __( 'This controls the title which the user sees during checkout.', 'neopayment-payment-gateway' ),
 				'default'     => 'Clave',
 				'desc_tip'    => true,
 			),
 			'description'            => array(
-				'title'       => __( 'Description', 'nbo-payment-gateway' ),
+				'title'       => __( 'Description', 'neopayment-payment-gateway' ),
 				'type'        => 'textarea',
-				'description' => __( 'This controls the description which the user sees during checkout.', 'nbo-payment-gateway' ),
-				'default'     => __( 'Pay with Clave', 'nbo-payment-gateway' ),
+				'description' => __( 'This controls the description which the user sees during checkout.', 'neopayment-payment-gateway' ),
+				'default'     => __( 'Pay with Clave', 'neopayment-payment-gateway' ),
 			),
 			'testmode'               => array(
-				'title'       => __( 'Test mode', 'nbo-payment-gateway' ),
-				'label'       => __( 'Enable Test Mode', 'nbo-payment-gateway' ),
+				'title'       => __( 'Test mode', 'neopayment-payment-gateway' ),
+				'label'       => __( 'Enable Test Mode', 'neopayment-payment-gateway' ),
 				'type'        => 'checkbox',
-				'description' => __( 'Place the payment gateway in test mode using test API keys.', 'nbo-payment-gateway' ),
+				'description' => __( 'Place the payment gateway in test mode using test API keys.', 'neopayment-payment-gateway' ),
 				'default'     => 'yes',
 				'desc_tip'    => true,
 			),
 			'test_api_url'           => array(
-				'title' => __( 'Test API URL', 'nbo-payment-gateway' ),
+				'title' => __( 'Test API URL', 'neopayment-payment-gateway' ),
 				'type'  => 'text',
 			),
 			'test_api_client_id'     => array(
-				'title' => __( 'Test API Client Id', 'nbo-payment-gateway' ),
+				'title' => __( 'Test API Client Id', 'neopayment-payment-gateway' ),
 				'type'  => 'text',
 			),
 			'test_api_client_secret' => array(
-				'title' => __( 'Test API Client Secret', 'nbo-payment-gateway' ),
+				'title' => __( 'Test API Client Secret', 'neopayment-payment-gateway' ),
 				'type'  => 'password',
 			),
 			'api_url'                => array(
-				'title' => __( 'Production API URL', 'nbo-payment-gateway' ),
+				'title' => __( 'Production API URL', 'neopayment-payment-gateway' ),
 				'type'  => 'text',
 			),
 			'api_client_id'          => array(
-				'title' => __( 'Production API Client Id', 'nbo-payment-gateway' ),
+				'title' => __( 'Production API Client Id', 'neopayment-payment-gateway' ),
 				'type'  => 'text',
 			),
 			'api_client_secret'      => array(
-				'title' => __( 'Production API Client Secret', 'nbo-payment-gateway' ),
+				'title' => __( 'Production API Client Secret', 'neopayment-payment-gateway' ),
 				'type'  => 'password',
 			),
 		);
@@ -179,7 +179,7 @@ class NBO_PAYMENT_GATEWAY_Telered_Gateway extends WC_Payment_Gateway {
 		<table class="form-table">
 			<?php
 			// Nonce field for security.
-			wp_nonce_field( 'nbo_payment_gateway_telered_save_settings', 'nbo_payment_gateway_telered_nonce' );
+			wp_nonce_field( 'neopayment_payment_gateway_telered_save_settings', 'neopayment_payment_gateway_telered_nonce' );
 
 			$this->generate_settings_html();
 			?>
@@ -196,7 +196,7 @@ class NBO_PAYMENT_GATEWAY_Telered_Gateway extends WC_Payment_Gateway {
 		if ( $this->description ) {
 			// you can instructions for test mode, I mean test card numbers etc.
 			if ( $this->testmode ) {
-				$this->description .= ' ' . __( 'TEST MODE ENABLED', 'nbo-payment-gateway' ) . '.';
+				$this->description .= ' ' . __( 'TEST MODE ENABLED', 'neopayment-payment-gateway' ) . '.';
 				$this->description  = trim( $this->description );
 			}
 			// display the description with <p> tags etc.
@@ -228,12 +228,12 @@ class NBO_PAYMENT_GATEWAY_Telered_Gateway extends WC_Payment_Gateway {
 		// we need it to get any order detailes.
 		$order = wc_get_order( $order_id );
 
-		NBO_PAYMENT_GATEWAY_Log::debug( "api_client_id=$this->api_client_id, api_client_secret=$this->api_client_secret" );
-		$nbo_payment_gateway_client = new NBO_PAYMENT_GATEWAY_Client( $this->api_url, $this->api_client_id, $this->api_client_secret );
+		NEOPAYMENT_PAYMENT_GATEWAY_Log::debug( "api_client_id=$this->api_client_id, api_client_secret=$this->api_client_secret" );
+		$neopayment_payment_gateway_client = new NEOPAYMENT_PAYMENT_GATEWAY_Client( $this->api_url, $this->api_client_id, $this->api_client_secret );
 		try {
-			$checkout = $nbo_payment_gateway_client->checkout( $order, NBO_PAYMENT_GATEWAY_Constants::NBO_PAYMENT_GATEWAY_PAYMENT_TYPE_TELERED );
+			$checkout = $neopayment_payment_gateway_client->checkout( $order, NEOPAYMENT_PAYMENT_GATEWAY_Constants::NEOPAYMENT_PAYMENT_GATEWAY_PAYMENT_TYPE_TELERED );
 
-			NBO_PAYMENT_GATEWAY_Log::debug( 'Checkout data: ' . wp_json_encode( $checkout ) );
+			NEOPAYMENT_PAYMENT_GATEWAY_Log::debug( 'Checkout data: ' . wp_json_encode( $checkout ) );
 
 			// Mark as on-hold (we're awaiting the cheque).
 			// $order->update_status('on-hold', __( 'Awaiting cheque payment', 'woocommerce' ));.
@@ -242,9 +242,9 @@ class NBO_PAYMENT_GATEWAY_Telered_Gateway extends WC_Payment_Gateway {
 				'result'   => 'success',
 				'redirect' => $this->api_url . '/checkout/' . $checkout['slug'],
 			);
-		} catch ( \NBO_PAYMENT_GATEWAY_Exception $e ) {
+		} catch ( \NEOPAYMENT_PAYMENT_GATEWAY_Exception $e ) {
 			if ( ! $e->isSuccessResponse() ) {
-				NBO_PAYMENT_GATEWAY_Log::debug( $e->getMessage() . ' - ' . wp_json_encode( $e->getResponse() ) );
+				NEOPAYMENT_PAYMENT_GATEWAY_Log::debug( $e->getMessage() . ' - ' . wp_json_encode( $e->getResponse() ) );
 				wc_add_notice( 'No se ha podido generar el pago. Por favor contacte con el comercio.', 'error' );
 			} else {
 				wc_add_notice( 'No se ha podido procesar el pago. Por favor contacte con el comercio.', 'error' );
@@ -255,7 +255,7 @@ class NBO_PAYMENT_GATEWAY_Telered_Gateway extends WC_Payment_Gateway {
 	/**
 	 * Callback function for show payment status
 	 */
-	public function nbo_payment_gateway_callback_url() {
+	public function neopayment_payment_gateway_callback_url() {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$order_id = isset( $_GET['oid'] ) ? absint( $_GET['oid'] ) : 0;
 
@@ -281,17 +281,17 @@ class NBO_PAYMENT_GATEWAY_Telered_Gateway extends WC_Payment_Gateway {
 	 *
 	 * @return void
 	 */
-	public function nbo_payment_gateway_webhook() {
+	public function neopayment_payment_gateway_webhook() {
 
 		$data_raw = json_decode( file_get_contents( 'php://input' ), true );
 		if ( ! is_array( $data_raw ) ) {
-			NBO_PAYMENT_GATEWAY_Log::debug( 'Webhook error: payload no es JSON' );
+			NEOPAYMENT_PAYMENT_GATEWAY_Log::debug( 'Webhook error: payload no es JSON' );
 			status_header( 400 );
 			exit;
 		}
 
-		$data = $this->nbo_payment_gateway_recursive_sanitize( $data_raw );
-		NBO_PAYMENT_GATEWAY_Log::debug( 'Checkout data: ' . wp_json_encode( $checkout ) );
+		$data = $this->neopayment_payment_gateway_recursive_sanitize( $data_raw );
+		NEOPAYMENT_PAYMENT_GATEWAY_Log::debug( 'Checkout data: ' . wp_json_encode( $checkout ) );
 
 		try {
 			$transaction = $data;
@@ -303,25 +303,25 @@ class NBO_PAYMENT_GATEWAY_Telered_Gateway extends WC_Payment_Gateway {
 			$success_status = array( 'authorized', 'notified' );
 
 			if ( $order ) {
-				$order->add_meta_data( 'nbo_payment_gateway_bank_code', $transaction['response_code'] ?? '' );
-				$order->add_meta_data( 'nbo_payment_gateway_transaction_id', $transaction['identifier'] ?? '' );
-				$order->add_meta_data( 'nbo_payment_gateway_bank_authorization', $transaction['authorization_number'] ?? '' );
+				$order->add_meta_data( 'neopayment_payment_gateway_bank_code', $transaction['response_code'] ?? '' );
+				$order->add_meta_data( 'neopayment_payment_gateway_transaction_id', $transaction['identifier'] ?? '' );
+				$order->add_meta_data( 'neopayment_payment_gateway_bank_authorization', $transaction['authorization_number'] ?? '' );
 
 				if ( in_array( $status, $success_status, true ) ) {
-					$order->update_status( 'completed', __( 'Pago completado', 'nbo-payment-gateway' ) );
+					$order->update_status( 'completed', __( 'Pago completado', 'neopayment-payment-gateway' ) );
 					$order->payment_complete( $transaction['identifier'] ?? '' );
 					if ( function_exists( 'WC' ) && WC()->cart ) {
 						WC()->cart->empty_cart();
 					}
 				} else {
-					$order->update_status( 'failed', __( 'Pago fallido', 'nbo-payment-gateway' ) );
+					$order->update_status( 'failed', __( 'Pago fallido', 'neopayment-payment-gateway' ) );
 				}
 			}
 
 			status_header( 204 );
 
-		} catch ( \NBO_PAYMENT_GATEWAY_Exception $e ) {
-			NBO_PAYMENT_GATEWAY_Log::debug( 'Error getting transaction ' . ( $data['tid'] ?? '' ) . ' - ' . $e->getMessage() );
+		} catch ( \NEOPAYMENT_PAYMENT_GATEWAY_Exception $e ) {
+			NEOPAYMENT_PAYMENT_GATEWAY_Log::debug( 'Error getting transaction ' . ( $data['tid'] ?? '' ) . ' - ' . $e->getMessage() );
 			status_header( 400 );
 		}
 	}
@@ -332,10 +332,10 @@ class NBO_PAYMENT_GATEWAY_Telered_Gateway extends WC_Payment_Gateway {
 	 * @param mixed $value Value to sanitize (array|string|scalar).
 	 * @return mixed Sanitized value.
 	 */
-	private function nbo_payment_gateway_recursive_sanitize( $value ) {
+	private function neopayment_payment_gateway_recursive_sanitize( $value ) {
 		if ( is_array( $value ) ) {
 			foreach ( $value as $k => $v ) {
-				$value[ $k ] = $this->nbo_payment_gateway_recursive_sanitize( $v );
+				$value[ $k ] = $this->neopayment_payment_gateway_recursive_sanitize( $v );
 			}
 			return $value;
 		}

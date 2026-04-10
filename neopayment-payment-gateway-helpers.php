@@ -4,11 +4,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Helpers for NBO Payment Gateway plugin.
+ * Helpers for Neopayment Payment Gateway plugin.
  *
- * @package NBO_PAYMENT_GATEWAY
+ * @package NEOPAYMENT_PAYMENT_GATEWAY
  */
-class NBO_PAYMENT_GATEWAY_Helpers {
+class NEOPAYMENT_PAYMENT_GATEWAY_Helpers {
 
 	/**
 	 * Valid Luhn for card numbers.

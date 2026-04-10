@@ -1,28 +1,28 @@
 import { useState, useEffect } from 'react';
 import { __ } from '@wordpress/i18n';
 import { registerPaymentMethod } from '@woocommerce/blocks-registry';
-import CardFields from './components/nbo-payment-gateway-card-fields';
+import CardFields from './components/neopayment-payment-gateway-card-fields';
 import visaUrl from '../../images/visa.svg';
 import mcUrl from '../../images/mastercard.svg';
 import {
   validateLuhn,
   validateExpiry,
   validateCvc
-} from '../includes/nbo-payment-gateway-validators';
+} from '../includes/neopayment-payment-gateway-validators';
 
 const Label = ({ label }) => (
-  <div className="nbo-payment-label">
-    <span>{ __( 'Card (Visa/Mastercard)', 'nbo-payment-gateway' ) }</span>
-    <div className="nbo-payment-label__icons">
+  <div className="neopayment-payment-label">
+    <span>{ __( 'Card (Visa/Mastercard)', 'neopayment-payment-gateway' ) }</span>
+    <div className="neopayment-payment-label__icons">
       <img
         src={ visaUrl }
         alt="Visa"
-        className="nbo-payment-label__icon"
+        className="neopayment-payment-label__icon"
       />
       <img
         src={ mcUrl }
         alt="Mastercard"
-        className="nbo-payment-label__icon"
+        className="neopayment-payment-label__icon"
       />
     </div>
   </div>
@@ -64,25 +64,25 @@ function PaymentMethod({
       if (!validateLuhn(cleanNumber)) {
         return {
           type: emitResponse.responseTypes.ERROR,
-          message: __('Invalid card number', 'nbo-payment-gateway'),
+          message: __('Invalid card number', 'neopayment-payment-gateway'),
         };
       }
       if (!validateExpiry(card_expiry)) {
         return {
           type: emitResponse.responseTypes.ERROR,
-          message: __('Invalid date', 'nbo-payment-gateway'),
+          message: __('Invalid date', 'neopayment-payment-gateway'),
         };
       }
       if (!validateCvc(card_cvc)) {
         return {
           type: emitResponse.responseTypes.ERROR,
-          message: __('Invalid CVC', 'nbo-payment-gateway'),
+          message: __('Invalid CVC', 'neopayment-payment-gateway'),
         };
       }
       if (!card_holder) {
         return {
           type: emitResponse.responseTypes.ERROR,
-          message: __('Holder name is required', 'nbo-payment-gateway'),
+          message: __('Holder name is required', 'neopayment-payment-gateway'),
         };
       }
       return {
@@ -104,9 +104,9 @@ function PaymentMethod({
 };
 
 registerPaymentMethod({
-  name: 'nbo_payment_gateway_standard_gateway',
+  name: 'neopayment_payment_gateway_standard_gateway',
   label: <Label />,
-  ariaLabel: __('NBO Standard Gateway', 'nbo-payment-gateway'),
+  ariaLabel: __('NEOPAYMENT Standard Gateway', 'neopayment-payment-gateway'),
   canMakePayment: () => true,
   content: <PaymentMethod />,
   edit: <PaymentMethod />,

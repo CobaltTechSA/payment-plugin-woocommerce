@@ -10,7 +10,7 @@ jQuery(
 		function testPopupEnabled() {
 			const w = window.open('', '_blank', 'width=100,height=100');
 			if (!w) {
-				alert(__('Habilite las ventanas emergentes en su navegador y vuelva a intentarlo.', 'nbo-payment-gateway'));
+				alert(__('Habilite las ventanas emergentes en su navegador y vuelva a intentarlo.', 'neopayment-payment-gateway'));
 				return false;
 			}
 			w.close();
@@ -59,7 +59,7 @@ jQuery(
 							const response = JSON.parse(xhr.responseText);
 							handleCheckoutResponse(response);
 						} catch (error) {
-							console.error('[NBO-3DS] Error parsing AJAX response:', error);
+							console.error('[NEOPAYMENT-3DS] Error parsing AJAX response:', error);
 						}
 					}
 				}
@@ -79,7 +79,7 @@ jQuery(
 								const json = await response.clone().json();
 								handleCheckoutResponse(json);
 							} catch (error) {
-								console.error('[NBO-3DS] Error parsing fetch response:', error);
+								console.error('[NEOPAYMENT-3DS] Error parsing fetch response:', error);
 							}
 						}
 					}
@@ -91,7 +91,7 @@ jQuery(
 		function handleCheckoutResponse(response) {
 			const orderId = response.order_id ?? response.payment_result?.order_id ?? null;
 			if (orderId && openedOrders.has(orderId)) {
-				console.warn('[NBO-3DS] This order_id has already been processed:', orderId);
+				console.warn('[NEOPAYMENT-3DS] This order_id has already been processed:', orderId);
 				return;
 			}
 			if (orderId) {
@@ -132,17 +132,17 @@ jQuery(
 		function open3DSPopup(url) {
 			const popup = window.open(url, '_blank', `width = ${POPUP_WIDTH},height = ${POPUP_HEIGHT}`);
 			if (!popup) {
-				console.warn('[NBO-3DS] The browser blocked the popup.');
+				console.warn('[NEOPAYMENT-3DS] The browser blocked the popup.');
 				showPopupWarning(
-					__('Error', 'nbo-payment-gateway'),
-					__('No se pudo abrir la ventana emergente. Active las ventanas emergentes en su navegador y vuelva a intentarlo.', 'nbo-payment-gateway')
+					__('Error', 'neopayment-payment-gateway'),
+					__('No se pudo abrir la ventana emergente. Active las ventanas emergentes en su navegador y vuelva a intentarlo.', 'neopayment-payment-gateway')
 				);
 			}
 		}
 		function showPopupWarning(title, text) {
-			console.warn(`[NBO - 3DS] ${title}: ${text}`);
+			console.warn(`[NEOPAYMENT - 3DS] ${title}: ${text}`);
 			if (typeof swal === 'function') {
-				window.swal({ title, text, icon: 'warning', button: __('Entendido', 'nbo-payment-gateway') }).then(
+				window.swal({ title, text, icon: 'warning', button: __('Entendido', 'neopayment-payment-gateway') }).then(
 					() => {
 						location.reload();
 					}
@@ -156,16 +156,16 @@ jQuery(
 			window.addEventListener(
 				'message',
 				(event) => {
-					if (!event.data?.nbo3ds) {
+					if (!event.data?.neopayment3ds) {
 						return;
 					}
-					if (event.data.nbo3ds === 'success') {
+					if (event.data.neopayment3ds === 'success') {
 						window.location.href = event.data.redirect_to || window.location.href;
 					} else {
-						console.warn('[NBO-3DS] Authentication failed.');
+						console.warn('[NEOPAYMENT-3DS] Authentication failed.');
 						showPopupWarning(
-							__('Error de autenticación', 'nbo-payment-gateway'),
-							__('Inténtelo nuevamente y mantenga la ventana emergente activa.', 'nbo-payment-gateway')
+							__('Error de autenticación', 'neopayment-payment-gateway'),
+							__('Inténtelo nuevamente y mantenga la ventana emergente activa.', 'neopayment-payment-gateway')
 						);
 					}
 				}

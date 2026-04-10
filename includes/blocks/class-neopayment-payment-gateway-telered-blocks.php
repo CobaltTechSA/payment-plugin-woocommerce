@@ -1,8 +1,8 @@
 <?php
 /**
- * Blocks Telered class for NBO Payment Gateway plugin.
+ * Blocks Telered class for Neopayment Payment Gateway plugin.
  *
- * @package NBO_PAYMENT_GATEWAY
+ * @package NEOPAYMENT_PAYMENT_GATEWAY
  */
 
 namespace NboPaymentGateway\Blocks;
@@ -14,16 +14,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Integration for the NBO Telered Blocks payment method.
+ * Integration for the NEOPAYMENT Telered Blocks payment method.
  */
-final class NBO_PAYMENT_GATEWAY_Telered_Blocks extends AbstractPaymentMethodType {
+final class NEOPAYMENT_PAYMENT_GATEWAY_Telered_Blocks extends AbstractPaymentMethodType {
 
 	/**
-	 * Payment method name for the NBO Telered gateway.
+	 * Payment method name for the NEOPAYMENT Telered gateway.
 	 *
 	 * @var string
 	 */
-	protected $name = 'nbo_payment_gateway_telered_gateway';
+	protected $name = 'neopayment_payment_gateway_telered_gateway';
 
 	/**
 	 * Initializes the blocks telered hooks.
@@ -38,7 +38,7 @@ final class NBO_PAYMENT_GATEWAY_Telered_Blocks extends AbstractPaymentMethodType
 	 * @return array Block Telered JS.
 	 */
 	public function get_payment_method_script_handles() {
-		return array( 'nbo-payment-gateway-telered-blocks-js' );
+		return array( 'neopayment-payment-gateway-telered-blocks-js' );
 	}
 
 	/**
@@ -48,8 +48,8 @@ final class NBO_PAYMENT_GATEWAY_Telered_Blocks extends AbstractPaymentMethodType
 	 */
 	public function get_payment_method_data() {
 		return array(
-			'title'       => __( 'Clave Card', 'nbo-payment-gateway' ),
-			'description' => __( 'Pay securely with your card', 'nbo-payment-gateway' ),
+			'title'       => __( 'Clave Card', 'neopayment-payment-gateway' ),
+			'description' => __( 'Pay securely with your card', 'neopayment-payment-gateway' ),
 			'supports'    => array( 'products' ),
 		);
 	}

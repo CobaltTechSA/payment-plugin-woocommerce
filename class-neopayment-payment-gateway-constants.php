@@ -1,37 +1,37 @@
 <?php
 
 /**
- * Constants helper for NBO Payment Gateway plugin.
+ * Constants helper for Neopayment Payment Gateway plugin.
  *
- * @package NBO_PAYMENT_GATEWAY
+ * @package NEOPAYMENT_PAYMENT_GATEWAY
  */
 
 /**
  * Handles WooCommerce constants for the payment gateway.
  */
-class NBO_PAYMENT_GATEWAY_Constants {
+class NEOPAYMENT_PAYMENT_GATEWAY_Constants {
 
-	const NBO_PAYMENT_GATEWAY_STANDARD_GATEWAY_ID = 'nbo_payment_gateway_standard_gateway';
-	const NBO_PAYMENT_GATEWAY_TELERED_GATEWAY_ID  = 'nbo_payment_gateway_telered_gateway';
+	const NEOPAYMENT_PAYMENT_GATEWAY_STANDARD_GATEWAY_ID = 'neopayment_payment_gateway_standard_gateway';
+	const NEOPAYMENT_PAYMENT_GATEWAY_TELERED_GATEWAY_ID  = 'neopayment_payment_gateway_telered_gateway';
 
-	const NBO_PAYMENT_GATEWAY_PLUGIN_VERSION = '2.4.2';
-	const NBO_PAYMENT_GATEWAY_PLUGIN_NAME    = 'Neopayment Bank Operations Payment Gateway';
+	const NEOPAYMENT_PAYMENT_GATEWAY_PLUGIN_VERSION = '2.4.2';
+	const NEOPAYMENT_PAYMENT_GATEWAY_PLUGIN_NAME    = 'Neopayment Bank Operations Payment Gateway';
 
 	// Minimum PHP version required by this plugin.
-	const NBO_PAYMENT_GATEWAY_MINIMUM_PHP_VERSION = '7.2.0';
+	const NEOPAYMENT_PAYMENT_GATEWAY_MINIMUM_PHP_VERSION = '7.2.0';
 
 	// Minimum WordPress version required by this plugin.
-	const NBO_PAYMENT_GATEWAY_MINIMUM_WP_VERSION = '4.4';
+	const NEOPAYMENT_PAYMENT_GATEWAY_MINIMUM_WP_VERSION = '4.4';
 
 	// Minimum WooCommerce version required by this plugin.
-	const NBO_PAYMENT_GATEWAY_MINIMUM_WC_VERSION = '5.3';
+	const NEOPAYMENT_PAYMENT_GATEWAY_MINIMUM_WC_VERSION = '5.3';
 
 
-	const NBO_PAYMENT_GATEWAY_PAYMENT_TYPE_TELERED    = 'TELERED';
-	const NBO_PAYMENT_GATEWAY_PAYMENT_TYPE_VISA       = 'VISA';
-	const NBO_PAYMENT_GATEWAY_PAYMENT_TYPE_MASTERCARD = 'MASTERCARD';
+	const NEOPAYMENT_PAYMENT_GATEWAY_PAYMENT_TYPE_TELERED    = 'TELERED';
+	const NEOPAYMENT_PAYMENT_GATEWAY_PAYMENT_TYPE_VISA       = 'VISA';
+	const NEOPAYMENT_PAYMENT_GATEWAY_PAYMENT_TYPE_MASTERCARD = 'MASTERCARD';
 
-	const NBO_PAYMENT_GATEWAY_PAYMENT_COUNTRIES = array(
+	const NEOPAYMENT_PAYMENT_GATEWAY_PAYMENT_COUNTRIES = array(
 		'AF' => 'AFG', // Afghanistan.
 		'AX' => 'ALA', // &#197;land Islands.
 		'AL' => 'ALB', // Albania.
