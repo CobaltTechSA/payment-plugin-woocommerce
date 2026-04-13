@@ -5,7 +5,7 @@
  * Description: Payments with VISA, MasterCard and Clave
  * Author: Neopayment
  * Author URI: https://neopayment.com
- * Version: 2.5.2
+ * Version: 3.0.0
  * License: GPL-2.0
  * Text Domain: neopayment-payment-gateway
  * Domain Path: /i18n
