@@ -39,7 +39,11 @@ final class NEOPAYMENT_PAYMENT_GATEWAY_Standard_Blocks extends AbstractPaymentMe
 	 * @return array
 	 */
 	public function get_payment_method_script_handles() {
-		return array( 'neopayment-payment-gateway-standard-blocks-js' );
+		// Blocks only auto-enqueue handles listed here; 3DS popup must load on checkout too.
+		return array(
+			'neopayment-payment-gateway-standard-blocks-js',
+			'neopayment-payment-gateway-3ds-popup',
+		);
 	}
 
 	/**

@@ -114,7 +114,12 @@ jQuery(
 					{}
 				);
 
-				if (details.requires_challenge === '1' && details.challenge_url) {
+				const challengeOn =
+					details.requires_challenge === '1' ||
+					details.requires_challenge === 1 ||
+					details.requires_challenge === true ||
+					details.requires_challenge === 'true';
+				if (challengeOn && details.challenge_url) {
 					open3DSPopup(details.challenge_url);
 					return;
 				}
