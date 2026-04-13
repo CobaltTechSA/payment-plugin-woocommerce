@@ -1,35 +1,35 @@
-=== CBO Payment Gateway ===
-Contributors: cobalttech
-Tags: woocommerce, payment gateway, cobalt tech, panama
+=== Neopayment Payment Gateway ===
+Contributors: neopayment
+Tags: woocommerce, payment gateway, neopayment, panama
 Requires at least: 4.4
-Tested up to: 6.8
+Tested up to: 6.9
 Requires PHP: 7.2.0
 Stable tag: 2.5.2
 License: GPLv2
 License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html#SEC1
 
-Woocommerce plugin for CBO Payment Gateway
+Woocommerce plugin for Neopayment Payment Gateway
 
 == Description ==
-This plugin enables secure online payments for WooCommerce stores in Panama using the Cobalt Tech payment gateway.
+This plugin enables secure online payments for WooCommerce stores in Panama using the Neopayment payment gateway.
 
-Accept credit and debit card payments directly on your website through Visa, Mastercard, and Clave cards. The plugin connects your WooCommerce store to the Cobalt Tech payment platform, allowing merchants based in Panama to process transactions efficiently and securely.
+Accept credit and debit card payments directly on your website through Visa, Mastercard, and Clave cards. The plugin connects your WooCommerce store to the Neopayment payment platform, allowing merchants based in Panama to process transactions efficiently and securely.
 
 **Features:**
 
 - Seamless integration with WooCommerce.
 - Support for Visa, Mastercard, and Clave cards.
-- Secure transaction handling via the Cobalt Tech platform.
+- Secure transaction handling via the Neopayment platform.
 - Only available for stores with a Panama billing address.
 
 Whether you\'re launching a new online store or expanding your payment options in Panama, this plugin offers a reliable solution for accepting card payments.
 
 
 == Installation ==
-1. Upload the plugin files to the `/wp-content/plugins/cobalt-tech-gateway` directory, or install the plugin through the WordPress plugins screen directly.
+1. Upload the plugin files to the `/wp-content/plugins/neopayment-gateway` directory, or install the plugin through the WordPress plugins screen directly.
 2. Activate the plugin through the \'Plugins\' screen in WordPress.
-3. Go to **WooCommerce > Settings > Payments** and enable the \"Cobalt Tech Gateway\".
-4. Configure your Cobalt Tech credentials and settings.
+3. Go to **WooCommerce > Settings > Payments** and enable the \"Neopayment Gateway\".
+4. Configure your Neopayment credentials and settings.
 
 == Frequently Asked Questions ==
 
@@ -41,9 +41,9 @@ Only WooCommerce stores located in Panama are supported.
 
 Visa, Mastercard, and Clave cards.
 
-= Do I need a Cobalt Tech merchant account? =
+= Do I need a Neopayment merchant account? =
 
-Yes. You must be an approved merchant with Cobalt Tech to use this plugin.
+Yes. You must be an approved merchant with Neopayment to use this plugin.
 
 == Changelog ==
 2025.09.22 - version 2.5.2

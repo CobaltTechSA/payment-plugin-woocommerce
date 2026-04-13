@@ -1,7 +1,7 @@
 {
-  "name": "class-cobalt-bank-operations-payment-gateway-blocks",
+  "name": "class-neopayment-payment-gateway-blocks",
   "version": "2.0.0",
-  "description": "Blocks integration for CBO payment gateway",
+  "description": "Blocks integration for NEOPAYMENT payment gateway",
   "scripts": {
     "build": "webpack --mode=production",
     "start": "webpack --watch"
