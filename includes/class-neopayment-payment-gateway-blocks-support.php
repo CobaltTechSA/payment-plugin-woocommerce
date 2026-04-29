@@ -87,7 +87,9 @@ final class NEOPAYMENT_PAYMENT_GATEWAY_Blocks_Support {
 			'neopayment-payment-gateway-3ds-popup',
 			NEOPAYMENT_PAYMENT_GATEWAY_URL . 'assets/js/neopayment-payment-gateway-3ds-popup.js',
 			array( 'jquery', 'neopayment-payment-gateway-standard-blocks-js' ),
-			'2.4.0',
+			file_exists( NEOPAYMENT_PAYMENT_GATEWAY_PATH . 'assets/js/neopayment-payment-gateway-3ds-popup.js' )
+				? (string) filemtime( NEOPAYMENT_PAYMENT_GATEWAY_PATH . 'assets/js/neopayment-payment-gateway-3ds-popup.js' )
+				: NEOPAYMENT_PAYMENT_GATEWAY_Constants::NEOPAYMENT_PAYMENT_GATEWAY_PLUGIN_VERSION,
 			true
 		);
 
