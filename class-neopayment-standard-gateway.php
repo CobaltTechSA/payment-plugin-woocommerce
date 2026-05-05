@@ -210,7 +210,7 @@ class NEOPAYMENT_Standard_Gateway_Legacy extends WC_Payment_Gateway {
 	 * This method is called on the 'wp_enqueue_scripts' action.
 	 */
 	public function register_plugin_scripts() {
-		if ( ! is_checkout() || is_cart() ) {
+		if ( ! is_checkout() ) {
 			return;
 		}
 
@@ -546,7 +546,8 @@ class NEOPAYMENT_Standard_Gateway_Legacy extends WC_Payment_Gateway {
 					'result'             => 'success',
 					'requires_challenge' => true,
 					'challenge_url'      => $transaction['metadatas']['3ds_authentication_form'],
-					'redirect'           => '',
+					// Prevent Woo classic checkout from hard reloading while 3DS is pending.
+					'redirect'           => '#neopayment-3ds-pending',
 					'callback_url'       => $callback,
 				);
 			} elseif ( $this->validate_payment( $transaction ) ) {
@@ -726,13 +727,19 @@ class NEOPAYMENT_Standard_Gateway_Legacy extends WC_Payment_Gateway {
 
 		$main_script = '
 			document.addEventListener("DOMContentLoaded", function() {
+				var targetWindow = null;
 				if (window.opener && !window.opener.closed) {
-					window.opener.postMessage({
+					targetWindow = window.opener;
+				} else if (window.parent && window.parent !== window) {
+					targetWindow = window.parent;
+				}
+
+				if (targetWindow) {
+					targetWindow.postMessage({
 						neopayment3ds: neopayment3dsData.success ? "success" : "fail",
 						redirect_to: neopayment3dsData.target,
 						source: "neopayment_3ds_handler"
 					}, "' . esc_url( home_url( '/' ) ) . '");
-					setTimeout(function() { window.close(); }, 300);
 				} else {
 					window.location.href = neopayment3dsData.target;
 				}
@@ -746,11 +753,46 @@ class NEOPAYMENT_Standard_Gateway_Legacy extends WC_Payment_Gateway {
 		<head>
 			<meta charset="<?php bloginfo( 'charset' ); ?>">
 			<title><?php esc_html_e( 'Processing 3DS…', 'neopayment' ); ?></title>
+			<style>
+				html, body {
+					height: 100%;
+					margin: 0;
+					background: #f4f7fb;
+					font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+				}
+				.neopayment-3ds-loading {
+					height: 100%;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					flex-direction: column;
+					gap: 12px;
+					color: #22324a;
+				}
+				.neopayment-3ds-spinner {
+					width: 42px;
+					height: 42px;
+					border: 4px solid #d7deea;
+					border-top-color: #2f6fb3;
+					border-radius: 50%;
+					animation: neopayment3dsspin 0.9s linear infinite;
+				}
+				.neopayment-3ds-text {
+					font-size: 14px;
+					text-align: center;
+					max-width: 320px;
+					line-height: 1.4;
+				}
+				@keyframes neopayment3dsspin {
+					to { transform: rotate(360deg); }
+				}
+			</style>
 			<?php wp_head(); ?>
 		</head>
 		<body>
 			<div class="neopayment-3ds-loading">
 				<div class="neopayment-3ds-spinner"></div>
+				<p class="neopayment-3ds-text"><?php esc_html_e( 'Estamos finalizando la autenticación 3DS. Por favor espere...', 'neopayment' ); ?></p>
 				<noscript>
 					<p><?php esc_html_e( 'Please enable JavaScript to complete your payment. You will be automatically redirected...', 'neopayment' ); ?></p>
 					<meta http-equiv="refresh" content="3;url=<?php echo esc_url( $target ); ?>">

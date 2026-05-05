@@ -15,6 +15,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. Plugin Name of the plugin
+#. Author of the plugin
 #: neopayment.php
 msgid "Neopayment"
 msgstr ""
@@ -27,12 +28,7 @@ msgstr ""
 #. Description of the plugin
 #: neopayment.php
 msgid "Payments with VISA, MasterCard and Clave"
-msgstr ""
-
-#. Author of the plugin
-#: neopayment.php
-msgid "Neopayment"
-msgstr ""
+msgstr "Pagos con VISA, MasterCard y Clave"
 
 #. Author URI of the plugin
 #: neopayment.php
@@ -78,247 +74,247 @@ msgstr "ID de transacción no válida"
 msgid "Refund route not defined"
 msgstr "Ruta de reembolso no definida"
 
-#: class-neopayment-client.php:300
+#: class-neopayment-client.php:301
 msgid "Error requesting refund"
 msgstr "Error al solicitar reembolso"
 
-#: class-neopayment-client.php:306
+#: class-neopayment-client.php:307
 msgid "Refund failed"
 msgstr "Reembolso fallido"
 
-#: class-neopayment-client.php:460
+#: class-neopayment-client.php:467
 msgid "Error getting commerce"
 msgstr "Error al obtener comercio"
 
-#: class-neopayment-standard-gateway.php:39
 #: class-neopayment-standard-gateway.php:38
+#: class-neopayment-standard.php:39
 msgid "Acceptance of payments with Visa / Mastercard"
 msgstr "Aceptación de pagos con Visa / Mastercard"
 
-#: class-neopayment-standard-gateway.php:93
-#: class-neopayment-standard-gateway.php:395
-#: class-neopayment-telered-gateway.php:81
 #: class-neopayment-standard-gateway.php:89
 #: class-neopayment-standard-gateway.php:382
+#: class-neopayment-standard.php:93
+#: class-neopayment-standard.php:399
+#: class-neopayment-telered.php:81
 msgid "Unauthorized action."
 msgstr "Acción no autorizada."
 
-#: class-neopayment-standard-gateway.php:93
-#: class-neopayment-telered-gateway.php:81
 #: class-neopayment-standard-gateway.php:89
+#: class-neopayment-standard.php:93
+#: class-neopayment-telered.php:81
 msgid "Security Error"
 msgstr "Error de seguridad"
 
-#: class-neopayment-standard-gateway.php:110
 #: class-neopayment-standard-gateway.php:105
-#: includes/blocks/class-neopayment-standard-blocks.php:70
+#: class-neopayment-standard.php:110
+#: includes/blocks/class-neopayment-standard-blocks.php:74
 msgid "Visa"
 msgstr ""
 
-#: class-neopayment-standard-gateway.php:116
 #: class-neopayment-standard-gateway.php:111
-#: includes/blocks/class-neopayment-standard-blocks.php:75
+#: class-neopayment-standard.php:116
+#: includes/blocks/class-neopayment-standard-blocks.php:79
 msgid "Mastercard"
 msgstr ""
 
-#: class-neopayment-standard-gateway.php:139
-#: class-neopayment-telered-gateway.php:118
 #: class-neopayment-standard-gateway.php:133
+#: class-neopayment-standard.php:139
+#: class-neopayment-telered.php:118
 msgid "Enable/Disable"
-msgstr ""
+msgstr "Habilitar/Deshabilitar"
 
-#: class-neopayment-standard-gateway.php:140
-#: class-neopayment-telered-gateway.php:119
 #: class-neopayment-standard-gateway.php:134
+#: class-neopayment-standard.php:140
+#: class-neopayment-telered.php:119
 msgid "Enable Neopayment"
 msgstr "Habilitar/Deshabilitar"
 
-#: class-neopayment-standard-gateway.php:146
-#: class-neopayment-telered-gateway.php:125
 #: class-neopayment-standard-gateway.php:140
+#: class-neopayment-standard.php:146
+#: class-neopayment-telered.php:125
 msgid "Title"
 msgstr "Título"
 
-#: class-neopayment-standard-gateway.php:148
-#: class-neopayment-telered-gateway.php:127
 #: class-neopayment-standard-gateway.php:142
+#: class-neopayment-standard.php:148
+#: class-neopayment-telered.php:127
 msgid "This controls the title which the user sees during checkout."
 msgstr "Esto controla el título que el usuario ve durante el pago."
 
-#: class-neopayment-standard-gateway.php:153
-#: class-neopayment-telered-gateway.php:132
 #: class-neopayment-standard-gateway.php:147
+#: class-neopayment-standard.php:153
+#: class-neopayment-telered.php:132
 msgid "Description"
 msgstr "Descripción"
 
-#: class-neopayment-standard-gateway.php:155
-#: class-neopayment-telered-gateway.php:134
 #: class-neopayment-standard-gateway.php:149
+#: class-neopayment-standard.php:155
+#: class-neopayment-telered.php:134
 msgid "This controls the description which the user sees during checkout."
 msgstr "Esto controla la descripción que el usuario ve durante el pago."
 
-#: class-neopayment-standard-gateway.php:156
 #: class-neopayment-standard-gateway.php:150
+#: class-neopayment-standard.php:156
 msgid "Pay with your VISA or Mastercard card"
 msgstr "Paga con tu tarjeta VISA o Mastercard"
 
-#: class-neopayment-standard-gateway.php:159
-#: class-neopayment-telered-gateway.php:138
 #: class-neopayment-standard-gateway.php:153
+#: class-neopayment-standard.php:159
+#: class-neopayment-telered.php:138
 msgid "Test mode"
 msgstr "Modo de pruebas"
 
-#: class-neopayment-standard-gateway.php:160
-#: class-neopayment-telered-gateway.php:139
 #: class-neopayment-standard-gateway.php:154
+#: class-neopayment-standard.php:160
+#: class-neopayment-telered.php:139
 msgid "Enable Test Mode"
 msgstr "Habilitar modo de pruebas"
 
-#: class-neopayment-standard-gateway.php:162
-#: class-neopayment-telered-gateway.php:141
 #: class-neopayment-standard-gateway.php:156
+#: class-neopayment-standard.php:162
+#: class-neopayment-telered.php:141
 msgid "Place the payment gateway in test mode using test API keys."
 msgstr "Coloque la pasarela de pago en modo de prueba utilizando claves API de prueba."
 
-#: class-neopayment-standard-gateway.php:167
-#: class-neopayment-telered-gateway.php:146
 #: class-neopayment-standard-gateway.php:161
+#: class-neopayment-standard.php:167
+#: class-neopayment-telered.php:146
 msgid "Test API URL"
 msgstr "URL de la API de prueba"
 
-#: class-neopayment-standard-gateway.php:172
-#: class-neopayment-telered-gateway.php:150
 #: class-neopayment-standard-gateway.php:166
+#: class-neopayment-standard.php:172
+#: class-neopayment-telered.php:150
 msgid "Test API Client Id"
 msgstr "API ClientId de prueba"
 
-#: class-neopayment-standard-gateway.php:176
-#: class-neopayment-telered-gateway.php:154
 #: class-neopayment-standard-gateway.php:170
+#: class-neopayment-standard.php:176
+#: class-neopayment-telered.php:154
 msgid "Test API Client Secret"
 msgstr "API ClientSecret de prueba"
 
-#: class-neopayment-standard-gateway.php:180
-#: class-neopayment-telered-gateway.php:158
 #: class-neopayment-standard-gateway.php:174
+#: class-neopayment-standard.php:180
+#: class-neopayment-telered.php:158
 msgid "Production API URL"
 msgstr "URL de la API de producción"
 
-#: class-neopayment-standard-gateway.php:185
-#: class-neopayment-telered-gateway.php:162
 #: class-neopayment-standard-gateway.php:179
+#: class-neopayment-standard.php:185
+#: class-neopayment-telered.php:162
 msgid "Production API Client Id"
 msgstr "API ClientId de producción"
 
-#: class-neopayment-standard-gateway.php:189
-#: class-neopayment-telered-gateway.php:166
 #: class-neopayment-standard-gateway.php:183
+#: class-neopayment-standard.php:189
+#: class-neopayment-telered.php:166
 msgid "Production API Client Secret"
 msgstr "API ClientSecret de producción"
 
-#: class-neopayment-standard-gateway.php:294
-#: class-neopayment-telered-gateway.php:199
 #: class-neopayment-standard-gateway.php:284
+#: class-neopayment-standard.php:298
+#: class-neopayment-telered.php:199
 msgid "TEST MODE ENABLED"
 msgstr "MODO DE PRUEBAS HABILITADO"
 
-#: class-neopayment-standard-gateway.php:326
-#: class-neopayment-standard-gateway.php:473
 #: class-neopayment-standard-gateway.php:314
 #: class-neopayment-standard-gateway.php:444
+#: class-neopayment-standard.php:330
+#: class-neopayment-standard.php:478
 msgid "Security check failed. Please try again."
 msgstr "Error en la comprobación de seguridad. Inténtalo de nuevo."
 
-#: class-neopayment-standard-gateway.php:360
 #: class-neopayment-standard-gateway.php:348
+#: class-neopayment-standard.php:364
 #: assets/js/blocks/components/neopayment-card-fields.js:98
 #: assets/js/blocks/neopayment-standard.js:67
 #: build/neopayment-standard.js:1
 msgid "Invalid card number"
 msgstr "Número de tarjeta no válido"
 
-#: class-neopayment-standard-gateway.php:366
 #: class-neopayment-standard-gateway.php:354
+#: class-neopayment-standard.php:370
 msgid "Invalid expiry date"
 msgstr "Fecha no válida"
 
-#: class-neopayment-standard-gateway.php:371
 #: class-neopayment-standard-gateway.php:359
+#: class-neopayment-standard.php:375
 msgid "Invalid card holder"
 msgstr "Nombre de tarjeta no válido"
 
-#: class-neopayment-standard-gateway.php:376
 #: class-neopayment-standard-gateway.php:364
+#: class-neopayment-standard.php:380
 msgid "Invalid card code (CVV)"
 msgstr "CVV no válido"
 
 #. translators: %s is the refund status returned by the API
-#: class-neopayment-standard-gateway.php:454
+#: class-neopayment-standard.php:458
 #, php-format
 msgid "Reembolso denegado (estado: %s)."
-msgstr ""
+msgstr "Reembolso denegado (estado: %s)."
 
-#: class-neopayment-standard-gateway.php:584
-#: class-neopayment-standard-gateway.php:560
+#: class-neopayment-standard-gateway.php:561
+#: class-neopayment-standard.php:595
 msgid "We were unable to complete the payment. Please contact with commerce."
 msgstr "No pudimos completar el pago. Por favor, contacte con el departamento de comercio."
 
-#: class-neopayment-standard-gateway.php:586
-#: class-neopayment-standard-gateway.php:562
+#: class-neopayment-standard-gateway.php:563
+#: class-neopayment-standard.php:597
 msgid "We were unable to complete the payment. Please check your card details or contact your bank."
 msgstr "No pudimos completar el pago. Por favor, revise los datos de su tarjeta o contacte con su banco."
 
-#: class-neopayment-standard-gateway.php:591
-#: class-neopayment-standard-gateway.php:568
+#: class-neopayment-standard-gateway.php:569
+#: class-neopayment-standard.php:602
 msgid "Cannot generate the payment. Please, contact with commerce."
 msgstr "No se puede generar el pago. Por favor, contacte con el comercio."
 
-#: class-neopayment-standard-gateway.php:593
-#: class-neopayment-standard-gateway.php:570
+#: class-neopayment-standard-gateway.php:571
+#: class-neopayment-standard.php:604
 msgid "Cannot process the payment. Please, contact with commerce."
 msgstr "No se puede generar el pago. Por favor, contacte con el comercio."
 
-#: class-neopayment-standard-gateway.php:707
-#: class-neopayment-standard-gateway.php:688
+#: class-neopayment-standard-gateway.php:689
+#: class-neopayment-standard.php:781
 msgid "Payment completed"
 msgstr "Pago completado"
 
-#: class-neopayment-standard-gateway.php:714
-#: class-neopayment-standard-gateway.php:695
+#: class-neopayment-standard-gateway.php:696
+#: class-neopayment-standard.php:788
 msgid "Failed payment"
 msgstr "Pago fallido"
 
-#: class-neopayment-standard-gateway.php:769
-#: class-neopayment-standard-gateway.php:748
+#: class-neopayment-standard-gateway.php:755
+#: class-neopayment-standard.php:849
 msgid "Processing 3DS…"
 msgstr "Procesando 3DS..."
 
-#: class-neopayment-standard-gateway.php:777
-#: class-neopayment-standard-gateway.php:755
+#: class-neopayment-standard-gateway.php:797
+#: class-neopayment-standard.php:892
 msgid "Please enable JavaScript to complete your payment. You will be automatically redirected..."
 msgstr "Habilite JavaScript para completar su pago. Será redirigido automáticamente..."
 
-#: class-neopayment-telered-gateway.php:34
+#: class-neopayment-telered.php:34
 msgid "Acceptance of payments with Clave"
 msgstr "Aceptación de pagos con Clave"
 
-#: class-neopayment-telered-gateway.php:96
+#: class-neopayment-telered.php:96
 msgid "Telered"
-msgstr ""
+msgstr "Telered"
 
-#: class-neopayment-telered-gateway.php:135
+#: class-neopayment-telered.php:135
 #: assets/js/blocks/neopayment-telered.js:24
 #: build/neopayment-telered.js:1
 msgid "Pay with Clave"
 msgstr "Pagar con Clave"
 
-#: class-neopayment-telered-gateway.php:311
+#: class-neopayment-telered.php:311
 msgid "Pago completado"
-msgstr ""
+msgstr "Pago completado"
 
-#: class-neopayment-telered-gateway.php:317
+#: class-neopayment-telered.php:317
 msgid "Pago fallido"
-msgstr ""
+msgstr "Pago fallido"
 
 #: includes/blocks/class-neopayment-telered-blocks.php:51
 #: assets/js/blocks/neopayment-telered.js:8
@@ -340,28 +336,84 @@ msgstr "Tarjeta (Visa/Mastercard)"
 #: neopayment.php:233
 #, php-format
 msgid "%1$s requiere WordPress %2$s or higher. Porfavor %3$sactualiza WordPress &raquo;%4$s"
-msgstr ""
+msgstr "%1$s requiere WordPress %2$s o superior. Por favor, %3$sactualiza WordPress &raquo;%4$s"
 
 #. translators: %1$s - Plugin Name, %2$s - activate WooCommerce link open, %3$s - activate WooCommerce link close.
 #: neopayment.php:259
 #, php-format
 msgid "%1$s requiere que WooCommerce esté activado. Por favor %2$sactiva WooCommerce%3$s."
-msgstr ""
+msgstr "%1$s requiere que WooCommerce esté activado. Por favor, %2$sactiva WooCommerce%3$s."
 
 #. translators: %1$s - Plugin Name, %2$s - install WooCommerce link open, %3$s - install WooCommerce link close.
 #: neopayment.php:275
 #, php-format
 msgid "%1$s requiere que WooCommerce esté instalado y activado. por favor, %2$sinstala WooCommerce%3$s."
-msgstr ""
+msgstr "%1$s requiere que WooCommerce esté instalado y activado. Por favor, %2$sinstala WooCommerce%3$s."
 
 #. translators: %1$s - Plugin Name, %2$s - minimum WooCommerce version, %3$s - update WooCommerce link open, %4$s - update WooCommerce link close, %5$s - download minimum WooCommerce link open, %6$s - download minimum WooCommerce link close.
 #: neopayment.php:294
 #, php-format
 msgid "%1$s requiere WooCommerce %2$s o superior. Por favor, %3$sactualiza WooCommerce%4$s a la última versión, o %5$sdescarga la versión mínima requerida &raquo;%6$s"
-msgstr ""
+msgstr "%1$s requiere WooCommerce %2$s o superior. Por favor, %3$sactualiza WooCommerce%4$s a la última versión, o %5$sdescarga la versión mínima requerida &raquo;%6$s"
 
 #. translators: %1$s - Plugin Name, %2$s - minimum WooCommerce version, %3$s - update WooCommerce link open, %4$s - update WooCommerce link close, %5$s - download minimum WooCommerce link open, %6$s - download minimum WooCommerce link close.
 #: neopayment.php:310
 #, php-format
 msgid "%1$s solo está disponible para tiendas localizadas en Panamá."
+msgstr "%1$s solo está disponible para tiendas localizadas en Panamá."
+
+#: assets/js/blocks/components/neopayment-card-fields.js:64
+#: build/neopayment-standard.js:1
+msgid "Full name"
+msgstr "Nombre completo"
+
+#: assets/js/blocks/components/neopayment-card-fields.js:73
+#: build/neopayment-standard.js:1
+msgid "You must enter the holder name"
+msgstr "Debes introducir el nombre del titular."
+
+#: assets/js/blocks/components/neopayment-card-fields.js:107
+#: build/neopayment-standard.js:1
+msgid "Expiration date"
+msgstr "Fecha de expiración"
+
+#: assets/js/blocks/components/neopayment-card-fields.js:112
+#: build/neopayment-standard.js:1
+msgid "MM/YY"
+msgstr "MM/AA"
+
+#: class-neopayment-standard-gateway.php:795
+#: class-neopayment-standard.php:890
+msgid "Estamos finalizando la autenticación 3DS. Por favor espere..."
 msgstr ""
+
+#: class-neopayment-standard.php:569
+msgid "No se pudo iniciar la autenticación 3DS. Recarga la página e inténtalo nuevamente."
+msgstr ""
+
+#: assets/js/blocks/components/neopayment-card-fields.js:127
+#: assets/js/blocks/neopayment-standard.js:73
+#: build/neopayment-standard.js:1
+msgid "Invalid date"
+msgstr "Fecha no válida"
+
+#: assets/js/blocks/components/neopayment-card-fields.js:148
+#: assets/js/blocks/neopayment-standard.js:79
+#: build/neopayment-standard.js:1
+msgid "Invalid CVC"
+msgstr "CVC no válido"
+
+#: assets/js/blocks/neopayment-standard.js:85
+#: build/neopayment-standard.js:1
+msgid "Holder name is required"
+msgstr "El nombre del titular es obligatorio"
+
+#: assets/js/blocks/neopayment-standard.js:109
+#: build/neopayment-standard.js:1
+msgid "Neopayment Standard Gateway"
+msgstr "Pasarela estándar de Neopayment"
+
+#: assets/js/blocks/neopayment-telered.js:17
+#: build/neopayment-telered.js:1
+msgid "Neopayment Telered Gateway"
+msgstr "Pasarela Telered de Neopayment"

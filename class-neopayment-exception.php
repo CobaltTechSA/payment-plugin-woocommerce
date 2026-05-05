@@ -47,6 +47,6 @@ class NEOPAYMENT_Exception extends Exception {
 	 * @return bool
 	 */
 	public function isSuccessResponse(): bool {
-		return 200 === $this->response['code'];
+		return isset( $this->response['code'] ) && 200 === (int) $this->response['code'];
 	}
 }
