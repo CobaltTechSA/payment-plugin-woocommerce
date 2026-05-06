@@ -14,7 +14,7 @@ class NEOPAYMENT_Constants {
 	const NEOPAYMENT_STANDARD_GATEWAY_ID = 'neopayment_standard_gateway';
 	const NEOPAYMENT_TELERED_GATEWAY_ID  = 'neopayment_telered_gateway';
 
-	const NEOPAYMENT_PLUGIN_VERSION = '3.0.0';
+	const NEOPAYMENT_PLUGIN_VERSION = '3.0.1';
 	const NEOPAYMENT_PLUGIN_NAME    = 'Neopayment Bank Operations Payment Gateway';
 
 	// Minimum PHP version required by this plugin.

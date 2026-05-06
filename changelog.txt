@@ -1,3 +1,18 @@
+2026.05.06 - version 3.0.1
+* Introduces a modal-based flow for 3D Secure to replace the existing popup-based mechanism.
+* Improved 3DS processing feedback and status updates via modals.
+* Validates necessary 3DS parameters and provides fallback mechanisms for potential failures.
+* Enhanced error-handling logic for API exceptions in class-neopayment-client.php.
+* Added missing validation for required 3DS parameters to prevent incomplete payload submissions.
+* Prevents unnecessary page reloads during 3DS processing in classic WooCommerce checkout.
+* Updates to JavaScript files for better modular structure and new 3DS modal functionality.
+* Changes to CSS for styling the 3DS modal and its components.
+* Versioning updates for scripts to reflect dynamic changes.
+* Refreshes translation files (POT, PO, MO) with new strings related to the improved 3DS workflow and validation messages.
+* Enhanced text clarity in some error/warning messages for end users in Spanish translations.
+* Fixed issues where scripts were incorrectly enqueued during cart pages instead of checkout.
+* Adjusted processes for handling checkout events and browser data collection.
+
 2026.04.13 - version 3.0.0
 * Renamed plugin
 
