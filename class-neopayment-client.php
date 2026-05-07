@@ -20,6 +20,8 @@ class NEOPAYMENT_Client
 
 	const API_V2_ROUTES = array(
 		'sale'        => '/api/v2/transactions/sale',
+		'authorize'   => '/api/v2/transactions/pre_auth',
+		'capture'     => '/api/v2/transactions/adjustment',
 		'transaction' => '/api/v2/transactions/',
 		'checkout'    => '/api/v2/checkout',
 		'refund'      => '/api/v2/transactions/refund',
@@ -449,6 +451,115 @@ class NEOPAYMENT_Client
 			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 			throw new NEOPAYMENT_Exception($error_message, $response);
 		}
+	}
+
+	/**
+	 * Processes an authorization-only transaction with provided card details.
+	 *
+	 * @param WC_Order $order         WooCommerce order object.
+	 * @param string   $card_number   Credit card number.
+	 * @param string   $expiry_date   Card expiration date (MM/YY or MM/YYYY).
+	 * @param string   $cvv           Card CVV code.
+	 * @param string   $card_holder   Name of the card holder.
+	 * @param array    $three_ds_params Optional. Parameters related to 3D Secure authentication.
+	 * @param array    $metadatas     Optional. Additional metadata to include in the transaction.
+	 * @return array
+	 * @throws NEOPAYMENT_Exception If the authorization fails or is invalid.
+	 */
+	public function authorize(WC_Order $order, $card_number, $expiry_date, $cvv, $card_holder, $three_ds_params = array(), $metadatas = array())
+	{
+		\NEOPAYMENT_Log::debug('Order ID (authorize): ' . $order->get_id());
+
+		$tax               = $order->get_total_tax() * 100;
+		$total             = $order->get_total() * 100;
+		$total_without_tax = $total - $tax;
+
+		$final_metadatas = array(
+			'entry'             => get_bloginfo('name') . ' - Plugin Woocommerce v' . NEOPAYMENT_Constants::NEOPAYMENT_PLUGIN_VERSION,
+			'platform'          => 'Woocommerce',
+			'version'           => NEOPAYMENT_Constants::NEOPAYMENT_PLUGIN_VERSION,
+			'order_id'          => $order->get_id(),
+			'payment_reference' => $order->get_id(),
+			'source'            => get_bloginfo('url'),
+		);
+
+		$final_metadatas = array_merge($final_metadatas, $metadatas);
+
+		$body = array(
+			'metas'         => $final_metadatas,
+			'tip'           => 0,
+			'tax'           => $tax,
+			'amount'        => $total_without_tax,
+			'currency_code' => $order->get_currency(),
+			'pan'           => $card_number,
+			'exp_date'      => $expiry_date,
+			'cvv2'          => $cvv,
+			'card_holder'   => $card_holder,
+		);
+
+		$response = $this->post($this->get_route('authorize'), $body);
+		\NEOPAYMENT_Log::debug('Authorize response: ' . wp_json_encode($response));
+
+		if (200 === $response['code']) {
+			return $response['body']['data'];
+		}
+
+		$error_message = 'Error processing authorization';
+		if (isset($response['body']['message']) && is_string($response['body']['message']) && '' !== $response['body']['message']) {
+			$error_message = sanitize_text_field($response['body']['message']);
+		}
+
+		// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
+		throw new NEOPAYMENT_Exception($error_message, $response);
+	}
+
+	/**
+	 * Captures/adjusts a previously authorized transaction.
+	 *
+	 * @param string   $transaction_id Authorized transaction identifier.
+	 * @param int      $amount         Optional amount in cents (0 means full amount on provider side).
+	 * @param string   $endpoint       Optional custom endpoint base path.
+	 * @return array
+	 * @throws NEOPAYMENT_Exception If the capture fails.
+	 */
+	public function capture(string $transaction_id, int $amount = 0, string $endpoint = ''): array
+	{
+		$route = '' !== $endpoint ? $endpoint : $this->get_route('capture');
+		if ('' === $route) {
+			throw new NEOPAYMENT_Exception(esc_html__('Capture route not defined', 'neopayment'));
+		}
+
+		$tx_candidates = array((string) $transaction_id);
+		$numeric_tx    = (int) $transaction_id;
+		$internal_id   = $numeric_tx - 130000000;
+		if ($internal_id > 0) {
+			$tx_candidates[] = (string) $internal_id;
+		}
+
+		$last_response = null;
+		foreach (array_unique($tx_candidates) as $tx_candidate) {
+			$endpoint_route = rtrim($route, '/') . '/' . rawurlencode($tx_candidate);
+			if ($amount > 0) {
+				$endpoint_route .= '?amount=' . $amount;
+			}
+
+			$response = $this->get($endpoint_route);
+			\NEOPAYMENT_Log::debug('Capture response: ' . wp_json_encode($response));
+
+			if (200 === $response['code']) {
+				return $response['body']['data'] ?? $response['body'];
+			}
+
+			$last_response = $response;
+			$error_code = $response['body']['error'] ?? '';
+			if ('resource_not_found' !== $error_code && 404 !== (int) ($response['code'] ?? 0)) {
+				break;
+			}
+		}
+
+		$message = $last_response['body']['message'] ?? esc_html__('Error requesting capture', 'neopayment');
+		// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Structured response for handlers.
+		throw new NEOPAYMENT_Exception($message, $last_response);
 	}
 
 	/**

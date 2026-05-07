@@ -53,6 +53,8 @@ class NEOPAYMENT_Standard_Gateway extends WC_Payment_Gateway
 		$this->description       = $this->get_option('description');
 		$this->enabled           = $this->get_option('enabled');
 		$this->testmode          = 'yes' === $this->get_option('testmode');
+		$this->payment_action    = $this->get_option('payment_action', 'sale');
+		$this->capture_endpoint  = $this->get_option('capture_endpoint', '/api/v2/transactions/adjustment');
 		$this->api_url           = $this->testmode ? $this->get_option('test_api_url') : $this->get_option('api_url');
 		$this->api_client_id     = $this->testmode ? $this->get_option('test_api_client_id') : $this->get_option('api_client_id');
 		$this->api_client_secret = $this->testmode ? $this->get_option('test_api_client_secret') : $this->get_option('api_client_secret');
@@ -79,6 +81,9 @@ class NEOPAYMENT_Standard_Gateway extends WC_Payment_Gateway
 				wp_nonce_field('neopayment_standard_save_settings', 'neopayment_standard_nonce');
 			}
 		);
+
+		add_filter('woocommerce_order_actions', array($this, 'add_capture_order_action'));
+		add_action('woocommerce_order_action_neopayment_capture_authorized', array($this, 'process_capture_order_action'));
 	}
 
 	/**
@@ -158,6 +163,24 @@ class NEOPAYMENT_Standard_Gateway extends WC_Payment_Gateway
 				'type'        => 'textarea',
 				'description' => __('This controls the description which the user sees during checkout.', 'neopayment'),
 				'default'     => __('Pay with your VISA or Mastercard card', 'neopayment'),
+			),
+			'payment_action'         => array(
+				'title'       => __('Payment action', 'neopayment'),
+				'type'        => 'select',
+				'description' => __('Choose whether to immediately charge the card or only preauthorize it.', 'neopayment'),
+				'default'     => 'sale',
+				'desc_tip'    => true,
+				'options'     => array(
+					'sale'      => __('Sale (authorize and capture)', 'neopayment'),
+					'authorize' => __('Preauthorization only', 'neopayment'),
+				),
+			),
+			'capture_endpoint'       => array(
+				'title'       => __('Capture endpoint path', 'neopayment'),
+				'type'        => 'text',
+				'description' => __('Endpoint path used for the adjustment/capture operation.', 'neopayment'),
+				'default'     => '/api/v2/transactions/adjustment',
+				'desc_tip'    => true,
 			),
 			'testmode'               => array(
 				'title'       => __('Test mode', 'neopayment'),
@@ -608,8 +631,16 @@ class NEOPAYMENT_Standard_Gateway extends WC_Payment_Gateway
 			}
 			$three_ds_params = $this->neopayment_normalize_3ds_params($three_ds_params);
 			NEOPAYMENT_Log::debug('three_ds_params=' . wp_json_encode($three_ds_params));
+			$is_authorize_only = 'authorize' === $this->payment_action;
+			$order->update_meta_data('neopayment_payment_action', $is_authorize_only ? 'authorize' : 'sale');
+			$order->save();
+			$metadatas = array(
+				'payment_action' => $is_authorize_only ? 'authorize' : 'sale',
+			);
 
-			$transaction = $neopayment_client->sale($order, $card_number, $card_expiry, $card_cvc, $card_holder, $three_ds_params);
+			$transaction = $is_authorize_only
+				? $neopayment_client->authorize($order, $card_number, $card_expiry, $card_cvc, $card_holder, $three_ds_params, $metadatas)
+				: $neopayment_client->sale($order, $card_number, $card_expiry, $card_cvc, $card_holder, $three_ds_params, $metadatas);
 			NEOPAYMENT_Log::debug('Checkout data: ' . wp_json_encode($transaction));
 
 			if ('authenticating' === ($transaction['status'] ?? '')) {
@@ -813,15 +844,25 @@ class NEOPAYMENT_Standard_Gateway extends WC_Payment_Gateway
 		$order_id = $metas['order_id'];
 		$order    = wc_get_order($order_id);
 
-		$status         = $transaction['status'];
-		$success_status = array('authorized', 'notified');
+		$status         = strtolower((string) $transaction['status']);
+		$success_status = array('authorized', 'notified', 'approved', 'completed');
+		$requested_action = (string) $order->get_meta('neopayment_payment_action');
+		if (isset($metas['payment_action']) && is_string($metas['payment_action'])) {
+			$requested_action = $metas['payment_action'];
+		}
+		$is_authorize_only = 'authorize' === strtolower($requested_action);
 		$order->update_meta_data('neopayment_bank_code', $transaction['response_code']);
 		$order->update_meta_data('neopayment_transaction_id', $transaction['identifier']);
 		$order->update_meta_data('neopayment_bank_authorization', $transaction['authorization_number']);
 
 		if (in_array($status, $success_status, true)) {
-			$order->update_status('completed', __('Payment completed', 'neopayment'));
-			$order->payment_complete($transaction['identifier']);
+			if ($is_authorize_only && 'authorized' === $status) {
+				$order->update_status('on-hold', __('Payment authorized. Pending adjustment/capture approval.', 'neopayment'));
+				$order->add_order_note(__('Funds were preauthorized in NEOPAYMENT. Capture (adjustment) is still required.', 'neopayment'));
+			} else {
+				$order->update_status('completed', __('Payment completed', 'neopayment'));
+				$order->payment_complete($transaction['identifier']);
+			}
 			if (function_exists('WC') && WC()->cart) {
 				WC()->cart->empty_cart();
 			}
@@ -998,6 +1039,72 @@ class NEOPAYMENT_Standard_Gateway extends WC_Payment_Gateway
 	public function neopayment_get_iso_alpha3_cc($country)
 	{
 		return NEOPAYMENT_Constants::NEOPAYMENT_PAYMENT_COUNTRIES[$country] ?? $country;
+	}
+
+	/**
+	 * Add capture action to WooCommerce order actions.
+	 *
+	 * @param array $actions Order actions list.
+	 * @return array
+	 */
+	public function add_capture_order_action($actions)
+	{
+		$actions['neopayment_capture_authorized'] = __('Neopayment: Capture authorized payment', 'neopayment');
+		return $actions;
+	}
+
+	/**
+	 * Process capture action from order admin.
+	 *
+	 * @param WC_Order $order WooCommerce order.
+	 * @return void
+	 */
+	public function process_capture_order_action($order)
+	{
+		if (! $order instanceof WC_Order) {
+			return;
+		}
+		if ($this->id !== $order->get_payment_method()) {
+			return;
+		}
+
+		$transaction_id = (string) $order->get_meta('neopayment_transaction_id');
+		if ('' === $transaction_id) {
+			$order->add_order_note(__('Capture failed: missing Neopayment transaction ID.', 'neopayment'));
+			return;
+		}
+
+		$neopayment_client = new NEOPAYMENT_Client(
+			$this->api_url,
+			$this->api_client_id,
+			$this->api_client_secret
+		);
+
+		try {
+			// For adjustment endpoint, amount is optional. Omitting it avoids
+			// mismatches when the provider compares against authorized amount format.
+			$result = $neopayment_client->capture($transaction_id, 0, (string) $this->capture_endpoint);
+			$status = strtolower((string) ($result['status'] ?? 'approved'));
+
+			if (in_array($status, array('approved', 'completed', 'authorized'), true)) {
+				$order->payment_complete($transaction_id);
+				$order->update_status('completed', __('Payment captured successfully.', 'neopayment'));
+				$order->add_order_note(__('Neopayment adjustment/capture approved.', 'neopayment'));
+			} else {
+				$order->add_order_note(
+					sprintf(
+						/* translators: %s capture status */
+						__('Capture response received with non-success status: %s', 'neopayment'),
+						$status
+					)
+				);
+			}
+		} catch (\NEOPAYMENT_Exception $e) {
+			$order->add_order_note(sprintf(__('Capture failed: %s', 'neopayment'), $e->getMessage()));
+		} catch (\Throwable $e) {
+			$order->add_order_note(__('Capture failed due to an unexpected error. Check logs.', 'neopayment'));
+			NEOPAYMENT_Log::debug('Unexpected capture error: ' . $e->getMessage());
+		}
 	}
 
 	/**
