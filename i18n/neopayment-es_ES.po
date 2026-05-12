@@ -66,6 +66,10 @@ msgstr "Fecha de vencimiento (MM/AA)"
 msgid "MM / YY"
 msgstr "MM / AA"
 
+#: class-neopayment-client.php:81
+msgid "API credentials are not configured."
+msgstr "Las credenciales de la API no están configuradas."
+
 #: class-neopayment-client.php:280
 msgid "Invalid transaction ID"
 msgstr "ID de transacción no válida"

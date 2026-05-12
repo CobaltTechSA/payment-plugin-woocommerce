@@ -97,6 +97,8 @@ class NEOPAYMENT_Standard_Gateway extends WC_Payment_Gateway
 			wp_die(esc_html__('Unauthorized action.', 'neopayment'), esc_html__('Security Error', 'neopayment'), 403);
 		}
 		parent::process_admin_options();
+
+		NEOPAYMENT_Client::clear_cached_oauth_tokens();
 	}
 
 
@@ -410,7 +412,8 @@ class NEOPAYMENT_Standard_Gateway extends WC_Payment_Gateway
 		$neopayment_client = new NEOPAYMENT_Client(
 			$this->api_url,
 			$this->api_client_id,
-			$this->api_client_secret
+			$this->api_client_secret,
+			$this->testmode
 		);
 
 		if (! $order_id || ! $amount) {
@@ -519,7 +522,7 @@ class NEOPAYMENT_Standard_Gateway extends WC_Payment_Gateway
 		NEOPAYMENT_Log::debug('process_payment: ' . $order_id);
 		$order = wc_get_order($order_id);
 
-		$neopayment_client = new NEOPAYMENT_Client($this->api_url, $this->api_client_id, $this->api_client_secret);
+		$neopayment_client = new NEOPAYMENT_Client( $this->api_url, $this->api_client_id, $this->api_client_secret, $this->testmode );
 		try {
 			// detect if the request is from a block-based checkout or classic checkout.
 			$raw_input = file_get_contents('php://input');

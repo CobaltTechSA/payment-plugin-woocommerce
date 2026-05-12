@@ -54,22 +54,59 @@ class NEOPAYMENT_Client
 	private $authorization;
 
 	/**
+	 * wp_options key for OAuth access token (suffixed by environment).
+	 *
+	 * @var string
+	 */
+	private $access_token_option;
+
+	/**
+	 * wp_options key for OAuth expiry timestamp (suffixed by environment).
+	 *
+	 * @var string
+	 */
+	private $expires_at_option;
+
+	/**
 	 * Class constructor.
 	 *
 	 * @param string      $base_url      Base URL for API connection.
 	 * @param string|null $client_id     Client identifier from the merchant.
 	 * @param string|null $client_secret Client secret from the merchant.
+	 * @param bool        $testmode      When true, token is stored under *_test keys; when false, *_live (separate from sandbox vs production).
 	 * @throws NEOPAYMENT_Exception When API credentials are not configured.
 	 */
-	public function __construct(string $base_url, ?string $client_id, ?string $client_secret)
-	{
-		if (empty($base_url) || empty($client_id) || empty($client_secret)) {
-			throw new NEOPAYMENT_Exception('Credenciales API no configuradas.');
+	public function __construct( string $base_url, ?string $client_id, ?string $client_secret, bool $testmode = false ) {
+		if ( empty( $base_url ) || empty( $client_id ) || empty( $client_secret ) ) {
+			throw new NEOPAYMENT_Exception( esc_html__( 'API credentials are not configured.', 'neopayment' ) );
 		}
 
-		$this->base_url      = $base_url;
+		$this->base_url      = rtrim( $base_url, '/' );
 		$this->client_id     = $client_id;
 		$this->client_secret = $client_secret;
+
+		$suffix                    = $testmode ? 'test' : 'live';
+		$this->access_token_option = 'neopayment_access_token_' . $suffix;
+		$this->expires_at_option    = 'neopayment_expires_at_' . $suffix;
+	}
+
+	/**
+	 * Remove all cached OAuth tokens (legacy + per-environment).
+	 *
+	 * @return void
+	 */
+	public static function clear_cached_oauth_tokens() {
+		$keys = array(
+			'neopayment_access_token',
+			'neopayment_expires_at',
+			'neopayment_access_token_test',
+			'neopayment_expires_at_test',
+			'neopayment_access_token_live',
+			'neopayment_expires_at_live',
+		);
+		foreach ( $keys as $key ) {
+			delete_option( $key );
+		}
 	}
 
 	/**
@@ -199,7 +236,7 @@ class NEOPAYMENT_Client
 	 */
 	public function is_access_token_expired(): bool
 	{
-		$expires_at = intval(get_option('neopayment_expires_at', 0));
+		$expires_at = intval( get_option( $this->expires_at_option, 0 ) );
 		$now        = time();
 
 		return $expires_at <= $now;
@@ -231,8 +268,9 @@ class NEOPAYMENT_Client
 	 */
 	public function get_access_token()
 	{
-		$access_token = get_option('neopayment_access_token');
-		if ($this->is_access_token_expired()) {
+		$access_token = get_option( $this->access_token_option );
+
+		if ( $this->is_access_token_expired() ) {
 			$response = $this->post(
 				'/oauth/token',
 				array(
@@ -243,20 +281,22 @@ class NEOPAYMENT_Client
 				false
 			);
 
-			if (200 === $response['code']) {
+			if ( 200 === $response['code'] ) {
 				$access_token = $response['body']['access_token'];
-				$expires_in   = intval($response['body']['expires_in']);
+				$expires_in   = intval( $response['body']['expires_in'] );
 
 				// access_token expiration time.
-				$expires_in -= (60 * 5); // For prevention, subtract 5 minutes.
-				$expires_at  = time() + $expires_in;
+				$expires_in -= ( 60 * 5 ); // For prevention, subtract 5 minutes.
+				$expires_at   = time() + $expires_in;
 
-				update_option('neopayment_access_token', $access_token);
-				update_option('neopayment_expires_at', $expires_at);
-				NEOPAYMENT_Log::debug("Authentication completed: expires_in=$expires_in, access_token=$access_token");
+				update_option( $this->access_token_option, $access_token );
+				update_option( $this->expires_at_option, $expires_at );
+				NEOPAYMENT_Log::debug( "Authentication completed: expires_in={$expires_in}, option={$this->access_token_option}" );
 			} else {
-				// Failed.
-				NEOPAYMENT_Log::error('Error getting access token: ' . wp_json_encode($response));
+				$token_url = $this->base_url . '/oauth/token';
+				NEOPAYMENT_Log::error(
+					'Error getting access token HTTP ' . (int) $response['code'] . ' POST ' . $token_url . ' — ' . wp_json_encode( $response )
+				);
 				return null;
 			}
 		}

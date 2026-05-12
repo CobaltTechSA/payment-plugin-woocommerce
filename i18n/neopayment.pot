@@ -66,6 +66,10 @@ msgstr ""
 msgid "MM / YY"
 msgstr ""
 
+#: class-neopayment-client.php:81
+msgid "API credentials are not configured."
+msgstr ""
+
 #: class-neopayment-client.php:280
 msgid "Invalid transaction ID"
 msgstr ""
