@@ -219,12 +219,24 @@ class NEOPAYMENT_Standard_Gateway extends WC_Payment_Gateway
 
 
 	/**
-	 * Register scripts for the plugin.
-	 * This method is called on the 'wp_enqueue_scripts' action.
+	 * Enqueues front-end scripts on checkout and pay-for-order screens.
+	 *
+	 * Loads:
+	 * - `neopayment-script.js` — browser fingerprint hidden fields for classic / order-pay flows.
+	 * - `neopayment-3ds-popup.js` — 3DS challenge modal and Store API interception (depends on jQuery + SweetAlert).
+	 *
+	 * Scripts are skipped on non-checkout pages to avoid unnecessary HTTP weight.
+	 * The `order-pay` endpoint is included because WooCommerce may not treat it as `is_checkout()` in all setups,
+	 * yet the customer still needs the same assets when paying from a direct link.
+	 *
+	 * @hook wp_enqueue_scripts
+	 *
+	 * @return void
 	 */
 	public function register_plugin_scripts()
 	{
-		if (! is_checkout()) {
+		$is_order_pay = function_exists( 'is_wc_endpoint_url' ) && is_wc_endpoint_url( 'order-pay' );
+		if ( ! is_checkout() && ! $is_order_pay ) {
 			return;
 		}
 
@@ -258,7 +270,7 @@ class NEOPAYMENT_Standard_Gateway extends WC_Payment_Gateway
 		wp_enqueue_script(
 			'neopayment-3ds-popup',
 			$base . 'neopayment-3ds-popup.js',
-			array('jquery', 'wc-checkout', 'neopayment-sweetalert'),
+			array( 'jquery', 'neopayment-sweetalert' ),
 			$popup_ver,
 			true
 		);
@@ -266,21 +278,43 @@ class NEOPAYMENT_Standard_Gateway extends WC_Payment_Gateway
 		// This will be used to handle the 3DS challenge response.
 		$callback = esc_url_raw(home_url("/wc-api/{$this->id}_status"));
 
+		$localized = array(
+			'url_ok' => $callback,
+			'url_ko' => $callback,
+		);
+
+		// Pay-for-order uses a full document redirect (not `wc-ajax=checkout`), so the JSON challenge is lost.
+		// When `process_payment` stored a pending URL and redirected with `neopayment_open_3ds=1`, expose it here.
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only GET flags; access is gated by `hash_equals()` against the order key below (same trust model as core order-pay URLs).
+		$open_3ds_flag   = isset( $_GET['neopayment_open_3ds'] ) ? sanitize_text_field( wp_unslash( (string) $_GET['neopayment_open_3ds'] ) ) : '';
+		$order_key_param = isset( $_GET['key'] ) ? sanitize_text_field( wp_unslash( (string) $_GET['key'] ) ) : '';
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
+		if ( $is_order_pay && '1' === $open_3ds_flag && '' !== $order_key_param ) {
+			$pay_order_id = absint( get_query_var( 'order-pay' ) );
+			$pay_order    = $pay_order_id ? wc_get_order( $pay_order_id ) : false;
+			$key          = $order_key_param;
+			if ( $pay_order instanceof WC_Order && hash_equals( $pay_order->get_order_key(), $key ) ) {
+				$pending_url = $pay_order->get_meta( '_neopayment_pending_3ds_url' );
+				$pending_at  = (int) $pay_order->get_meta( '_neopayment_pending_3ds_at' );
+				if ( is_string( $pending_url ) && '' !== $pending_url && ( time() - $pending_at ) <= 900 ) {
+					$localized['pending_challenge_url'] = esc_url_raw( $pending_url );
+				}
+			}
+		}
+
 		wp_localize_script(
 			'neopayment-3ds-popup',
 			'neopayment_3DS',
-			array(
-				'url_ok' => $callback,
-				'url_ko' => $callback,
-			)
+			$localized
 		);
 	}
 
 	/**
-	 * Credit card form checkout classic.
+	 * Delegates rendering of the hosted credit card inputs to `NEOPAYMENT_CC`.
 	 *
-	 * @param array $args   args forms.
-	 * @param array $fields fields args forms.
+	 * @param array $args   Optional arguments (reserved for WooCommerce compatibility).
+	 * @param array $fields Optional field definitions (reserved).
+	 *
 	 * @return void
 	 */
 	public function credit_card_form($args = array(), $fields = array())
@@ -292,7 +326,15 @@ class NEOPAYMENT_Standard_Gateway extends WC_Payment_Gateway
 	}
 
 	/**
-	 * You will need it if you want your custom credit card form, Step 4 is about it.
+	 * Outputs gateway fields shown on the checkout / order-pay payment step (classic UI).
+	 *
+	 * Renders description (with test-mode notice), the payment nonce, **hidden browser fields for 3DS2**
+	 * (`neopayment_echo_classic_checkout_browser_hidden_fields`), then the card form markup.
+	 *
+	 * Hidden fields start empty and are populated by `neopayment-script.js` before submit; PHP applies
+	 * `neopayment_apply_3ds_browser_fallback()` if any value is still missing server-side.
+	 *
+	 * @return void
 	 */
 	public function payment_fields()
 	{
@@ -310,6 +352,8 @@ class NEOPAYMENT_Standard_Gateway extends WC_Payment_Gateway
 		// nonce field for security.
 		wp_nonce_field($this->id . '_process_payment', $this->id . '_nonce');
 
+		$this->neopayment_echo_classic_checkout_browser_hidden_fields();
+
 		$this->credit_card_form();
 	}
 
@@ -321,9 +365,12 @@ class NEOPAYMENT_Standard_Gateway extends WC_Payment_Gateway
 	public function payment_scripts() {}
 
 	/**
-	 * Fields validation, more in Step 5.
+	 * Validates posted card fields for classic / order-pay checkout (Blocks requests are skipped).
 	 *
-	 * @return bool True si es válido, false en caso contrario.
+	 * Verifies nonce when present, detects Blocks via `payment_data` in `php://input`, then runs Luhn,
+	 * expiry, cardholder, and CVV checks using `NEOPAYMENT_Helpers`.
+	 *
+	 * @return bool True when validation passes; false after adding `wc_add_notice()` errors.
 	 */
 	public function validate_fields()
 	{
@@ -502,10 +549,28 @@ class NEOPAYMENT_Standard_Gateway extends WC_Payment_Gateway
 	}
 
 	/**
-	 * Processes the payment and returns result + redirect URL.
+	 * Executes the remote sale and maps the API response to WooCommerce checkout outcomes.
 	 *
-	 * @param int $order_id WooCommerce order ID.
-	 * @return array Result data with 'result' and 'redirect' keys.
+	 * **Checkout origin detection**
+	 * - **Blocks / Store API:** JSON body contains `payment_data`; card + browser fields are read from that structure.
+	 * - **Classic checkout & order-pay:** Reads card fields from `$_POST` and builds 3DS browser data via
+	 *   `neopayment_get_3ds_params()` → validates with `neopayment_has_required_3ds_browser_params()`.
+	 *
+	 * **Common pipeline (both origins)**
+	 * `neopayment_resolve_3ds_email()` fills a valid `email` from the order when POST/Blocks omitted it (API requirement).
+	 * `neopayment_normalize_3ds_params()` adjusts types (e.g. `challengeWindowSize`), then `NEOPAYMENT_Client::sale()`
+	 * is called. Returns success + challenge URL for 3DS step-up, success + redirect when authorized, or failure notices.
+	 *
+	 * @param int $order_id WooCommerce order ID being paid.
+	 *
+	 * @return array{
+	 *     result: 'success'|'failure',
+	 *     redirect?: string,
+	 *     requires_challenge?: bool,
+	 *     challenge_url?: string,
+	 *     neopayment_callback_url?: string,
+	 *     additional_data?: array
+	 * } Structured result for WooCommerce core / Blocks.
 	 */
 	public function process_payment($order_id)
 	{
@@ -521,6 +586,9 @@ class NEOPAYMENT_Standard_Gateway extends WC_Payment_Gateway
 		// we need it to get any order details.
 		NEOPAYMENT_Log::debug('process_payment: ' . $order_id);
 		$order = wc_get_order($order_id);
+		if ( $order instanceof WC_Order ) {
+			$this->neopayment_clear_pending_3ds_challenge( $order );
+		}
 
 		$neopayment_client = new NEOPAYMENT_Client( $this->api_url, $this->api_client_id, $this->api_client_secret, $this->testmode );
 		try {
@@ -579,7 +647,7 @@ class NEOPAYMENT_Standard_Gateway extends WC_Payment_Gateway
 					'challengeWindowSize'      => $data['challengeWindowSize'] ?? null,
 
 					'browserIP'                => isset($_SERVER['REMOTE_ADDR']) ? sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'])) : '',
-					'email'                    => $billing['email'] ?? $order->get_billing_email(),
+					'email'                    => isset( $billing['email'] ) ? sanitize_email( (string) $billing['email'] ) : '',
 					'billAddrCountry'          => $this->neopayment_get_iso_alpha3_cc($billing['country'] ?? $order->get_billing_country()),
 					'billAddrCity'             => $billing['city'] ?? $order->get_billing_city(),
 					'billAddrState'            => NEOPAYMENT_Helpers::parse_state($billing['state'] ?? $order->get_billing_state()),
@@ -609,6 +677,14 @@ class NEOPAYMENT_Standard_Gateway extends WC_Payment_Gateway
 					return array( 'result' => 'failure' );
 				}
 			}
+			$three_ds_params['email'] = $this->neopayment_resolve_3ds_email( $three_ds_params, $order );
+			if ( ! is_email( $three_ds_params['email'] ) ) {
+				wc_add_notice(
+					__( 'Se requiere un correo de facturación válido para la autenticación 3DS. Comprueba los datos del pedido.', 'neopayment' ),
+					'error'
+				);
+				return array( 'result' => 'failure' );
+			}
 			$three_ds_params = $this->neopayment_normalize_3ds_params($three_ds_params);
 			NEOPAYMENT_Log::debug('three_ds_params=' . wp_json_encode($three_ds_params));
 
@@ -616,13 +692,26 @@ class NEOPAYMENT_Standard_Gateway extends WC_Payment_Gateway
 			NEOPAYMENT_Log::debug('Checkout data: ' . wp_json_encode($transaction));
 
 			if ('authenticating' === ($transaction['status'] ?? '')) {
+				$challenge_url = isset( $transaction['metadatas']['3ds_authentication_form'] )
+					? esc_url_raw( (string) $transaction['metadatas']['3ds_authentication_form'] )
+					: '';
+
+				// Classic AJAX checkout keeps the JSON response and can open the iframe from JS using the hash.
+				// Pay-for-order performs a real HTTP redirect, so the client never sees `challenge_url` unless we persist it.
+				$redirect = '#neopayment-3ds-pending';
+				if ( $order instanceof WC_Order && $this->neopayment_is_pay_for_order_request() && '' !== $challenge_url ) {
+					$order->update_meta_data( '_neopayment_pending_3ds_url', $challenge_url );
+					$order->update_meta_data( '_neopayment_pending_3ds_at', time() );
+					$order->save();
+					$redirect = add_query_arg( 'neopayment_open_3ds', '1', $order->get_checkout_payment_url( true ) );
+				}
+
 				return array(
-					'result'             => 'success',
-					'requires_challenge' => true,
-					'challenge_url'      => $transaction['metadatas']['3ds_authentication_form'],
-					// Prevent Woo classic checkout from hard reloading while 3DS is pending.
-					'redirect'           => '#neopayment-3ds-pending',
-					'neopayment_callback_url'       => $callback,
+					'result'               => 'success',
+					'requires_challenge'   => true,
+					'challenge_url'        => $challenge_url,
+					'redirect'             => $redirect,
+					'neopayment_callback_url' => $callback,
 				);
 			} elseif ($this->validate_payment($transaction)) {
 				return array(
@@ -652,21 +741,190 @@ class NEOPAYMENT_Standard_Gateway extends WC_Payment_Gateway
 	}
 
 	/**
-	 * Get 3DS Params for payments
+	 * Normalizes a PHP `$_POST` value when duplicate HTML fields produced an array of scalars.
 	 *
-	 * @return array
+	 * WooCommerce may submit multiple inputs with the same `name` (theme + plugin duplicates). WordPress
+	 * then exposes `$_POST['field']` as an array; passing that array to `sanitize_text_field()` yields an
+	 * empty string. This helper picks the **last non-empty** scalar, then falls back to the last scalar value.
+	 *
+	 * @param array $parts Raw fragment from `$_POST` or parsed `post_data` (list of submitted values).
+	 *
+	 * @return string Coalesced scalar as string; empty string if nothing usable was found.
+	 */
+	private function neopayment_coalesce_post_array_to_string( array $parts ) {
+		$candidates = array_reverse( $parts, true );
+		foreach ( $candidates as $c ) {
+			if ( is_scalar( $c ) && '' !== trim( (string) $c ) ) {
+				return (string) $c;
+			}
+		}
+		foreach ( $candidates as $c ) {
+			if ( is_scalar( $c ) ) {
+				return (string) $c;
+			}
+		}
+		return '';
+	}
+
+	/**
+	 * Prints empty hidden inputs for EMV 3DS2 browser channel attributes on classic / order-pay checkout.
+	 *
+	 * Field names must stay in sync with `neopayment-script.js` and `neopayment_get_3ds_params()`.
+	 * Class `neopayment-standard-gateway-browser` allows the script to locate and update values before POST.
+	 *
+	 * @see neopayment_get_3ds_params()
+	 * @see neopayment_apply_3ds_browser_fallback()
+	 *
+	 * @return void
+	 */
+	private function neopayment_echo_classic_checkout_browser_hidden_fields() {
+		$names = array(
+			'browserJavaEnabled',
+			'browserJavascriptEnabled',
+			'browserLanguage',
+			'browserColorDepth',
+			'browserScreenWidth',
+			'browserScreenHeight',
+			'browserTZ',
+			'browserUserAgent',
+			'challengeWindowSize',
+		);
+		foreach ( $names as $name ) {
+			printf(
+				'<input type="hidden" class="neopayment-standard-gateway-browser" name="%1$s" value="" autocomplete="off" />',
+				esc_attr( $name )
+			);
+		}
+	}
+
+	/**
+	 * Supplies conservative defaults for any 3DS2 browser-channel keys still empty after reading the request.
+	 *
+	 * Used when JavaScript did not run (performance plugins, CSP), on **order-pay** edge cases, or when
+	 * duplicate inputs collapsed to blank strings. Prefer real browser data from the client when available;
+	 * these defaults satisfy `neopayment_has_required_3ds_browser_params()` and keep the sale request valid.
+	 *
+	 * Does **not** overwrite non-empty values (after `trim`).
+	 *
+	 * @param array $three_ds_params Partial 3DS payload (typically output of `neopayment_get_3ds_params()` before fallback).
+	 *
+	 * @return array Same structure with missing browser keys filled.
+	 */
+	private function neopayment_apply_3ds_browser_fallback( array $three_ds_params ) {
+		$keys = array(
+			'browserJavaEnabled',
+			'browserJavascriptEnabled',
+			'browserLanguage',
+			'browserColorDepth',
+			'browserScreenWidth',
+			'browserScreenHeight',
+			'browserTZ',
+			'browserUserAgent',
+			'challengeWindowSize',
+		);
+		foreach ( $keys as $key ) {
+			if ( isset( $three_ds_params[ $key ] ) && '' !== trim( (string) $three_ds_params[ $key ] ) ) {
+				continue;
+			}
+			switch ( $key ) {
+				case 'browserUserAgent':
+					$three_ds_params[ $key ] = isset( $_SERVER['HTTP_USER_AGENT'] )
+						? sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) )
+						: 'WooCommerce';
+					break;
+				case 'browserLanguage':
+					$lang = '';
+					if ( ! empty( $_SERVER['HTTP_ACCEPT_LANGUAGE'] ) ) {
+						$al    = sanitize_text_field( wp_unslash( $_SERVER['HTTP_ACCEPT_LANGUAGE'] ) );
+						$parts = explode( ',', $al );
+						$piece = isset( $parts[0] ) ? $parts[0] : '';
+						$seg   = explode( ';', $piece );
+						$lang  = strtolower( trim( (string) ( $seg[0] ?? '' ) ) );
+					}
+					$three_ds_params[ $key ] = '' !== $lang ? $lang : 'en';
+					break;
+				case 'browserJavaEnabled':
+					$three_ds_params[ $key ] = '0';
+					break;
+				case 'browserJavascriptEnabled':
+					$three_ds_params[ $key ] = '1';
+					break;
+				case 'browserColorDepth':
+					$three_ds_params[ $key ] = '24';
+					break;
+				case 'browserScreenWidth':
+					$three_ds_params[ $key ] = '1920';
+					break;
+				case 'browserScreenHeight':
+					$three_ds_params[ $key ] = '1080';
+					break;
+				case 'browserTZ':
+					$three_ds_params[ $key ] = '0';
+					break;
+				case 'challengeWindowSize':
+					$three_ds_params[ $key ] = '3';
+					break;
+				default:
+					$three_ds_params[ $key ] = '';
+			}
+		}
+		return $three_ds_params;
+	}
+
+	/**
+	 * Ensures `email` in the 3DS payload is acceptable to the remote API (non-empty, valid format).
+	 *
+	 * The gateway returns HTTP 400 when `3ds_params.email` is empty. Classic AJAX checkout often omits
+	 * top-level `billing_email` (it lives in `post_data` — handled in `neopayment_get_3ds_params()`), and
+	 * pay-for-order flows may not repost billing fields; this method falls back to `WC_Order::get_billing_email()`.
+	 *
+	 * @param array         $three_ds_params Current 3DS payload.
+	 * @param WC_Order|bool $order           Order being paid.
+	 *
+	 * @return string Sanitized email (empty string only when neither payload nor order provides a valid address).
+	 */
+	private function neopayment_resolve_3ds_email( array $three_ds_params, $order ) {
+		$from_payload = '';
+		if ( isset( $three_ds_params['email'] ) ) {
+			$candidate = trim( (string) $three_ds_params['email'] );
+			if ( '' !== $candidate ) {
+				$from_payload = sanitize_email( $candidate );
+			}
+		}
+		if ( $from_payload && is_email( $from_payload ) ) {
+			return $from_payload;
+		}
+		if ( $order instanceof WC_Order ) {
+			$from_order = sanitize_email( $order->get_billing_email() );
+			if ( $from_order && is_email( $from_order ) ) {
+				return $from_order;
+			}
+		}
+		return '';
+	}
+
+	/**
+	 * Builds the 3DS2 `three_ds_params` array for **classic checkout** and **pay-for-order** submissions.
+	 *
+	 * Reads browser attributes from top-level `$_POST` and from the serialized `post_data` string WooCommerce
+	 * sends on AJAX checkout. Merges billing/shipping fallbacks for address-related 3DS fields. Applies
+	 * `neopayment_coalesce_post_array_to_string()` when a browser field arrives as an array (duplicate inputs).
+	 *
+	 * Always ends by merging `neopayment_apply_3ds_browser_fallback()` so the payload is complete before validation.
+	 *
+	 * **Not used** by the Blocks checkout branch (that path receives browser data from the REST payload).
+	 *
+	 * @return array Associative 3DS payload ready for `neopayment_has_required_3ds_browser_params()`.
 	 */
 	private function neopayment_get_3ds_params()
 	{
+		// phpcs:disable WordPress.Security.NonceVerification.Missing,WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		// WooCommerce verifies `woocommerce-process_checkout` / `woocommerce-pay` nonces before calling gateway `process_payment()`.
 		$posted_data = array();
 		$post_data_raw = filter_input(INPUT_POST, 'post_data', FILTER_UNSAFE_RAW);
 		$post_data_raw = is_string($post_data_raw) ? sanitize_textarea_field(wp_unslash($post_data_raw)) : '';
 		if ('' !== $post_data_raw) {
 			parse_str($post_data_raw, $posted_data);
-		}
-
-		if (isset($_POST['_wpnonce']) && wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['_wpnonce'])), 'woocommerce-process_checkout')) {
-			$three_ds_params['email'] = isset($_POST['billing_email']) ? sanitize_email(wp_unslash($_POST['billing_email'])) : '';
 		}
 
 		$three_ds_attrs = array(
@@ -683,21 +941,46 @@ class NEOPAYMENT_Standard_Gateway extends WC_Payment_Gateway
 
 		$three_ds_params = array();
 
-		foreach ($three_ds_attrs as $attr) {
+		foreach ( $three_ds_attrs as $attr ) {
 			$value = '';
-			if (isset($_POST[$attr])) {
-				$value = sanitize_text_field(wp_unslash($_POST[$attr]));
-			} elseif (isset($posted_data[$attr])) {
-				$value = sanitize_text_field($posted_data[$attr]);
+			if ( isset( $_POST[ $attr ] ) ) {
+				$raw = wp_unslash( $_POST[ $attr ] );
+				if ( is_array( $raw ) ) {
+					$raw = $this->neopayment_coalesce_post_array_to_string( $raw );
+				}
+				$value = is_scalar( $raw ) ? sanitize_text_field( (string) $raw ) : '';
+			} elseif ( isset( $posted_data[ $attr ] ) ) {
+				$pd = $posted_data[ $attr ];
+				if ( is_array( $pd ) ) {
+					$pd = $this->neopayment_coalesce_post_array_to_string( $pd );
+				}
+				$value = is_scalar( $pd ) ? sanitize_text_field( (string) $pd ) : '';
 			}
-			$three_ds_params[$attr] = $value;
+			$three_ds_params[ $attr ] = $value;
 		}
 
 		// Order additional data.
 		$three_ds_params['transType']     = 'goods';
 		$three_ds_params['deviceChannel'] = 'browser';
 		$three_ds_params['browserIP']     = isset($_SERVER['REMOTE_ADDR']) ? sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'])) : '';
-		$three_ds_params['email']         = isset($_POST['billing_email']) ? sanitize_email(wp_unslash($_POST['billing_email'])) : '';
+
+		// Shopper email: on AJAX checkout Woo often puts `billing_email` only inside serialized `post_data`, not top-level `$_POST`.
+		$email_raw = '';
+		if ( isset( $_POST['billing_email'] ) ) {
+			$raw = wp_unslash( $_POST['billing_email'] );
+			if ( is_array( $raw ) ) {
+				$raw = $this->neopayment_coalesce_post_array_to_string( $raw );
+			}
+			$email_raw = is_scalar( $raw ) ? trim( (string) $raw ) : '';
+		}
+		if ( '' === $email_raw && isset( $posted_data['billing_email'] ) ) {
+			$pd = $posted_data['billing_email'];
+			if ( is_array( $pd ) ) {
+				$pd = $this->neopayment_coalesce_post_array_to_string( $pd );
+			}
+			$email_raw = is_scalar( $pd ) ? trim( (string) $pd ) : '';
+		}
+		$three_ds_params['email'] = sanitize_email( $email_raw );
 
 		$billing_country_raw                = isset($_POST['billing_country']) ? sanitize_text_field(wp_unslash($_POST['billing_country'])) : '';
 		$billing_iso3                       = ('' !== $billing_country_raw) ? $this->neopayment_get_iso_alpha3_cc($billing_country_raw) : '';
@@ -750,14 +1033,20 @@ class NEOPAYMENT_Standard_Gateway extends WC_Payment_Gateway
 		}
 		$three_ds_params['shipAddrPostCode'] = $shipping_post;
 
-		return $three_ds_params;
+		// phpcs:enable WordPress.Security.NonceVerification.Missing,WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+
+		return $this->neopayment_apply_3ds_browser_fallback( $three_ds_params );
 	}
 
 	/**
-	 * Validate required 3DS browser fields for classic checkout.
+	 * Validates that all mandatory browser-channel keys are present and non-empty (classic / order-pay only).
 	 *
-	 * @param array $three_ds_params 3DS params payload.
-	 * @return bool
+	 * EMV 3DS2 expects these fields for risk analysis; missing values abort payment with a customer-facing notice.
+	 * Debug logs include every array key currently set plus a hint when `$_POST[$key]` is an array (duplicate fields).
+	 *
+	 * @param array $three_ds_params Payload produced by `neopayment_get_3ds_params()` (after fallback).
+	 *
+	 * @return bool True if every required key has a non-empty trimmed string/number representation.
 	 */
 	private function neopayment_has_required_3ds_browser_params($three_ds_params)
 	{
@@ -773,10 +1062,13 @@ class NEOPAYMENT_Standard_Gateway extends WC_Payment_Gateway
 			'challengeWindowSize',
 		);
 
-		foreach ($required as $key) {
-			if (! isset($three_ds_params[$key]) || '' === trim((string) $three_ds_params[$key])) {
-				$present_keys = implode(',', array_keys($three_ds_params));
-				NEOPAYMENT_Log::debug("Missing required 3DS browser param: {$key}. Received keys: {$present_keys}");
+		foreach ( $required as $key ) {
+			$val = isset( $three_ds_params[ $key ] ) ? $three_ds_params[ $key ] : null;
+			if ( null === $val || '' === trim( (string) $val ) ) {
+				$present_keys = implode( ',', array_keys( $three_ds_params ) );
+				// phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Debug-only; POST was already consumed under WC nonces in `neopayment_get_3ds_params()`.
+				$post_shape   = isset( $_POST[ $key ] ) && is_array( $_POST[ $key ] ) ? ' (POST is array — duplicate fields)' : '';
+				NEOPAYMENT_Log::debug( "Missing required 3DS browser param: {$key}. Received keys: {$present_keys}{$post_shape}" );
 				return false;
 			}
 		}
@@ -787,17 +1079,66 @@ class NEOPAYMENT_Standard_Gateway extends WC_Payment_Gateway
 	}
 
 	/**
-	 * Normalize 3DS params types expected by API.
+	 * Whether the current HTTP request is the WooCommerce pay-for-order flow (order-pay template).
 	 *
-	 * @param array $three_ds_params 3DS params payload.
-	 * @return array
+	 * Used to choose a full redirect with query args so PHP can restore the 3DS challenge URL after reload
+	 * (WooCommerce does not use `wc-ajax=checkout` here, so hash-only redirects lose the JSON payload).
+	 *
+	 * @return bool
+	 */
+	private function neopayment_is_pay_for_order_request() {
+		// phpcs:disable WordPress.Security.NonceVerification.Missing,WordPress.Security.NonceVerification.Recommended -- WooCommerce verifies `woocommerce-pay` / checkout nonces before calling gateway `process_payment()`.
+		$pay_nonce = isset( $_POST['woocommerce-pay-nonce'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['woocommerce-pay-nonce'] ) ) : '';
+		if ( '' !== $pay_nonce ) {
+			return true;
+		}
+		$pfo = '';
+		if ( isset( $_GET['pay_for_order'] ) ) {
+			$pfo = sanitize_text_field( wp_unslash( (string) $_GET['pay_for_order'] ) );
+		} elseif ( isset( $_POST['pay_for_order'] ) ) {
+			$pfo = sanitize_text_field( wp_unslash( (string) $_POST['pay_for_order'] ) );
+		}
+		// phpcs:enable WordPress.Security.NonceVerification.Missing,WordPress.Security.NonceVerification.Recommended
+		if ( '' !== $pfo && wc_string_to_bool( $pfo ) ) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Removes stored 3DS challenge URL used only for pay-for-order resume-after-redirect.
+	 *
+	 * @param WC_Order|bool $order Order instance.
+	 *
+	 * @return void
+	 */
+	private function neopayment_clear_pending_3ds_challenge( $order ) {
+		if ( ! $order instanceof WC_Order ) {
+			return;
+		}
+		$order->delete_meta_data( '_neopayment_pending_3ds_url' );
+		$order->delete_meta_data( '_neopayment_pending_3ds_at' );
+		$order->save();
+	}
+
+	/**
+	 * Normalizes 3DS payload types before calling `NEOPAYMENT_Client::sale()`.
+	 *
+	 * Currently enforces `challengeWindowSize` as an integer in the **1–5** EMV range (codes `01`–`05`).
+	 * Values outside that range (legacy bugs such as sending pixel width `400`) are coerced to `3`.
+	 *
+	 * @param array $three_ds_params Combined classic or Blocks 3DS payload.
+	 *
+	 * @return array Mutated copy safe for JSON encoding to the Neopayment API.
 	 */
 	private function neopayment_normalize_3ds_params($three_ds_params)
 	{
-		// Keep browser fields as strings (same format that works in Blocks),
-		// but enforce integer for challengeWindowSize because API validates type.
-		if (isset($three_ds_params['challengeWindowSize']) && '' !== trim((string) $three_ds_params['challengeWindowSize'])) {
-			$three_ds_params['challengeWindowSize'] = (int) $three_ds_params['challengeWindowSize'];
+		if ( isset( $three_ds_params['challengeWindowSize'] ) && '' !== trim( (string) $three_ds_params['challengeWindowSize'] ) ) {
+			$raw = (int) $three_ds_params['challengeWindowSize'];
+			if ( $raw < 1 || $raw > 5 ) {
+				$raw = 3;
+			}
+			$three_ds_params['challengeWindowSize'] = $raw;
 		}
 
 		return $three_ds_params;
@@ -815,6 +1156,9 @@ class NEOPAYMENT_Standard_Gateway extends WC_Payment_Gateway
 		$metas    = $transaction['metadatas'];
 		$order_id = $metas['order_id'];
 		$order    = wc_get_order($order_id);
+		if ( ! $order instanceof WC_Order ) {
+			return false;
+		}
 
 		$status         = $transaction['status'];
 		$success_status = array('authorized', 'notified');
@@ -823,6 +1167,7 @@ class NEOPAYMENT_Standard_Gateway extends WC_Payment_Gateway
 		$order->update_meta_data('neopayment_bank_authorization', $transaction['authorization_number']);
 
 		if (in_array($status, $success_status, true)) {
+			$this->neopayment_clear_pending_3ds_challenge( $order );
 			$order->update_status('completed', __('Payment completed', 'neopayment'));
 			$order->payment_complete($transaction['identifier']);
 			if (function_exists('WC') && WC()->cart) {
@@ -830,6 +1175,7 @@ class NEOPAYMENT_Standard_Gateway extends WC_Payment_Gateway
 			}
 			return true;
 		} else {
+			$this->neopayment_clear_pending_3ds_challenge( $order );
 			$order->update_status('failed', __('Failed payment', 'neopayment'));
 		}
 

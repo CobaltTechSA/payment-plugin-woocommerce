@@ -377,8 +377,13 @@ jQuery(
 			});
 
 			// Fallback for themes/plugins that bypass checkout_place_order_success flow.
+			// Includes `pay_for_order` when WooCommerce processes order-pay via AJAX.
 			$(document).ajaxComplete((event, xhr, settings) => {
-				if (!settings?.url || !settings.url.includes('wc-ajax=checkout')) {
+				const ajaxUrl = settings?.url || '';
+				if (
+					!ajaxUrl.includes('wc-ajax=checkout') &&
+					!ajaxUrl.includes('wc-ajax=pay_for_order')
+				) {
 					return;
 				}
 				const payload = asObject(xhr?.responseText);
@@ -521,10 +526,40 @@ jQuery(
 				}
 			);
 		}
+		/**
+		 * Pay-for-order: WooCommerce does a full document redirect (not `wc-ajax=checkout`), so the JSON with
+		 * `challenge_url` is never seen by JS. PHP stores the URL in order meta and passes it as `pending_challenge_url`.
+		 */
+		function resumePendingChallengeFromServer() {
+			const raw =
+				typeof window.neopayment_3DS !== 'undefined' && window.neopayment_3DS.pending_challenge_url
+					? String(window.neopayment_3DS.pending_challenge_url)
+					: '';
+			if (!raw || !/^https?:\/\//i.test(raw)) {
+				return;
+			}
+			if (openedChallenges.has(raw)) {
+				return;
+			}
+			openedChallenges.add(raw);
+			open3DSModal(raw);
+			try {
+				const u = new URL(window.location.href);
+				if (u.searchParams.get('neopayment_open_3ds') === '1') {
+					u.searchParams.delete('neopayment_open_3ds');
+					const q = u.searchParams.toString();
+					history.replaceState(null, '', u.pathname + (q ? `?${q}` : '') + u.hash);
+				}
+			} catch (e) {
+				// IE / very old browsers without URL — leave query string as-is.
+			}
+		}
+
 		$(document).ready(
 			() => {
 				handlePopupEvents();
 				initMessageHandler();
+				resumePendingChallengeFromServer();
 			}
 		);
 	}
