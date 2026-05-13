@@ -85,6 +85,8 @@ class NEOPAYMENT_Telered_Gateway extends WC_Payment_Gateway {
 			wp_die( esc_html__( 'Unauthorized action.', 'neopayment' ), esc_html__( 'Security Error', 'neopayment' ), 403 );
 		}
 		parent::process_admin_options();
+
+		NEOPAYMENT_Client::clear_cached_oauth_tokens();
 	}
 
 	/**
@@ -233,7 +235,7 @@ class NEOPAYMENT_Telered_Gateway extends WC_Payment_Gateway {
 		$order = wc_get_order( $order_id );
 
 		NEOPAYMENT_Log::debug( "api_client_id=$this->api_client_id, api_client_secret=$this->api_client_secret" );
-		$neopayment_client = new NEOPAYMENT_Client( $this->api_url, $this->api_client_id, $this->api_client_secret );
+		$neopayment_client = new NEOPAYMENT_Client( $this->api_url, $this->api_client_id, $this->api_client_secret, $this->testmode );
 		try {
 			$checkout = $neopayment_client->checkout( $order, NEOPAYMENT_Constants::NEOPAYMENT_PAYMENT_TYPE_TELERED );
 
