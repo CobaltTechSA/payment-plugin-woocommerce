@@ -4,7 +4,7 @@ Tags: woocommerce, payment gateway, neopayment, panama
 Requires at least: 4.4
 Tested up to: 6.9
 Requires PHP: 7.2.0
-Stable tag: 3.0.1
+Stable tag: 3.0.2
 License: GPLv2
 License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html#SEC1
 

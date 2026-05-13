@@ -1,3 +1,10 @@
+2026.05.12 - version 3.0.2
+* Added support for handling pay_for_order flows and ensuring resumed challenges are correctly initialized and validated.
+* Browser attributes are refactored and validated to ensure consistent behavior across different checkout scenarios.
+* Enhanced error messages and debug logging, especially for OAuth token management and 3DS validation failures.
+* Refined and modularized functions in JavaScript and PHP for better maintainability and readability.
+* Added new localization strings for Spanish and updated .pot files for consistency.
+
 2026.05.06 - version 3.0.1
 * Introduces a modal-based flow for 3D Secure to replace the existing popup-based mechanism.
 * Improved 3DS processing feedback and status updates via modals.
